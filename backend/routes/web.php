@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\Auth\AuthController;
 
 /*
@@ -25,6 +28,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 });
 
+Route::controller(GoogleController::class)->group(function () {
+    Route::get('authorized/google', 'redirectToGoogle')->name('auth.google');
+    Route::get('authorized/google/callback', 'handleGoogleCallback');
+});
+
+Route::controller(FacebookController::class)->group(function () {
+    Route::get('authorized/facebook', 'redirectToFacebook')->name('auth.facebook');
+    Route::get('authorized/facebook/callback', 'handleFacebookCallback');
+});
+
 // Auth::routes();
 // //Language Translation
 // Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
@@ -35,4 +48,4 @@ Route::group(['middleware' => ['auth']], function () {
 // Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 // Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
-// Route::get('{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
+// Route::get('{any}', [HomeController::class, 'index'])->name('index');
