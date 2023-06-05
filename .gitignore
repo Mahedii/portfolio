@@ -23,3 +23,4 @@ Homestead.json
 .phpunit.result.cache
 /theme_files
 /backend/vendor
+# /backend/storage/framework/views

@@ -50,6 +50,8 @@ return [
     "two-column" => "Two Column",
     "hovered"=>"Hovered",
     "pages"=>"Pages",
+    "home-page" => "Home Page",
+    "contact-me" => "Contact Me",
     "authentication"=>"Authentication",
     "signin"=>"Sign In",
     "basic"=>"Basic",

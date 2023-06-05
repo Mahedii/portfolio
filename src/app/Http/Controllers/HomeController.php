@@ -28,7 +28,8 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        if (view()->exists($request->path())) {
+        $path = $request->path() . ".index";
+        if (view()->exists($path)) {
             return view($request->path());
         }
         return abort(404);
@@ -36,7 +37,7 @@ class HomeController extends Controller
 
     public function root()
     {
-        return view('index');
+        return view('Backend.index');
     }
 
     /*Language Translation*/

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\FacebookController;
+use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
 
@@ -26,13 +27,18 @@ Route::get('/', function () {
 Route::post('/user-login', [AuthController::class, 'login'])->name('user.signin');
 Route::get('/signout', [AuthController::class, 'signOut'])->name('logout');
 Route::get('/auth', [AuthController::class, 'loginPage'])->name('loginPage');
-Route::get('/admin/dashboard', [AuthController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
+Route::get('/admin-dashboard', [AuthController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
     Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
     Route::get('/work-history', [WorkHistoryController::class, 'index'])->name('workHistoryPage');
+});
+
+Route::controller(SocialLoginController::class)->group(function () {
+    Route::get('authorized/{platform}', 'redirectTo')->name('social.auth.redirectTo');
+    Route::get('authorized/{platform}/callback', 'social.auth.handleCallback');
 });
 
 Route::controller(GoogleController::class)->group(function () {
@@ -55,4 +61,5 @@ Route::controller(FacebookController::class)->group(function () {
 // Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 // Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
+// Route::get('page/{any}', [HomeController::class, 'index'])->name('index');
 Route::get('{any}', [HomeController::class, 'index'])->name('index');

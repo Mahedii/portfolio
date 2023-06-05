@@ -42,7 +42,7 @@ class AuthController extends Controller
 
         if (auth()->attempt($data)) {
             $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
-            return redirect()->intended('/admin/dashboard')->withSuccess('Signed in');
+            return redirect()->intended('/admin-dashboard')->withSuccess('Signed in');
             return response()->json(['token' => $token], 200);
         } else {
             return redirect()->back()->with('crudMsg', 'Login details are not valid');

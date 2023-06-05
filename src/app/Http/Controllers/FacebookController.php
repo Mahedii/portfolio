@@ -34,7 +34,7 @@ class FacebookController extends Controller
 
             if ($finduser) {
                 Auth::login($finduser);
-                return redirect()->intended('/admin/dashboard')->withSuccess('Signed in');
+                return redirect()->intended('/admin-dashboard')->withSuccess('Signed in');
             } else {
                 $newUser = User::updateOrCreate(['email' => $user->email], [
                         'name' => $user->name,
@@ -45,7 +45,7 @@ class FacebookController extends Controller
 
                 Auth::login($newUser);
 
-                return redirect()->intended('/admin/dashboard')->withSuccess('Signed in');
+                return redirect()->intended('/admin-dashboard')->withSuccess('Signed in');
             }
         } catch (Exception $e) {
             dd($e->getMessage());

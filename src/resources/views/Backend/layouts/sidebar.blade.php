@@ -32,6 +32,8 @@
             </div>
             <ul class="navbar-nav" id="navbar-nav">
 
+                <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.home-page')</span></li>
+
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarWorkExp" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarWorkExp">
                         <i class="ri-rocket-line"></i> <span>@lang('translation.work-experience')</span>
@@ -44,6 +46,12 @@
                             </li>
                         </ul>
                     </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="Backend.widgets">
+                        <i class="ri-honour-line"></i> <span>@lang('translation.contact-me')</span>
+                    </a>
                 </li>
 
                 <li class="menu-title"><span>@lang('translation.menu')</span></li>
