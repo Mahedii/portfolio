@@ -19,9 +19,13 @@ use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
 |
 */
 
+Route::get('/', function () {
+    return view('Frontend.index');
+});
+
 Route::post('/user-login', [AuthController::class, 'login'])->name('user.signin');
 Route::get('/signout', [AuthController::class, 'signOut'])->name('logout');
-Route::get('/', [AuthController::class, 'loginPage'])->name('loginPage');
+Route::get('/auth', [AuthController::class, 'loginPage'])->name('loginPage');
 Route::get('/admin/dashboard', [AuthController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
 
 Route::group(['middleware' => ['auth']], function () {

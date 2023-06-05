@@ -7,13 +7,13 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="icon" href="{!! asset('frontend/assets/img/logo-32x32.png') !!}" sizes="32x32"/>
-    <link rel="icon" href="{!! asset('frontend/assets/img/logo-192x192.png') !!}" sizes="192x192"/>
+    <link rel="icon" href="<?php echo asset('frontend/assets/img/logo-32x32.png'); ?>" sizes="32x32"/>
+    <link rel="icon" href="<?php echo asset('frontend/assets/img/logo-192x192.png'); ?>" sizes="192x192"/>
 
     <title>Personal | Blackdsn</title>
 
-    <link href="{{ asset('frontend/assets/css/plugins.css') }}" rel="stylesheet"/>
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/style.css') }}">
+    <link href="<?php echo e(asset('frontend/assets/css/plugins.css')); ?>" rel="stylesheet"/>
+    <link rel="stylesheet" href="<?php echo e(asset('frontend/assets/css/style.css')); ?>">
 </head>
 
 <body class="v-dark bg-dots dsn-effect-scroll dsn-cursor-effect dsn-ajax">
@@ -24,26 +24,26 @@
     <div class="dsnload p-absolute">
         <span class="dsnload__row">
             <span class="dsnload__img">
-            <img src="{!! asset('frontend/assets/img/logo-light.png') !!}" class="logo-dark" alt="Blackdsn" decoding="async" loading="lazy"/>
-            <img src="{!! asset('frontend/assets/img/logo.png') !!}" class="logo-light" alt="Blackdsn" decoding="async" loading="lazy"/>
+            <img src="<?php echo asset('frontend/assets/img/logo-light.png'); ?>" class="logo-dark" alt="Blackdsn" decoding="async" loading="lazy"/>
+            <img src="<?php echo asset('frontend/assets/img/logo.png'); ?>" class="logo-light" alt="Blackdsn" decoding="async" loading="lazy"/>
             </span>
         </span>
         <span class="dsnload__row dsnload__row--sibling">
             <span class="dsnload__img">
-                 <img src="{!! asset('frontend/assets/img/logo-light.png') !!}" class="logo-dark" alt="Blackdsn" decoding="async" loading="lazy"/>
-            <img src="{!! asset('frontend/assets/img/logo.png') !!}" class="logo-light" alt="Blackdsn" decoding="async" loading="lazy"/>
+                 <img src="<?php echo asset('frontend/assets/img/logo-light.png'); ?>" class="logo-dark" alt="Blackdsn" decoding="async" loading="lazy"/>
+            <img src="<?php echo asset('frontend/assets/img/logo.png'); ?>" class="logo-light" alt="Blackdsn" decoding="async" loading="lazy"/>
             </span>
         </span>
         <span class="dsnload__row dsnload__row--sibling">
             <span class="dsnload__img">
-                <img src="{!! asset('frontend/assets/img/logo-light.png') !!}" class="logo-dark" alt="Blackdsn" decoding="async" loading="lazy"/>
-            <img src="{!! asset('frontend/assets/img/logo.png') !!}" class="logo-light" alt="Blackdsn" decoding="async" loading="lazy"/>
+                <img src="<?php echo asset('frontend/assets/img/logo-light.png'); ?>" class="logo-dark" alt="Blackdsn" decoding="async" loading="lazy"/>
+            <img src="<?php echo asset('frontend/assets/img/logo.png'); ?>" class="logo-light" alt="Blackdsn" decoding="async" loading="lazy"/>
             </span>
         </span>
         <span class="dsnload__row dsnload__row--sibling">
             <span class="dsnload__img">
-               <img src="{!! asset('frontend/assets/img/logo-light.png') !!}" class="logo-dark" alt="Blackdsn" decoding="async" loading="lazy"/>
-            <img src="{!! asset('frontend/assets/img/logo.png') !!}" class="logo-light" alt="Blackdsn" decoding="async" loading="lazy"/>
+               <img src="<?php echo asset('frontend/assets/img/logo-light.png'); ?>" class="logo-dark" alt="Blackdsn" decoding="async" loading="lazy"/>
+            <img src="<?php echo asset('frontend/assets/img/logo.png'); ?>" class="logo-light" alt="Blackdsn" decoding="async" loading="lazy"/>
             </span>
         </span>
 
@@ -80,8 +80,8 @@
         <div class="main-logo">
             <a href="index.html" data-dsn-text="Blackdsn" class="custom-logo-link main-brand effect-ajax" rel="home"
                aria-current="page">
-                <img src="{!! asset('frontend/assets/img/logo-light.png') !!}" class="custom-logo logo-light" alt="Blackdsn"/>
-                <img src="{!! asset('frontend/assets/img/logo.png') !!}" class="custom-logo logo-dark" alt="Blackdsn"/>
+                <img src="<?php echo asset('frontend/assets/img/logo-light.png'); ?>" class="custom-logo logo-light" alt="Blackdsn"/>
+                <img src="<?php echo asset('frontend/assets/img/logo.png'); ?>" class="custom-logo logo-dark" alt="Blackdsn"/>
             </a>
         </div>
         <nav class="main-navigation ">
@@ -770,7 +770,7 @@
                     </span>
                         <span class="title-btn p-relative z-index-1">PLAY</span> -->
                     </a>
-
+                    <?php echo e(svg('fab-laravel')); ?>
                         <a href="#" data-dsn-split="chars" class="effect-ajax"
                            data-dsn-ajax="slider">
                             HEADPHONES
@@ -782,7 +782,7 @@
         </div>
         <div class="dsn-bg-section p-absolute w-100 h-100 over-hidden top-0 left-0">
             <div class="h-100 img-box-parallax before-z-index section-margin w-100"  data-overlay="4">
-                <img src="{!! asset('frontend/assets/img/about-4.jpg') !!}" class="cover-bg-img has-direction" alt="">
+                <img src="<?php echo asset('frontend/assets/img/about-4.jpg'); ?>" class="cover-bg-img has-direction" alt="">
             </div>
 
         </div>
@@ -877,7 +877,7 @@
                 <div class="row align-items-center h-100">
                     <div class="col-lg-6 ">
                         <div class="box-im" data-dsn-grid="move-up">
-                            <img class="has-top-bottom" src="{!! asset('frontend/assets/img/project/project9/7.jpg') !!}" alt=""
+                            <img class="has-top-bottom" src="<?php echo asset('frontend/assets/img/project/project9/7.jpg'); ?>" alt=""
                                 data-dsn-move="20%">
                         </div>
                     </div>
@@ -936,7 +936,7 @@
 
 
                         <div class="icon">
-                            <img src="{!! asset('frontend/assets/img/services/1.png') !!}" alt="">
+                            <img src="<?php echo asset('frontend/assets/img/services/1.png'); ?>" alt="">
                         </div>
                     </li>
 
@@ -948,7 +948,7 @@
 
 
                         <div class="icon">
-                            <img src="{!! asset('frontend/assets/img/services/3.png') !!}" alt="">
+                            <img src="<?php echo asset('frontend/assets/img/services/3.png'); ?>" alt="">
                         </div>
                     </li>
 
@@ -960,7 +960,7 @@
 
 
                         <div class="icon">
-                            <img src="{!! asset('frontend/assets/img/services/2.png') !!}" alt="">
+                            <img src="<?php echo asset('frontend/assets/img/services/2.png'); ?>" alt="">
                         </div>
                     </li>
 
@@ -972,7 +972,7 @@
 
 
                         <div class="icon">
-                            <img src="{!! asset('frontend/assets/img/services/4.png') !!}" alt="">
+                            <img src="<?php echo asset('frontend/assets/img/services/4.png'); ?>" alt="">
                         </div>
                     </li>
                 </ul>
@@ -1106,7 +1106,7 @@
                                data-dsn-ajax="work" title="HEADPHONES">
                                 <div class="box-image-bg before-z-index dsn-swiper-parallax-transform"
                                      data-overlay="4">
-                                    <img class="cover-bg-img" src="{!! asset('frontend/assets/img/portfolio/project6/1.jpg') !!}"
+                                    <img class="cover-bg-img" src="<?php echo asset('frontend/assets/img/portfolio/project6/1.jpg'); ?>"
                                          alt=""/>
                                 </div>
                             </a>
@@ -1148,7 +1148,7 @@
                                data-dsn-ajax="work" title="DOG CHOW">
                                 <div class="box-image-bg before-z-index dsn-swiper-parallax-transform"
                                      data-overlay="3">
-                                    <img class="cover-bg-img" src="{!! asset('frontend/assets/img/portfolio/project5/1.jpg') !!}"
+                                    <img class="cover-bg-img" src="<?php echo asset('frontend/assets/img/portfolio/project5/1.jpg'); ?>"
                                          alt=""/>
                                 </div>
                             </a>
@@ -1193,7 +1193,7 @@
                                data-dsn-ajax="work" title="OPEN RUN">
                                 <div class="box-image-bg before-z-index dsn-swiper-parallax-transform"
                                      data-overlay="2">
-                                    <img class="cover-bg-img" src="{!! asset('frontend/assets/img/portfolio/project4/1.jpg') !!}"
+                                    <img class="cover-bg-img" src="<?php echo asset('frontend/assets/img/portfolio/project4/1.jpg'); ?>"
                                          alt=""/>
                                 </div>
                             </a>
@@ -1238,7 +1238,7 @@
                                data-dsn-ajax="work" title="AUDI RS">
                                 <div class="box-image-bg before-z-index dsn-swiper-parallax-transform"
                                      data-overlay="2">
-                                    <img class="cover-bg-img" src="{!! asset('frontend/assets/img/portfolio/project3/1.jpg') !!}"
+                                    <img class="cover-bg-img" src="<?php echo asset('frontend/assets/img/portfolio/project3/1.jpg'); ?>"
                                          alt=""/>
                                 </div>
                             </a>
@@ -1282,7 +1282,7 @@
                                data-dsn-ajax="work" title="MEN FASHION">
                                 <div class="box-image-bg before-z-index dsn-swiper-parallax-transform"
                                      data-overlay="4">
-                                    <img class="cover-bg-img" src="{!! asset('frontend/assets/img/portfolio/project2/1.jpg') !!}"
+                                    <img class="cover-bg-img" src="<?php echo asset('frontend/assets/img/portfolio/project2/1.jpg'); ?>"
                                          alt=""/>
                                 </div>
                             </a>
@@ -1326,7 +1326,7 @@
                                data-dsn-ajax="work" title="VISIONAID">
                                 <div class="box-image-bg before-z-index dsn-swiper-parallax-transform"
                                      data-overlay="4">
-                                    <img class="cover-bg-img" src="{!! asset('frontend/assets/img/portfolio/project1/1.jpg') !!}"
+                                    <img class="cover-bg-img" src="<?php echo asset('frontend/assets/img/portfolio/project1/1.jpg'); ?>"
                                          alt=""/>
                                 </div>
                             </a>
@@ -1406,7 +1406,7 @@
             </div>
             <div class="dsn-bg-section p-absolute w-100 h-100 over-hidden top-0 left-0" style="z-index: -1;">
                 <div class="h-100 img-box-parallax before-z-index " data-dsn-grid="move-up" data-overlay="4">
-                    <img src="{!! asset('frontend/assets/img/about-4.jpg') !!}" class="cover-bg-img has-direction" alt="">
+                    <img src="<?php echo asset('frontend/assets/img/about-4.jpg'); ?>" class="cover-bg-img has-direction" alt="">
                 </div>
 
             </div>
@@ -1574,7 +1574,7 @@
                                                 data-dsn-text="Our Stories">
                                                 <div class="box-image-bg before-z-index dsn-swiper-parallax-transform"
                                                         data-overlay="4">
-                                                    <img src="{!! asset('frontend/assets/img/blog/1.jpg') !!}" class="cover-bg-img" alt=""/>
+                                                    <img src="<?php echo asset('frontend/assets/img/blog/1.jpg'); ?>" class="cover-bg-img" alt=""/>
                                                 </div>
                                             </a>
                                             <div class="post-content dsn-bg p-relative z-index-1 d-flex flex-column">
@@ -1618,7 +1618,7 @@
                                                 data-dsn-text="Our Stories">
                                                 <div class="box-image-bg before-z-index dsn-swiper-parallax-transform"
                                                         data-overlay="4">
-                                                    <img src="{!! asset('frontend/assets/img/blog/2.jpg') !!}" class="cover-bg-img" alt=""/>
+                                                    <img src="<?php echo asset('frontend/assets/img/blog/2.jpg'); ?>" class="cover-bg-img" alt=""/>
                                                 </div>
                                             </a>
                                             <div class="post-content dsn-bg p-relative z-index-1 d-flex flex-column">
@@ -1662,7 +1662,7 @@
                                                 data-dsn-text="Our Stories">
                                                 <div class="box-image-bg before-z-index dsn-swiper-parallax-transform"
                                                         data-overlay="4">
-                                                    <img src="{!! asset('frontend/assets/img/blog/3.jpg') !!}" class="cover-bg-img" alt=""/>
+                                                    <img src="<?php echo asset('frontend/assets/img/blog/3.jpg'); ?>" class="cover-bg-img" alt=""/>
                                                 </div>
                                             </a>
                                             <div class="post-content dsn-bg p-relative z-index-1 d-flex flex-column">
@@ -1871,9 +1871,9 @@
                                 <div class="main-logo">
                                     <a href="https://dsngrid.com/blackdsn/" data-dsn-text="Blackdsn"
                                        class="custom-logo-link main-brand effect-ajax" rel="home">
-                                        <img class="custom-logo logo-light" src="{!! asset('frontend/assets/img/logo-light.png') !!}"
+                                        <img class="custom-logo logo-light" src="<?php echo asset('frontend/assets/img/logo-light.png'); ?>"
                                              alt="Blackdsn"/>
-                                        <img class="custom-logo logo-dark" src="{!! asset('frontend/assets/img/logo.png') !!}"
+                                        <img class="custom-logo logo-dark" src="<?php echo asset('frontend/assets/img/logo.png'); ?>"
                                              alt="Blackdsn"/>
                                     </a>
                                 </div>
@@ -1969,7 +1969,7 @@
 
 <!-- ========== Scroll Right Page To Top Page ========== -->
 <div id="dsn_scroll_to_top" class="scroll-to-top">
-    <img src="{!! asset('frontend/assets/img/scroll_top.svg') !!}" alt="">
+    <img src="<?php echo asset('frontend/assets/img/scroll_top.svg'); ?>" alt="">
     <div class="box-number v-middle">
         <span>0%</span>
     </div>
@@ -2102,12 +2102,13 @@
 </script>
 
 
-<!-- <script src="{{asset('frontend/assets/js/jquery-3.1.1.min.js') }}"></script> -->
-<script src="{{asset('frontend/assets/js/jquery-3.6.0.min.js') }}"></script>
-<script src="{{asset('frontend/assets/js/plugins.min.js') }}"></script>
-<script src="{{asset('frontend/assets/js/plugins/dsn-grid.min.js') }}"></script>
-<script src="{{asset('frontend/assets/js/custom.js') }}"></script>
+<!-- <script src="<?php echo e(asset('frontend/assets/js/jquery-3.1.1.min.js')); ?>"></script> -->
+<script src="<?php echo e(asset('frontend/assets/js/jquery-3.6.0.min.js')); ?>"></script>
+<script src="<?php echo e(asset('frontend/assets/js/plugins.min.js')); ?>"></script>
+<script src="<?php echo e(asset('frontend/assets/js/plugins/dsn-grid.min.js')); ?>"></script>
+<script src="<?php echo e(asset('frontend/assets/js/custom.js')); ?>"></script>
 
 </body>
 
 </html>
+<?php /**PATH D:\xampp\htdocs\portfolio\backend\resources\views/Frontend/index.blade.php ENDPATH**/ ?>
