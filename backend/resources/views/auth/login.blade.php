@@ -1,4 +1,4 @@
-@extends('layouts.master-without-nav')
+@extends('Backend.layouts.master-without-nav')
 @section('title')
 @lang('translation.signin')
 @endsection
@@ -76,8 +76,8 @@
                                         <div>
                                             <a href="{{ url('authorized/facebook') }}" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-facebook-fill fs-16"></i></a>
                                             <a href="{{ url('authorized/google') }}" class="btn btn-danger btn-icon waves-effect waves-light"><i class="ri-google-fill fs-16"></i></a>
-                                            <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button>
-                                            <button type="button" class="btn btn-info btn-icon waves-effect waves-light"><i class="ri-twitter-fill fs-16"></i></button>
+                                            {{-- <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button>
+                                            <button type="button" class="btn btn-info btn-icon waves-effect waves-light"><i class="ri-twitter-fill fs-16"></i></button> --}}
                                         </div>
                                     </div>
                                 </form>

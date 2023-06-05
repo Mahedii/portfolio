@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,8 @@ Route::get('/admin/dashboard', [AuthController::class, 'dashboard'])->middleware
 Route::group(['middleware' => ['auth']], function () {
     Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
     Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
+
+    Route::get('/work-history', [WorkHistoryController::class, 'index'])->name('workHistoryPage');
 });
 
 Route::controller(GoogleController::class)->group(function () {
@@ -48,4 +51,4 @@ Route::controller(FacebookController::class)->group(function () {
 // Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 // Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
-// Route::get('{any}', [HomeController::class, 'index'])->name('index');
+Route::get('{any}', [HomeController::class, 'index'])->name('index');

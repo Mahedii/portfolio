@@ -8,7 +8,7 @@
 
     <div class="profile-foreground position-relative mx-n4 mt-n4">
         <div class="profile-wid-bg bg-transparent border-top">
-            
+
         </div>
     </div>
     <div class="pt-4 mb-4 mb-lg-3 pb-lg-4">
@@ -2734,4 +2734,4 @@
     <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\xampp\htdocs\portfolio\Laravel\galaxy\resources\views/pages-profile.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\xampp\htdocs\portfolio\Laravel\galaxy\resources\views/pages-profile.blade.php ENDPATH**/ ?>

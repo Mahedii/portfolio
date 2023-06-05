@@ -123,4 +123,4 @@
     <script src="<?php echo e(URL::asset('assets/js/pages/passowrd-create.init.js')); ?>"></script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Velzon_v1.5.0\Laravel\default\resources\views/auth-pass-change-basic.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Velzon_v1.5.0\Laravel\default\resources\views/auth-pass-change-basic.blade.php ENDPATH**/ ?>

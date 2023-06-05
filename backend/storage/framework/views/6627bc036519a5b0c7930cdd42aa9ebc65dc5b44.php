@@ -6,7 +6,7 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
 
-    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->startComponent('Backend.components.breadcrumb'); ?>
         <?php $__env->slot('li_1'); ?> Dashboards <?php $__env->endSlot(); ?>
         <?php $__env->slot('title'); ?> Analytics <?php $__env->endSlot(); ?>
     <?php echo $__env->renderComponent(); ?>
@@ -633,11 +633,11 @@
     <!-- apexcharts -->
     <script src="<?php echo e(URL::asset('/assets/libs/apexcharts/apexcharts.min.js')); ?>"></script>
     <script src="<?php echo e(URL::asset('assets/libs/jsvectormap/jsvectormap.min.js')); ?>"></script>
-    
+
 
     <!-- dashboard init -->
     <script src="<?php echo e(URL::asset('/assets/js/pages/dashboard-analytics.init.js')); ?>"></script>
     <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\default\resources\views/dashboard-analytics.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\default\resources\views/dashboard-analytics.blade.php ENDPATH**/ ?>

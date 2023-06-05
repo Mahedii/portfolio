@@ -8,7 +8,7 @@
 <link href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css" />
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-<?php $__env->startComponent('components.breadcrumb'); ?>
+<?php $__env->startComponent('Backend.components.breadcrumb'); ?>
 <?php $__env->slot('li_1'); ?> Tables <?php $__env->endSlot(); ?>
 <?php $__env->slot('title'); ?>Datatables <?php $__env->endSlot(); ?>
 <?php echo $__env->renderComponent(); ?>
@@ -2888,4 +2888,4 @@
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_Laravel\default\resources\views/tables-datatables.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_Laravel\default\resources\views/tables-datatables.blade.php ENDPATH**/ ?>

@@ -4,7 +4,7 @@
 <link href="<?php echo e(URL::asset('assets/libs/swiper/swiper.min.css')); ?>" rel="stylesheet" type="text/css" />
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-<?php $__env->startComponent('components.breadcrumb'); ?>
+<?php $__env->startComponent('Backend.components.breadcrumb'); ?>
 <?php $__env->slot('li_1'); ?> Dashboards <?php $__env->endSlot(); ?>
 <?php $__env->slot('title'); ?> Dashboard <?php $__env->endSlot(); ?>
 <?php echo $__env->renderComponent(); ?>
@@ -1513,4 +1513,4 @@
 <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_Laravel\default\resources\views/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_Laravel\default\resources\views/index.blade.php ENDPATH**/ ?>

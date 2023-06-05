@@ -2,7 +2,7 @@
     <?php echo app('translator')->get('translation.basic-elements'); ?>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->startComponent('Backend.components.breadcrumb'); ?>
         <?php $__env->slot('li_1'); ?>
             Forms
         <?php $__env->endSlot(); ?>
@@ -607,7 +607,7 @@ Must be 8-20 characters long.
 &lt;/div&gt;</code>
 <code>&lt;div class=&quot;input-group&quot;&gt;
 &lt;span class=&quot;input-group-text&quot;&gt;('content')
-<?php $__env->startComponent('components.breadcrumb'); ?>
+<?php $__env->startComponent('Backend.components.breadcrumb'); ?>
 <?php $__env->slot('li_1'); ?>
 Forms
 <?php $__env->endSlot(); ?>
@@ -1214,7 +1214,7 @@ Must be 8-20 characters long.
 &lt;/div&gt;</code>
 <code>&lt;div class=&quot;input-group&quot;&gt;
 &lt;span class=&quot;input-group-text&quot;&gt;('content')
-    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->startComponent('Backend.components.breadcrumb'); ?>
 <?php $__env->slot('li_1'); ?>
 Forms
 <?php $__env->endSlot(); ?>
@@ -2573,7 +2573,7 @@ Must be 8-20 characters long.
 
 <code>&lt;div class=&quot;input-group mb-3&quot;&gt;
 &lt;span class=&quot;input-group-text&quot;&gt;('content')
-    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->startComponent('Backend.components.breadcrumb'); ?>
 <?php $__env->slot('li_1'); ?>
 Forms
 <?php $__env->endSlot(); ?>
@@ -3791,7 +3791,7 @@ Must be 8-20 characters long.
         &lt;input type=&quot;text&quot; class=&quot;form-control&quot; aria-label=&quot;Dollar amount (with dot and two
         decimal places)&quot;&gt;
         &lt;span class=&quot;input-group-text&quot;&gt;('content')
-        <?php $__env->startComponent('components.breadcrumb'); ?>
+        <?php $__env->startComponent('Backend.components.breadcrumb'); ?>
             <?php $__env->slot('li_1'); ?>
                 Forms
             <?php $__env->endSlot(); ?>
@@ -5605,7 +5605,7 @@ Must be 8-20 characters long.
 
 <code>&lt;div class=&quot;input-group mb-3&quot;&gt;
 &lt;span class=&quot;input-group-text&quot;&gt;('content')
-    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->startComponent('Backend.components.breadcrumb'); ?>
 <?php $__env->slot('li_1'); ?>
 Forms
 <?php $__env->endSlot(); ?>
@@ -6825,7 +6825,7 @@ Must be 8-20 characters long.
         &lt;input type=&quot;text&quot; class=&quot;form-control&quot; aria-label=&quot;Dollar amount (with dot and two
         decimal places)&quot;&gt;
         &lt;span class=&quot;input-group-text&quot;&gt;('content')
-        <?php $__env->startComponent('components.breadcrumb'); ?>
+        <?php $__env->startComponent('Backend.components.breadcrumb'); ?>
             <?php $__env->slot('li_1'); ?>
                 Forms
             <?php $__env->endSlot(); ?>
@@ -8491,4 +8491,4 @@ Must be 8-20 characters long.
     <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\default\resources\views/forms-elements.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\default\resources\views/forms-elements.blade.php ENDPATH**/ ?>

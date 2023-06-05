@@ -58,7 +58,7 @@ class AuthController extends Controller
     public function dashboard()
     {
         if (Auth::check()) {
-            return view('/index');
+            return view('Backend.index');
         }
         return redirect()->route("user.signin")->withSuccess('You are not allowed to access');
     }

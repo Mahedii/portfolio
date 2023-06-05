@@ -1,6 +1,6 @@
 <?php $__env->startSection('title'); ?> <?php echo app('translator')->get('translation.checkboxs-radios'); ?> <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-    <?php $__env->startComponent('components.breadcrumb'); ?>
+    <?php $__env->startComponent('Backend.components.breadcrumb'); ?>
         <?php $__env->slot('li_1'); ?> Forms <?php $__env->endSlot(); ?>
         <?php $__env->slot('title'); ?> Checkboxs & Radios <?php $__env->endSlot(); ?>
     <?php echo $__env->renderComponent(); ?>
@@ -1459,4 +1459,4 @@ Radio Outline light
     <?php $__env->stopSection(); ?>
 
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\default\resources\views/forms-checkboxs-radios.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\default\resources\views/forms-checkboxs-radios.blade.php ENDPATH**/ ?>

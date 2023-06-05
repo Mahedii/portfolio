@@ -36,4 +36,4 @@
 <?php $__env->startSection('script'); ?>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Velzon_v1.5.0\Laravel\default\resources\views/auth-offline.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Velzon_v1.5.0\Laravel\default\resources\views/auth-offline.blade.php ENDPATH**/ ?>

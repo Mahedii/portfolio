@@ -103,8 +103,7 @@ unset($__errorArgs, $__bag); ?>
                                         <div>
                                             <a href="<?php echo e(url('authorized/facebook')); ?>" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-facebook-fill fs-16"></i></a>
                                             <a href="<?php echo e(url('authorized/google')); ?>" class="btn btn-danger btn-icon waves-effect waves-light"><i class="ri-google-fill fs-16"></i></a>
-                                            <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button>
-                                            <button type="button" class="btn btn-info btn-icon waves-effect waves-light"><i class="ri-twitter-fill fs-16"></i></button>
+                                            
                                         </div>
                                     </div>
                                 </form>
@@ -148,4 +147,4 @@ unset($__errorArgs, $__bag); ?>
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\xampp\htdocs\portfolio\backend\resources\views/auth/login.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\xampp\htdocs\portfolio\backend\resources\views/auth/login.blade.php ENDPATH**/ ?>

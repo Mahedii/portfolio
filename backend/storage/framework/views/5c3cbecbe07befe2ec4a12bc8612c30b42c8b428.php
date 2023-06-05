@@ -4,7 +4,7 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" type="text/css" />
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-<?php $__env->startComponent('components.breadcrumb'); ?>
+<?php $__env->startComponent('Backend.components.breadcrumb'); ?>
 <?php $__env->slot('li_1'); ?> Forms <?php $__env->endSlot(); ?>
 <?php $__env->slot('title'); ?>Select2 <?php $__env->endSlot(); ?>
 <?php echo $__env->renderComponent(); ?>
@@ -172,4 +172,4 @@
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\galaxy\resources\views/forms-select2.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\galaxy\resources\views/forms-select2.blade.php ENDPATH**/ ?>

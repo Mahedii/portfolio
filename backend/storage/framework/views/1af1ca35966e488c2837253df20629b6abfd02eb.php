@@ -7,7 +7,7 @@
 <link href="<?php echo e(URL::asset('assets/libs/jsvectormap/jsvectormap.min.css')); ?>" rel="stylesheet" type="text/css" />
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-<?php $__env->startComponent('components.breadcrumb'); ?>
+<?php $__env->startComponent('Backend.components.breadcrumb'); ?>
 <?php $__env->slot('li_1'); ?> Basic Action <?php $__env->endSlot(); ?>
 <?php $__env->slot('title'); ?>Basic Action <?php $__env->endSlot(); ?>
 <?php echo $__env->renderComponent(); ?>
@@ -1111,4 +1111,4 @@
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\galaxy\resources\views/dashboard-nft.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_laravel\galaxy\resources\views/dashboard-nft.blade.php ENDPATH**/ ?>

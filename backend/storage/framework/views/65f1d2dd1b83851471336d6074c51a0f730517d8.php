@@ -327,7 +327,7 @@
                         </div>
                     </div><!-- end col -->
                 </div><!-- end row -->
-                
+
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="card shadow-none">
@@ -922,4 +922,4 @@
 <script src="<?php echo e(URL::asset('assets/js/pages/nft-landing.init.js')); ?>"></script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_Laravel\default\resources\views/nft-landing.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\velzon_Laravel\default\resources\views/nft-landing.blade.php ENDPATH**/ ?>

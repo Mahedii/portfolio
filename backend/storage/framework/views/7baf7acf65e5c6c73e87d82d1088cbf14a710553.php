@@ -31,6 +31,21 @@
             <div id="two-column-menu">
             </div>
             <ul class="navbar-nav" id="navbar-nav">
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarWorkExp" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarWorkExp">
+                        <i class="ri-rocket-line"></i> <span><?php echo app('translator')->get('translation.work-experience'); ?></span>
+
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarWorkExp">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="landing" class="nav-link"> <?php echo app('translator')->get('translation.work-history'); ?> </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
                 <li class="menu-title"><span><?php echo app('translator')->get('translation.menu'); ?></span></li>
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
@@ -523,6 +538,7 @@
                         </ul>
                     </div>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarLanding" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLanding">
                         <i class="ri-rocket-line"></i> <span><?php echo app('translator')->get('translation.landing'); ?></span>

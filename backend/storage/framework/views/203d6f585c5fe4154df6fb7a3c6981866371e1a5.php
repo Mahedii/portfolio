@@ -148,4 +148,4 @@ unset($__errorArgs, $__bag); ?>
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\xampp\htdocs\portfolio\Laravel\galaxy\resources\views/auth/login.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('Backend.layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\xampp\htdocs\portfolio\Laravel\galaxy\resources\views/auth/login.blade.php ENDPATH**/ ?>
