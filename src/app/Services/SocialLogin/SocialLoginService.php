@@ -42,7 +42,12 @@ class SocialLoginService
 
             Auth::login($newUser);
 
-            return redirect()->intended('/admin-dashboard')->withSuccess('Signed in');
+            $result = [
+                'status' => 200,
+                'message' => "Success",
+            ];
+
+            return $result;
         }
     }
 }

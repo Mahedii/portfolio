@@ -27,7 +27,7 @@ class SocialLoginController extends Controller
             $platformId = $platform . "_id";
             $socialLoginService = new SocialLoginService($platform, $platformId);
             $result = $socialLoginService->redirectTo();
-
+            
             if ($result["status"] == 200) {
                 return redirect()->intended('/admin-dashboard')->withSuccess('Signed in');
             }

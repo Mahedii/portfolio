@@ -3,7 +3,7 @@
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <!-- Dark Logo-->
-        <a href="index" class="logo logo-dark">
+        <a href="{{ route('pagePath', ['path' => 'dashboard']) }}" class="logo logo-dark">
             <span class="logo-sm">
                 <img src="{{ URL::asset('assets/images/logo-sm.png') }}" alt="" height="22">
             </span>
@@ -12,7 +12,7 @@
             </span>
         </a>
         <!-- Light Logo-->
-        <a href="index" class="logo logo-light">
+        <a href="{{ route('pagePath', ['path' => 'dashboard']) }}" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ URL::asset('assets/images/logo-sm.png') }}" alt="" height="22">
             </span>
@@ -32,25 +32,69 @@
             </div>
             <ul class="navbar-nav" id="navbar-nav">
 
+                <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.header')</span></li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'header/navbar']) }}">
+                        <i class="ri-rocket-line"></i> <span>@lang('translation.navbar')</span>
+                    </a>
+                </li>
+
+                <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.footer')</span></li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'footer']) }}">
+                        <i class="ri-rocket-line"></i> <span>@lang('translation.footer')</span>
+                    </a>
+                </li>
+
                 <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.home-page')</span></li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarWorkExp" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarWorkExp">
-                        <i class="ri-rocket-line"></i> <span>@lang('translation.work-experience')</span>
-
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/hero-section']) }}">
+                        <i class="ri-layout-grid-line"></i> <span>@lang('translation.hero-section')</span>
                     </a>
-                    <div class="collapse menu-dropdown" id="sidebarWorkExp">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="{{ route('pagePath', ['path' => 'home/work-history']) }}" class="nav-link"> @lang('translation.work-history') </a>
-                            </li>
-                        </ul>
-                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/about-me']) }}">
+                        <i class="ri-rocket-line"></i> <span>@lang('translation.about-me')</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/work-history']) }}">
+                        <i class="ri-rocket-line"></i> <span>@lang('translation.work-history')</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/my-skills']) }}">
+                        <i class="ri-honour-line"></i> <span>@lang('translation.my-skills')</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/my-education']) }}">
+                        <i class="ri-honour-line"></i> <span>@lang('translation.my-education')</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/my-works']) }}">
+                        <i class="ri-honour-line"></i> <span>@lang('translation.my-works')</span>
+                    </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/contact-me']) }}">
                         <i class="ri-honour-line"></i> <span>@lang('translation.contact-me')</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'social-links']) }}">
+                        <i class="ri-rocket-line"></i> <span>@lang('translation.social-links')</span>
                     </a>
                 </li>
 

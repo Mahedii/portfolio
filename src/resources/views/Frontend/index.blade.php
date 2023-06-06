@@ -728,14 +728,14 @@
             <div class="box-content-inner">
                 <h1 class="title text-upper">
                     <span class="letter-stroke d-block">I'M</span>
-                    <!-- <span class="p-10 background-theme heading-color">john doe</span> -->
-                    <a href="#" data-dsn-split="chars" class="effect-ajax" data-dsn-ajax="slider">
-                        <span class="p-10 background-theme heading-color typed-text"></span><span class="cursor">&nbsp;</span>
-                    </a>
+                    <span class="p-10 background-theme heading-color" style="margin-left: 0">Mahadi</span>
                 </h1>
 
                 <h6 class="sm-title-block mt-30">
-                    Architect & Spatial Planner
+                    <a href="#" data-dsn-split="chars" class="effect-ajax background-theme heading-color" data-dsn-ajax="slider">
+                        <span class="py-1 pl-2" style="font-weight: bolder">I'm a</span>
+                        <span class="py-1 pr-2 typed-text"></span><span class="cursor">&nbsp;</span>
+                    </a>
                 </h6>
                 <p class="sm-title-block border-top border-bottom mt-30 pt-20 pb-20 max-w570">
                     “Architecture is the learned game, correct and magnificent, of forms assembled in the light.”
@@ -2060,7 +2060,7 @@
     const typedTextSpan = document.querySelector(".typed-text");
     const cursorSpan = document.querySelector(".cursor");
 
-    const textArray = ["Mahadi", "Freelancer", "Developer"];
+    const textArray = ["Software Engineer", "Freelancer", "Learner"];
     const typingDelay = 200;
     const erasingDelay = 100;
     const newTextDelay = 2000; // Delay between current and next text
@@ -2069,35 +2069,35 @@
 
 
     function type() {
-    if (charIndex < textArray[textArrayIndex].length) {
-        if(!cursorSpan.classList.contains("typing")) cursorSpan.classList.add("typing");
-        typedTextSpan.textContent += textArray[textArrayIndex].charAt(charIndex);
-        charIndex++;
-        setTimeout(type, typingDelay);
-    }
-    else {
-        cursorSpan.classList.remove("typing");
-        setTimeout(erase, newTextDelay);
-    }
+        if (charIndex < textArray[textArrayIndex].length) {
+            if(!cursorSpan.classList.contains("typing")) cursorSpan.classList.add("typing");
+            typedTextSpan.textContent += textArray[textArrayIndex].charAt(charIndex);
+            charIndex++;
+            setTimeout(type, typingDelay);
+        }
+        else {
+            cursorSpan.classList.remove("typing");
+            setTimeout(erase, newTextDelay);
+        }
     }
 
     function erase() {
         if (charIndex > 0) {
-        if(!cursorSpan.classList.contains("typing")) cursorSpan.classList.add("typing");
-        typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex-1);
-        charIndex--;
-        setTimeout(erase, erasingDelay);
-    }
-    else {
-        cursorSpan.classList.remove("typing");
-        textArrayIndex++;
-        if(textArrayIndex>=textArray.length) textArrayIndex=0;
-        setTimeout(type, typingDelay + 1100);
-    }
+            if(!cursorSpan.classList.contains("typing")) cursorSpan.classList.add("typing");
+            typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex-1);
+            charIndex--;
+            setTimeout(erase, erasingDelay);
+        }
+        else {
+            cursorSpan.classList.remove("typing");
+            textArrayIndex++;
+            if(textArrayIndex>=textArray.length) textArrayIndex=0;
+            setTimeout(type, typingDelay + 1100);
+        }
     }
 
     document.addEventListener("DOMContentLoaded", function() { // On DOM Load initiate the effect
-    if(textArray.length) setTimeout(type, newTextDelay + 250);
+        if(textArray.length) setTimeout(type, newTextDelay + 250);
     });
 </script>
 
