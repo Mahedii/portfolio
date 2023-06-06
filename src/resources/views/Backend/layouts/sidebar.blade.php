@@ -42,14 +42,14 @@
                     <div class="collapse menu-dropdown" id="sidebarWorkExp">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{route('workHistoryPage')}}" class="nav-link"> @lang('translation.work-history') </a>
+                                <a href="{{ route('pagePath', ['path' => 'home/work-history']) }}" class="nav-link"> @lang('translation.work-history') </a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="Backend.widgets">
+                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/contact-me']) }}">
                         <i class="ri-honour-line"></i> <span>@lang('translation.contact-me')</span>
                     </a>
                 </li>

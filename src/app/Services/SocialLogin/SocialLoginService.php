@@ -2,7 +2,6 @@
 
 namespace App\Services\SocialLogin;
 
-use GuzzleHttp\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -26,7 +25,13 @@ class SocialLoginService
 
         if ($finduser) {
             Auth::login($finduser);
-            return redirect()->intended('/admin-dashboard')->withSuccess('Signed in');
+
+            $result = [
+                'status' => 200,
+                'message' => "Success",
+            ];
+
+            return $result;
         } else {
             $newUser = User::updateOrCreate(['email' => $user->email], [
                     'name' => $user->name,
@@ -39,6 +44,5 @@ class SocialLoginService
 
             return redirect()->intended('/admin-dashboard')->withSuccess('Signed in');
         }
-
     }
 }

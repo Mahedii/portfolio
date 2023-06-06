@@ -5,8 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\FacebookController;
-use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\SocialLoginController;
+use App\Http\Controllers\Backend\Common\CommonController;
 use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
 
 /*
@@ -38,7 +39,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::controller(SocialLoginController::class)->group(function () {
     Route::get('authorized/{platform}', 'redirectTo')->name('social.auth.redirectTo');
-    Route::get('authorized/{platform}/callback', 'social.auth.handleCallback');
+    Route::get('authorized/{platform}/callback', 'handleCallback')->name('social.auth.handleCallback');
 });
 
 Route::controller(GoogleController::class)->group(function () {
@@ -61,5 +62,7 @@ Route::controller(FacebookController::class)->group(function () {
 // Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 // Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
-// Route::get('page/{any}', [HomeController::class, 'index'])->name('index');
-Route::get('{any}', [HomeController::class, 'index'])->name('index');
+
+Route::get('{path}', [CommonController::class, 'index'])->where('path', '.*')->name('pagePath');
+
+// Route::get('{any}', [HomeController::class, 'index'])->name('index');

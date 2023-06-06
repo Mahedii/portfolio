@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Laravel\Socialite\Facades\Socialite;
+use App\Services\SocialLogin\SocialLoginService;
 
 class SocialLoginController extends Controller
 {
@@ -23,10 +24,13 @@ class SocialLoginController extends Controller
     public function handleCallback($platform)
     {
         try {
-            $platformId = $platform+"_id";
+            $platformId = $platform . "_id";
             $socialLoginService = new SocialLoginService($platform, $platformId);
             $result = $socialLoginService->redirectTo();
 
+            if ($result["status"] == 200) {
+                return redirect()->intended('/admin-dashboard')->withSuccess('Signed in');
+            }
         } catch (Exception $e) {
             dd($e->getMessage());
         }
