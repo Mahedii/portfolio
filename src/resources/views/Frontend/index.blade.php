@@ -746,7 +746,7 @@
                         <span class="dsn-icon dsn-bg-before btn-icon-left heading-color z-index-1">
                             <i class="fas fa-angle-right"></i>
                         </span>
-                        <span class="title-btn p-relative  z-index-1 ">About Me</span>
+                        {{-- <span class="title-btn p-relative  z-index-1 ">About Me</span> --}}
                     </a>
                 </div>
             </div>
@@ -761,23 +761,15 @@
     <div class="section-video  section-margin background-section p-relative section-padding hv-100 dsn-animate-video v-dark-head" data-dsn-option='{"speed":5}' >
         <div class="container d-flex align-items-center h-100">
             <div class="content d-grid grid-3 justify-content-between align-items-center w-100">
-                <h6 class="title animate-left text-left">PLAY Lorem, ipsum.</h6>
+                <h6 class="title animate-left text-left">PLAY <span style="font-size: 50px">GAME</span></h6>
                 <div class="dsn-normal-btn dsn-icon-heading-color d-flex justify-content-center">
-                    <a class="vid background-section move-circle has-icon-left"
-                        href="https://vimeo.com/175353205" target="_blank" rel="nofollow" data-dsn="parallax">
-                    <!-- <span class="dsn-icon dsn-bg-before btn-icon-left heading-color z-index-1">
-                        <i class="fas fa-play"></i>
-                    </span>
-                        <span class="title-btn p-relative z-index-1">PLAY</span> -->
-                    </a>
-
-                        <a href="#" data-dsn-split="chars" class="effect-ajax"
-                           data-dsn-ajax="slider">
-                            HEADPHONES
-                        </a>
-
+                    {{-- <a class="vid background-section move-circle has-icon-left" href="https://vimeo.com/175353205" target="_blank" rel="nofollow" data-dsn="parallax">
+                        <span class="dsn-icon dsn-bg-before btn-icon-left heading-color z-index-1"><i class="fas fa-play"></i></span>
+                        <span class="title-btn p-relative z-index-1">PLAY</span>
+                    </a> --}}
+                    {{-- <a href="#" data-dsn-split="chars" class="effect-ajax" data-dsn-ajax="slider">HEADPHONES</a> --}}
                 </div>
-                <h6 class="title animate-right text-right">REEL</h6>
+                <h6 class="title animate-right text-right">REEL <span style="font-size: 50px">GAME</span></h6>
             </div>
         </div>
         <div class="dsn-bg-section p-absolute w-100 h-100 over-hidden top-0 left-0">

@@ -27,7 +27,7 @@ class CommonController extends Controller
             // dd($pathUrl, $fetchedData);
 
             if (view()->exists($pathUrl)) {
-                return view($pathUrl, compact('fetchedData'));
+                return view($pathUrl, $fetchedData);
             }
             return abort(404);
         } catch (Exception $e) {

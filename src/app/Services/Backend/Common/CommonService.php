@@ -4,6 +4,8 @@ namespace App\Services\Backend\Common;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\HeroSection\TypedTexts;
+use App\Models\HeroSection\HeroSection;
 
 class CommonService
 {
@@ -24,12 +26,20 @@ class CommonService
         $arrayIndex = count($pathArray);
         $keyword = $pathArray[$arrayIndex - 1];
 
-        if ($keyword == "contact-me") {
-            $fetchedData = "";
+        $componentArray = [];
+
+        if ($keyword == "hero-section") {
+            $heroSectionData = HeroSection::all();
+            $typedTextsData = TypedTexts::all();
+
+            $componentArray = [
+                "heroSectionData" => $heroSectionData,
+                "typedTextsData" => $typedTextsData
+            ];
         } elseif ($keyword == "work-history") {
-            $fetchedData = "";
+            $componentArray = [];
         } else {
-            $fetchedData = "";
+            $componentArray = [];
         }
 
         // $result = [
@@ -37,7 +47,7 @@ class CommonService
         //     'message' => "Success",
         // ];
 
-        return $keyword;
+        return $componentArray;
     }
 
     /**
