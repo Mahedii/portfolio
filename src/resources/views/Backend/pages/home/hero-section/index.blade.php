@@ -7,6 +7,8 @@
 <!--datatable responsive css-->
 <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection
 @section('content')
 @component('Backend.components.breadcrumb')
@@ -71,7 +73,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="quote" class="form-label">Quote<span class="text-danger">*</span></label>
-                                    <textarea class="form-control" name="quote" id="ckeditor-classic" rows="3">{{ $data->quote }}</textarea>
+                                    <textarea class="form-control" name="quote" id="ckeditor-classic" rows="3">{{ Str::limit($data->quote, 20) }}</textarea>
                                     @if ($errors->has('quote'))
                                         <span class="text-danger">{{ $errors->first('quote') }}</span>
                                     @endif
@@ -98,12 +100,12 @@
             <div class="row g-4">
                 <div class="col-sm">
                     <div class="d-flex justify-content-sm">
-                        <h5 class="card-title mt-2">Datatables</h5>
+                        <h5 class="card-title m-3">Datatables</h5>
                     </div>
                 </div>
                 <div class="col-sm">
                     <div class="d-flex justify-content-sm-end">
-                        <a href="" class="btn btn-success" id="addproduct-btn">
+                        <a href="" class="btn btn-success m-3" id="addproduct-btn">
                             <i class="ri-add-line align-bottom me-1"></i>
                             Add
                         </a>
@@ -119,9 +121,9 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="typedTextData">
                         @foreach($typedTextsData as $key => $data)
-                            <tr>
+                            <tr data-table="{{ $data->encrypted_table_name }}" id="{{ $data->id }}">
                                 <td>{{ ++$key }}</td>
                                 <td>{{ $data->text }}</td>
                                 <td>
@@ -140,14 +142,14 @@
                                             </li> --}}
 
                                             <li>
-                                                <a href="" class="dropdown-item edit-item-btn">
+                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item edit-item-btn edit-typing-text">
                                                     <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                     Edit
                                                 </a>
                                             </li>
 
                                             <li>
-                                                <a href="" class="dropdown-item edit-item-btn" onclick="return confirm('Are you sure you want to delete this?');">
+                                                <a href="javascript:void(0);" class="dropdown-item edit-item-btn" onclick="return confirm('Are you sure you want to delete this?');">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                     Delete
                                                 </a>
@@ -166,12 +168,129 @@
 </div>
 <!--end row-->
 
+<!-- Modal Blur -->
+<div id="zoomInEditModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInEditModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="zoomInEditModalLabel">Update Typing Text</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextFormData">
+                    @csrf
+                    <input type="hidden" class="form-control" id="slug" name="slug">
+                    <input type="hidden" class="form-control" id="table_name" name="table_name">
+                    <div class="row g-3">
+                        <div class="col-xxl-12">
+                            <div>
+                                <label for="typingText" class="form-label">Typing Text</label>
+                                <input type="text" class="form-control" id="typingTextVal" name="typingText" placeholder="Enter typing text">
+                            </div>
+                        </div><!--end col-->
+                        <div class="col-lg-12">
+                            <div class="hstack gap-2 justify-content-end">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {{-- <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary ">Save Changes</button>
+            </div> --}}
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('#typedTextData').on('click', '.edit-typing-text', function () {
+            var slug = $(this).data('slug');
+            var table = $(this).closest('tr').data('table');
+            var url = '/fetch/'+table+'/'+slug;
+            // alert(url);
+
+            $.ajax({
+                type:'GET',
+                url:url,
+                dataType:'json',
+                success:function(data){
+                    $('#table_name').val(data.table_name);
+                    var tableData = data.field;
+                    tableData.forEach(function(row) {
+                        $('#slug').val(row.slug);
+                        $('#typingTextVal').val(row.text);
+                    });
+                    $('#zoomInEditModal').modal('show');
+                }
+                ,error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+
+        });
+
+        $(document).on("submit", "#typingTextFormData", function(e){
+
+            e.preventDefault();
+
+            var form = $('#typingTextFormData')[0];
+            let formData = new FormData(form);
+
+            var dataString = $('#typingTextFormData').serialize();
+            // dataType: 'json',
+
+            // alert(dataString);
+
+            $.ajax({
+                url: "{{ route('ajaxUpdateData') }}",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                cache: false,
+                contentType: false,
+                success: function(data) {
+
+                    // var rowData = {
+                    //     id: data.field.id,
+                    //     text: data.field.text,
+                    //     action: ''
+                    // };
+                    // var table = $('#buttons-datatables').DataTable();
+                    // table.row.add(rowData).draw();
+
+                    $('#zoomInEditModal').modal('hide');
+                    $('#typingTextFormData')[0].reset();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+
+        });
+
+    });
+
+</script>
+
 @endsection
 @section('script')
 
 <script src="{{ URL::asset('assets/libs/prismjs/prismjs.min.js') }}"></script>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <!--datatable js-->
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>

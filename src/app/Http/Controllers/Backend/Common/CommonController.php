@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend\Common;
 
-use ReflectionClass;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +17,7 @@ class CommonController extends Controller
      */
     public function index($path)
     {
+        // dd("WTF");
         try {
             $this->commonService = new CommonService($path);
 

@@ -8,6 +8,8 @@ use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\Backend\Common\CommonController;
+use App\Http\Controllers\Backend\Common\Ajax\FetchDataController;
+use App\Http\Controllers\Backend\Common\Ajax\UpdateDataController;
 use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
 
 /*
@@ -33,6 +35,13 @@ Route::get('/dashboard', [AuthController::class, 'dashboard'])->middleware(['aut
 Route::group(['middleware' => ['auth']], function () {
     Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
     Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
+
+    Route::get('admin/{path}', [CommonController::class, 'index'])->where('path', '.*')->name('pagePath');
+
+    // Route::get('{tableData}', [FetchDataController::class, 'index'])->where('tableData', '.*')->name('ajaxFetchData');
+
+    Route::get('/fetch/{table}/{data}', [FetchDataController::class, 'index'])->name('ajaxFetchData');
+    Route::post('/update', UpdateDataController::class)->name('ajaxUpdateData');
 });
 
 Route::controller(SocialLoginController::class)->group(function () {
@@ -50,6 +59,6 @@ Route::controller(SocialLoginController::class)->group(function () {
 // Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 // Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
-Route::get('{path}', [CommonController::class, 'index'])->where('path', '.*')->name('pagePath');
+
 
 // Route::get('{any}', [HomeController::class, 'index'])->name('index');

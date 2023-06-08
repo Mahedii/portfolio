@@ -35,19 +35,25 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $data = [
-            'email' => $request->email,
-            'password' => $request->password
-        ];
+        $validated = $request->validate(
+            [
+                'email' => 'required',
+                'password' => 'required',
+            ],
+            [
+                'email.required' => 'Please Enter Your Email',
+                'password.required' => 'Please Enter Your password',
+            ]
+        );
 
-        if (auth()->attempt($data)) {
-            $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
-            return redirect()->intended('/admin-dashboard')->withSuccess('Signed in');
-            return response()->json(['token' => $token], 200);
-        } else {
-            return redirect()->back()->with('crudMsg', 'Login details are not valid');
-            return response()->json(['error' => 'Unauthorised'], 401);
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $token = $user->createToken('LaravelAuthApp')->accessToken;
+            return redirect()->intended('/dashboard')->withSuccess('Signed in');
         }
+
+        return redirect()->back()->with('crudMsg', 'Login details are not valid');
     }
 
     public function loginPage()
