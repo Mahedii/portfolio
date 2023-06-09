@@ -49,6 +49,7 @@ Route::controller(SocialLoginController::class)->group(function () {
     Route::get('authorized/{platform}/callback', 'handleCallback')->name('social.auth.handleCallback');
 });
 
+
 // Auth::routes();
 // //Language Translation
 // Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);

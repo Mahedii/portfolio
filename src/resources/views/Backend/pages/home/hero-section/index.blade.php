@@ -123,7 +123,7 @@
                     </thead>
                     <tbody id="typedTextData">
                         @foreach($typedTextsData as $key => $data)
-                            <tr data-table="{{ $data->encrypted_table_name }}" id="{{ $data->id }}">
+                            <tr data-table="{{ $data->encrypted_table_name }}" data-id="{{ $data->id }}">
                                 <td>{{ ++$key }}</td>
                                 <td>{{ $data->text }}</td>
                                 <td>
@@ -149,7 +149,7 @@
                                             </li>
 
                                             <li>
-                                                <a href="javascript:void(0);" class="dropdown-item edit-item-btn" onclick="return confirm('Are you sure you want to delete this?');">
+                                                <a href="javascript:void(0);" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this?');">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                     Delete
                                                 </a>
@@ -210,6 +210,14 @@
 
     $(document).ready(function () {
 
+        toastr.options = {
+            closeButton: true,
+            newestOnTop: true,
+            progressBar: true,
+            positionClass: 'toast-top-right',
+            timeOut: 3000,
+        };
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -264,13 +272,11 @@
                 contentType: false,
                 success: function(data) {
 
-                    // var rowData = {
-                    //     id: data.field.id,
-                    //     text: data.field.text,
-                    //     action: ''
-                    // };
-                    // var table = $('#buttons-datatables').DataTable();
-                    // table.row.add(rowData).draw();
+                    table = $('#buttons-datatables').DataTable();
+                    table.clear();
+                    var rows = showData(data.field);
+
+                    toastr.success(data.message);
 
                     $('#zoomInEditModal').modal('hide');
                     $('#typingTextFormData')[0].reset();
@@ -282,6 +288,47 @@
             });
 
         });
+
+        function showData(data){
+
+            var table = $('#buttons-datatables').DataTable();
+            var id = 1;
+
+            $.each(data, function( index, value ) {
+                var row = table.row.add([id++, value.text, createActions(value)]).draw(false).node();
+                $(row).attr('data-table', value.encrypted_table_name); // Set data-table attribute
+                $(row).attr('data-id', value.id);
+            });
+
+        }
+
+        function createActions(data) {
+            var actionContent =
+                '<div class="dropdown d-inline-block">' +
+                    '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                        '<i class="ri-more-fill align-middle"></i>' +
+                    '</button>' +
+                    '<ul class="dropdown-menu dropdown-menu-end">' +
+                        '<li>' +
+                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item edit-item-btn edit-typing-text" >' +
+                                '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i>' +
+                                'Edit' +
+                            '</a>' +
+                        '</li>' +
+                        '<li>' +
+                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item" onclick="return confirm(\'Are you sure you want to delete this?\');">' +
+                                '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>' +
+                                'Delete' +
+                            '</a>' +
+                        '</li>' +
+                    '</ul>' +
+                '</div>';
+
+            // <a class="dropdown-item" href="{{ route("testPath", ":slug") }}">Text</a>
+            // actionContent = actionContent.replace(":slug", data.slug);
+
+            return actionContent;
+        }
 
     });
 

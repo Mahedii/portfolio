@@ -15,6 +15,10 @@
 @section('body')
     @include('Backend.layouts.body')
 @show
+
+    <div id="toastr-alerts-container"></div>
+
+
     <!-- Begin page -->
     <div id="layout-wrapper">
         @include('Backend.layouts.topbar')

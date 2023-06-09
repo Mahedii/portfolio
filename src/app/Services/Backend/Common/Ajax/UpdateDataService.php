@@ -35,9 +35,14 @@ class UpdateDataService
                     'text' => $this->request->typingText,
                 ]);
 
-        $table_data = DB::table(Crypt::decryptString($this->request->table_name))
-                ->where('slug', $this->request->slug)
-                ->first();
+        // $table_data = DB::table(Crypt::decryptString($this->request->table_name))->where('slug', $this->request->slug)->first();
+        $table_data = DB::table(Crypt::decryptString($this->request->table_name))->get();
+
+        $encrypted_table_name = $this->request->table_name;
+        $table_data = $table_data->map(function ($item) use ($encrypted_table_name) {
+            $item->encrypted_table_name = $encrypted_table_name;
+            return $item;
+        });
 
         $result = [
             'status' => 200,
