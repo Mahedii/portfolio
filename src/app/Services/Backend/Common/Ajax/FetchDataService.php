@@ -19,35 +19,18 @@ class FetchDataService
     /**
      * Get data from database according routes
      *
+     * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         $table_data = DB::table(Crypt::decryptString($this->table))->where('slug', $this->data)->get();
 
         $result = [
             'status' => 200,
-            'table_name' => $this->table,
+            'table_secret_key' => $this->table,
             'field' => $table_data,
         ];
 
         return $result;
-    }
-
-    /**
-     * Make the path url
-     *
-     */
-    public function getPathUrl()
-    {
-        $viewPath = 'Backend.pages';
-        $folders = explode('/', $this->path);
-
-        foreach ($folders as $folder) {
-            $viewPath .= '.' . $folder;
-        }
-
-        $pathUrl = $viewPath . '.index';
-
-        return $pathUrl;
     }
 }

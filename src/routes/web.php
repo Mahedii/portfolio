@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\Backend\Common\CommonController;
 use App\Http\Controllers\Backend\Common\Ajax\FetchDataController;
+use App\Http\Controllers\Backend\Common\Ajax\ValidationDataController;
 use App\Http\Controllers\Backend\Common\Ajax\UpdateDataController;
 use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
 
@@ -41,6 +42,7 @@ Route::group(['middleware' => ['auth']], function () {
     // Route::get('{tableData}', [FetchDataController::class, 'index'])->where('tableData', '.*')->name('ajaxFetchData');
 
     Route::get('/fetch/{table}/{data}', [FetchDataController::class, 'index'])->name('ajaxFetchData');
+    Route::post('/validate', ValidationDataController::class)->name('ajaxValidationData');
     Route::post('/update', UpdateDataController::class)->name('ajaxUpdateData');
 });
 

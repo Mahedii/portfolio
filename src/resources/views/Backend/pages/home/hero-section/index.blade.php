@@ -43,37 +43,34 @@
     <div class="col-xxl-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Gutters</h4>
-                <div class="flex-shrink-0">
+                <h4 class="card-title mb-0 flex-grow-1">Hero Section</h4>
+                {{-- <div class="flex-shrink-0">
                     <div class="form-check form-switch form-switch-right form-switch-md">
                         <label for="gutters-showcode" class="form-label text-muted">Show Code</label>
-                        {{-- <input class="form-check-input code-switcher" type="checkbox" id="gutters-showcode"> --}}
                     </div>
-                </div>
-            </div><!-- end card header -->
+                </div> --}}
+            </div>
 
             <div class="card-body">
                 <div class="live-preview">
-                    <form method="POST" action="{{ route('pagePath', ['path' => 'header/navbar']) }}" enctype="multipart/form-data" class="row g-3">
-
+                    <form method="POST" action="" enctype="multipart/form-data" class="row g-3">
                         @csrf
-
                         @foreach ($heroSectionData as $data)
-
-                            <div class="row">
+                            <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label for="fullnameInput" class="form-label">Name<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" value="{{ $data->name }}" name="name">
+                                    <input type="text" class="form-control ajax-validation-input @error('name') is-invalid @enderror" value="{{ $data->name }}" name="name">
+                                    <input type="hidden" name="secret_key" id="secret_key" value="{{ $data->encrypted_table_name }}">
                                     @if ($errors->has('name'))
                                         <span class="text-danger">{{ $errors->first('name') }}</span>
                                     @endif
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label for="quote" class="form-label">Quote<span class="text-danger">*</span></label>
-                                    <textarea class="form-control" name="quote" id="ckeditor-classic" rows="3">{{ Str::limit($data->quote, 20) }}</textarea>
+                                    <textarea class="form-control ajax-validation-input" name="quote" id="ckeditor-classic" rows="3">{{ Str::limit($data->quote, 20) }}</textarea>
                                     @if ($errors->has('quote'))
                                         <span class="text-danger">{{ $errors->first('quote') }}</span>
                                     @endif
@@ -100,7 +97,7 @@
             <div class="row g-4">
                 <div class="col-sm">
                     <div class="d-flex justify-content-sm">
-                        <h5 class="card-title m-3">Datatables</h5>
+                        <h5 class="card-title m-3">Typed Texts</h5>
                     </div>
                 </div>
                 <div class="col-sm">
@@ -123,7 +120,7 @@
                     </thead>
                     <tbody id="typedTextData">
                         @foreach($typedTextsData as $key => $data)
-                            <tr data-table="{{ $data->encrypted_table_name }}" data-id="{{ $data->id }}">
+                            <tr data-table-secret="{{ $data->encrypted_table_name }}" data-id="{{ $data->id }}">
                                 <td>{{ ++$key }}</td>
                                 <td>{{ $data->text }}</td>
                                 <td>
@@ -180,7 +177,7 @@
                 <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextFormData">
                     @csrf
                     <input type="hidden" class="form-control" id="slug" name="slug">
-                    <input type="hidden" class="form-control" id="table_name" name="table_name">
+                    <input type="hidden" class="form-control" id="table_secret_key" name="table_secret_key">
                     <div class="row g-3">
                         <div class="col-xxl-12">
                             <div>
@@ -210,6 +207,9 @@
 
     $(document).ready(function () {
 
+        /**
+         * Set toastr options
+         */
         toastr.options = {
             closeButton: true,
             newestOnTop: true,
@@ -218,16 +218,22 @@
             timeOut: 3000,
         };
 
+        /**
+         * Set CSRF token for form request
+         */
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
+        /**
+         * Fetch selected inputs information for typed text & set them in a modal for update
+         */
         $('#typedTextData').on('click', '.edit-typing-text', function () {
             var slug = $(this).data('slug');
-            var table = $(this).closest('tr').data('table');
-            var url = '/fetch/'+table+'/'+slug;
+            var table_secret_key = $(this).closest('tr').data('table-secret');
+            var url = '/fetch/'+table_secret_key+'/'+slug;
             // alert(url);
 
             $.ajax({
@@ -235,7 +241,7 @@
                 url:url,
                 dataType:'json',
                 success:function(data){
-                    $('#table_name').val(data.table_name);
+                    $('#table_secret_key').val(data.table_secret_key);
                     var tableData = data.field;
                     tableData.forEach(function(row) {
                         $('#slug').val(row.slug);
@@ -251,6 +257,9 @@
 
         });
 
+        /**
+         * Update typed text data
+         */
         $(document).on("submit", "#typingTextFormData", function(e){
 
             e.preventDefault();
@@ -289,6 +298,9 @@
 
         });
 
+        /**
+         * Show fetched datatable data
+         */
         function showData(data){
 
             var table = $('#buttons-datatables').DataTable();
@@ -296,12 +308,15 @@
 
             $.each(data, function( index, value ) {
                 var row = table.row.add([id++, value.text, createActions(value)]).draw(false).node();
-                $(row).attr('data-table', value.encrypted_table_name); // Set data-table attribute
+                $(row).attr('data-table-secret', value.secret_key); // Set data-table attribute
                 $(row).attr('data-id', value.id);
             });
 
         }
 
+        /**
+         * Set action buttons for datatable
+         */
         function createActions(data) {
             var actionContent =
                 '<div class="dropdown d-inline-block">' +
@@ -324,12 +339,66 @@
                     '</ul>' +
                 '</div>';
 
-            // <a class="dropdown-item" href="{{ route("testPath", ":slug") }}">Text</a>
+            // <a class="dropdown-item" href="{{ route("pagePath", ":slug") }}">Text</a>
             // actionContent = actionContent.replace(":slug", data.slug);
 
             return actionContent;
         }
 
+        /**
+         * Perform AJAX validation for a single input
+         */
+        $(document).on('keyup', '.ajax-validation-input', function() {
+            var input = $(this);
+            var value = input.val();
+            var field = input.attr('name');
+            var secret_key = $("#secret_key").val();
+            // alert(secret_key);
+
+            // Prepare the data to be sent via AJAX
+            var data = {
+                field: field,
+                value: value,
+                secret_key: secret_key
+            };
+
+            // Send the AJAX request
+            $.ajax({
+                url: "{{ route('ajaxValidationData') }}",
+                type: "POST",
+                data: data,
+                dataType:'json',
+                success: function(response) {
+                    // alert(response.success);
+                    console.log(response);
+                    if (response.success) {
+                        // Validation passed, do something
+                        // ...
+                        input.siblings('.error-message').remove();
+                    } else {
+                        // Validation failed, display error message(s)
+                        var errors = response.errors;
+
+                        // Clear previous error messages
+                        input.siblings('.error-message').remove();
+
+                        // Display the new error messages
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                var errorMessage = errors[key][0];
+                                // toastr.error(errorMessage);
+                                input.after('<span class="text-danger error-message">' + errorMessage + '</span>');
+                            }
+                        }
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    // Handle the AJAX request error
+                    toastr.error(xhr.status);
+                    toastr.error(thrownError);
+                }
+            });
+        });
     });
 
 </script>

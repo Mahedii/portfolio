@@ -19,8 +19,9 @@ class CommonService
     /**
      * Get data from database according routes
      *
+     * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         $pathArray = explode('/', $this->path);
         $arrayIndex = count($pathArray);
@@ -42,19 +43,15 @@ class CommonService
             $componentArray = [];
         }
 
-        // $result = [
-        //     'status' => 200,
-        //     'message' => "Success",
-        // ];
-
         return $componentArray;
     }
 
     /**
      * Make the path url
      *
+     * @return string
      */
-    public function getPathUrl()
+    public function getPathUrl(): string
     {
         $viewPath = 'Backend.pages';
         $folders = explode('/', $this->path);

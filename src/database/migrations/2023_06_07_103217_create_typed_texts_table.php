@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('typed_texts', function (Blueprint $table) {
             $table->id();
             $table->string('text');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
         TypedTexts::create(['text' => 'Software Engineer', 'slug' => 'software-engineer', 'created_at' => now(),]);

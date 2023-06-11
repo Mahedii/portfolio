@@ -26,21 +26,22 @@ class UpdateDataService
     /**
      * Get data from database according routes
      *
+     * @return array
      */
-    public function getResponse()
+    public function getResponse(): array
     {
-        $updateQuery = DB::table(Crypt::decryptString($this->request->table_name))
+        $updateQuery = DB::table(Crypt::decryptString($this->request->table_secret_key))
                 ->where('slug', $this->request->slug)
                 ->update([
                     'text' => $this->request->typingText,
                 ]);
 
         // $table_data = DB::table(Crypt::decryptString($this->request->table_name))->where('slug', $this->request->slug)->first();
-        $table_data = DB::table(Crypt::decryptString($this->request->table_name))->get();
+        $table_data = DB::table(Crypt::decryptString($this->request->table_secret_key))->get();
 
-        $encrypted_table_name = $this->request->table_name;
+        $encrypted_table_name = $this->request->table_secret_key;
         $table_data = $table_data->map(function ($item) use ($encrypted_table_name) {
-            $item->encrypted_table_name = $encrypted_table_name;
+            $item->secret_key = $encrypted_table_name;
             return $item;
         });
 
