@@ -3,10 +3,11 @@
 namespace App\Services\Backend\Common\Ajax;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 
-class UpdateDataService
+class AddDataService
 {
     /**
      * Client form request container
@@ -84,5 +85,36 @@ class UpdateDataService
         });
 
         return $tableData;
+    }
+
+    /**
+     * Fetch updated table data
+     *
+     * @param string $tableSecretKey
+     * @return string
+     */
+    private function generateSlug(string $tableSecretKey): string
+    {
+        $name = $tableSecretKey."-slug";
+        $slug=Str::slug($name);
+        // dd($slug,"show");
+
+        if (DynamicModel::where('slug',Str::slug($name))->exists()) {
+
+            $original = $slug;
+
+            $count = 1;
+
+            while(DynamicModel::where('slug',$slug)->exists()) {
+
+                $slug = "{$original}-" . $count++;
+            }
+
+            return $slug;
+
+        }
+        // dd($slug);
+        return $slug;
+
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 
-class UpdateDataService
+class DeleteDataService
 {
     /**
      * Client form request container

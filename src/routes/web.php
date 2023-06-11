@@ -10,7 +10,9 @@ use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\Backend\Common\CommonController;
 use App\Http\Controllers\Backend\Common\Ajax\FetchDataController;
 use App\Http\Controllers\Backend\Common\Ajax\ValidationDataController;
+use App\Http\Controllers\Backend\Common\Ajax\AddDataController;
 use App\Http\Controllers\Backend\Common\Ajax\UpdateDataController;
+use App\Http\Controllers\Backend\Common\Ajax\DeleteDataController;
 use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
 
 /*
@@ -42,8 +44,10 @@ Route::group(['middleware' => ['auth']], function () {
     // Route::get('{tableData}', [FetchDataController::class, 'index'])->where('tableData', '.*')->name('ajaxFetchData');
 
     Route::get('/fetch/{table}/{data}', [FetchDataController::class, 'index'])->name('ajaxFetchData');
-    Route::post('/validate', ValidationDataController::class)->name('ajaxValidationData');
+    Route::post('/add', AddDataController::class)->name('ajaxAddData');
     Route::post('/update', UpdateDataController::class)->name('ajaxUpdateData');
+    Route::delete('/delete', DeleteDataController::class)->name('ajaxDeleteData');
+    Route::post('/validate', ValidationDataController::class)->name('ajaxValidationData');
 });
 
 Route::controller(SocialLoginController::class)->group(function () {

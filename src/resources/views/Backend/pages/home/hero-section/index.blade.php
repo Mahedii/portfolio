@@ -182,7 +182,7 @@
                         <div class="col-xxl-12">
                             <div>
                                 <label for="typingText" class="form-label">Typing Text</label>
-                                <input type="text" class="form-control" id="typingTextVal" name="typingText" placeholder="Enter typing text">
+                                <input type="text" class="form-control" id="typingTextVal" name="text" placeholder="Enter typing text">
                             </div>
                         </div><!--end col-->
                         <div class="col-lg-12">
@@ -250,8 +250,7 @@
                     $('#zoomInEditModal').modal('show');
                 }
                 ,error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
+                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
                 }
             });
 
@@ -280,19 +279,22 @@
                 cache: false,
                 contentType: false,
                 success: function(data) {
+                    if(data.status == 200) {
+                        toastr.success(data.message);
+                        table = $('#buttons-datatables').DataTable();
+                        table.clear();
+                        var rows = showData(data.field);
 
-                    table = $('#buttons-datatables').DataTable();
-                    table.clear();
-                    var rows = showData(data.field);
-
-                    toastr.success(data.message);
-
-                    $('#zoomInEditModal').modal('hide');
-                    $('#typingTextFormData')[0].reset();
+                        $('#zoomInEditModal').modal('hide');
+                        $('#typingTextFormData')[0].reset();
+                    } else {
+                        toastr.error(data.message);
+                        $('#zoomInEditModal').modal('hide');
+                        $('#typingTextFormData')[0].reset();
+                    }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
+                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
                 }
             });
 
@@ -393,9 +395,7 @@
                     }
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
-                    // Handle the AJAX request error
-                    toastr.error(xhr.status);
-                    toastr.error(thrownError);
+                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
                 }
             });
         });
