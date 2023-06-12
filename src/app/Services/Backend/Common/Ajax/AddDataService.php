@@ -35,7 +35,7 @@ class AddDataService
 
         $updateTable = $this->updateTableData($tableSecretKey);
 
-        if($updateTable) {
+        if ($updateTable) {
             $tableData = $this->getUpdatedTableData($tableSecretKey);
             $result = [
                 'status' => 200,

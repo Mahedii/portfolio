@@ -33,7 +33,7 @@ class ValidationDataService
     {
         $table_name = Crypt::decryptString($this->request->secret_key);
 
-        if ($table_name == Tables::hero_sections->value){
+        if ($table_name == Tables::hero_sections->value) {
             $requestClass = 'App\Http\Requests\HeroSectionRequest';
         }
         return $this->ajaxValidation($requestClass);
@@ -83,7 +83,7 @@ class ValidationDataService
             $errors = $validator->errors();
 
             $result = ['success' => false, 'errors' => $errors];
-        } else{
+        } else {
             $result = ['success' => true];
         }
 

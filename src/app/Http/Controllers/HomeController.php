@@ -89,7 +89,6 @@ class HomeController extends Controller
             //     'Message' => "Something went wrong!"
             // ], 200); // Status code here
             return redirect()->back();
-
         }
     }
 
