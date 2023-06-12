@@ -60,7 +60,7 @@
                                 <div class="col-md-6">
                                     <label for="fullnameInput" class="form-label">Name<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control ajax-validation-input @error('name') is-invalid @enderror" value="{{ $data->name }}" name="name">
-                                    <input type="hidden" name="secret_key" id="secret_key" value="{{ $data->encrypted_table_name }}">
+                                    <input type="hidden" name="table_secret_key" id="secret_key" value="{{ $data->encrypted_table_name }}">
                                     @if ($errors->has('name'))
                                         <span class="text-danger">{{ $errors->first('name') }}</span>
                                     @endif
@@ -102,7 +102,7 @@
                 </div>
                 <div class="col-sm">
                     <div class="d-flex justify-content-sm-end">
-                        <a href="" class="btn btn-success m-3" id="addproduct-btn">
+                        <a href="javascript:void(0);" class="btn btn-success m-3"  data-bs-toggle="modal" data-bs-target="#zoomInAddModal">
                             <i class="ri-add-line align-bottom me-1"></i>
                             Add
                         </a>
@@ -165,7 +165,39 @@
 </div>
 <!--end row-->
 
-<!-- Modal Blur -->
+<!-- Add Modal For Typed Texts -->
+<div id="zoomInAddModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInAddModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="zoomInEditModalLabel">Add Typing Text</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextAddFormData">
+                    @csrf
+                    <input type="hidden" class="form-control" name="table_secret_key" value="{{ $typedTextsData[0]->encrypted_table_name }}">
+                    <div class="row g-3">
+                        <div class="col-xxl-12">
+                            <div>
+                                <label for="typingText" class="form-label">Typing Text</label>
+                                <input type="text" class="form-control" name="text" placeholder="Enter typing text">
+                            </div>
+                        </div><!--end col-->
+                        <div class="col-lg-12">
+                            <div class="hstack gap-2 justify-content-end">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal For Typed Texts -->
 <div id="zoomInEditModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInEditModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -174,7 +206,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextFormData">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextUpdateFormData">
                     @csrf
                     <input type="hidden" class="form-control" id="slug" name="slug">
                     <input type="hidden" class="form-control" id="table_secret_key" name="table_secret_key">
@@ -259,14 +291,14 @@
         /**
          * Update typed text data
          */
-        $(document).on("submit", "#typingTextFormData", function(e){
+        $(document).on("submit", "#typingTextUpdateFormData", function(e){
 
             e.preventDefault();
 
-            var form = $('#typingTextFormData')[0];
+            var form = $('#typingTextUpdateFormData')[0];
             let formData = new FormData(form);
 
-            var dataString = $('#typingTextFormData').serialize();
+            var dataString = $('#typingTextUpdateFormData').serialize();
             // dataType: 'json',
 
             // alert(dataString);
@@ -286,11 +318,49 @@
                         var rows = showData(data.field);
 
                         $('#zoomInEditModal').modal('hide');
-                        $('#typingTextFormData')[0].reset();
+                        $('#typingTextUpdateFormData')[0].reset();
                     } else {
                         toastr.error(data.message);
                         $('#zoomInEditModal').modal('hide');
-                        $('#typingTextFormData')[0].reset();
+                        $('#typingTextUpdateFormData')[0].reset();
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
+                }
+            });
+
+        });
+
+        /**
+         * Add typed text data
+         */
+        $(document).on("submit", "#typingTextAddFormData", function(e){
+
+            e.preventDefault();
+            var dataString = $('#typingTextAddFormData').serialize();
+            // alert(dataString);
+
+            $.ajax({
+                url: "{{ route('ajaxAddData') }}",
+                type: 'POST',
+                data: dataString,
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data.status);
+                    toastr.success(data.status);
+                    if(data.status == 200) {
+                        toastr.success(data.message);
+                        table = $('#buttons-datatables').DataTable();
+                        table.clear();
+                        var rows = showData(data.field);
+
+                        $('#zoomInAddModal').modal('hide');
+                        $('#typingTextAddFormData')[0].reset();
+                    } else {
+                        toastr.error(data.message);
+                        $('#zoomInAddModal').modal('hide');
+                        $('#typingTextAddFormData')[0].reset();
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {

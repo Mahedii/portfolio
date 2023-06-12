@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\Tables;
+use App\Enums\Requests;
 
 class ValidationDataService
 {
@@ -34,7 +35,7 @@ class ValidationDataService
         $table_name = Crypt::decryptString($this->request->secret_key);
 
         if ($table_name == Tables::hero_sections->value) {
-            $requestClass = 'App\Http\Requests\HeroSectionRequest';
+            $requestClass = Requests::hero_sections->value;
         }
         return $this->ajaxValidation($requestClass);
     }

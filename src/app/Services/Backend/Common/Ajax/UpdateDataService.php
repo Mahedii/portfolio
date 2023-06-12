@@ -32,9 +32,9 @@ class UpdateDataService
     {
         $tableSecretKey = Crypt::decryptString($this->request->table_secret_key);
 
-        $updateTable = $this->updateTableData($tableSecretKey);
+        $updateTableData = $this->updateTableData($tableSecretKey);
 
-        if ($updateTable) {
+        if ($updateTableData) {
             $tableData = $this->getUpdatedTableData($tableSecretKey);
             $result = [
                 'status' => 200,
@@ -76,7 +76,7 @@ class UpdateDataService
      */
     private function getUpdatedTableData(string $tableSecretKey): object
     {
-        $tableData = DB::table($tableSecretKey)->get();
+        $tableData = DB::table($tableSecretKey)->orderBy('id', 'DESC')->get();
 
         $tableData = $tableData->map(function ($item) use ($tableSecretKey) {
             $item->secret_key = $this->request->table_secret_key;
