@@ -31,7 +31,7 @@ class CommonService
 
         if ($keyword == "hero-section") {
             $heroSectionData = HeroSection::all();
-            $typedTextsData = TypedTexts::all();
+            $typedTextsData = TypedTexts::orderBy('id', 'DESC')->get();
 
             $componentArray = [
                 "heroSectionData" => $heroSectionData,

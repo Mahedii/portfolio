@@ -30,21 +30,21 @@ class DeleteDataService
      */
     public function getResponse(): array
     {
-        $tableSecretKey = Crypt::decryptString($this->request->table_secret_key);
+        $tableSecretKey = Crypt::decryptString($this->request->table);
 
-        $updateTable = $this->updateTableData($tableSecretKey);
+        $deleteTableData = $this->deleteTableData($tableSecretKey);
 
-        if ($updateTable) {
+        if ($deleteTableData) {
             $tableData = $this->getUpdatedTableData($tableSecretKey);
             $result = [
                 'status' => 200,
-                'message' => 'Data updated successfully',
+                'message' => 'Data deleted successfully',
                 'field' => $tableData,
             ];
         } else {
             $result = [
                 'status' => 500,
-                'message' => 'Data can not be updated.',
+                'message' => 'Data can not be deleted.',
             ];
         }
 
@@ -52,20 +52,18 @@ class DeleteDataService
     }
 
     /**
-     * Fetch updated table data
+     * Delete selected table data
      *
      * @param string $tableSecretKey
      * @return int
      */
-    private function updateTableData(string $tableSecretKey): int
+    private function deleteTableData(string $tableSecretKey): int
     {
-        $fieldsToUpdate = $this->request->except(['slug', 'table_secret_key', '_token']);
+        $deleteQuery = DB::table($tableSecretKey)
+            ->where('slug', $this->request->data)
+            ->delete();
 
-        $updateQuery = DB::table($tableSecretKey)
-            ->where('slug', $this->request->slug)
-            ->update($fieldsToUpdate);
-
-        return $updateQuery;
+        return $deleteQuery;
     }
 
     /**
@@ -76,10 +74,10 @@ class DeleteDataService
      */
     private function getUpdatedTableData(string $tableSecretKey): object
     {
-        $tableData = DB::table($tableSecretKey)->get();
+        $tableData = DB::table($tableSecretKey)->orderBy('id', 'DESC')->get();
 
         $tableData = $tableData->map(function ($item) use ($tableSecretKey) {
-            $item->secret_key = $this->request->table_secret_key;
+            $item->secret_key = $this->request->table;
             return $item;
         });
 

@@ -46,7 +46,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/fetch/{table}/{data}', [FetchDataController::class, 'index'])->name('ajaxFetchData');
     Route::post('/add', AddDataController::class)->name('ajaxAddData');
     Route::post('/update', UpdateDataController::class)->name('ajaxUpdateData');
-    Route::delete('/delete', DeleteDataController::class)->name('ajaxDeleteData');
+    Route::delete('/delete/{table}/{data}', DeleteDataController::class)->name('ajaxDeleteData');
     Route::post('/validate', ValidationDataController::class)->name('ajaxValidationData');
 });
 

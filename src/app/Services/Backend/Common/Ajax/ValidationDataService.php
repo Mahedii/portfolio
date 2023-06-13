@@ -2,11 +2,11 @@
 
 namespace App\Services\Backend\Common\Ajax;
 
+use App\Enums\Tables;
+use App\Enums\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
-use App\Enums\Tables;
-use App\Enums\Requests;
 
 class ValidationDataService
 {
@@ -32,11 +32,18 @@ class ValidationDataService
      */
     public function getResponse(): array
     {
-        $table_name = Crypt::decryptString($this->request->secret_key);
+        $tableSecretKey = Crypt::decryptString($this->request->secret_key);
 
-        if ($table_name == Tables::hero_sections->value) {
-            $requestClass = Requests::hero_sections->value;
+        // #### Method 1 ####
+        // #### Get value from config/const.php ####
+        foreach (config('const.Tables') as $key => $data) {
+            // Check if the $tableSecretKey value matches with the const Tables key
+            if ($tableSecretKey === $key) {
+                // Get the value of const Requests key
+                $requestClass = config('const.Requests.' . $key);
+            }
         }
+
         return $this->ajaxValidation($requestClass);
     }
 

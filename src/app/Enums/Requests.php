@@ -4,6 +4,6 @@ namespace App\Enums;
 
 enum Requests: string
 {
-    case hero_sections = "App\Http\Requests\HeroSectionRequest";
-    case typed_texts = "App\Http\Requests\TypedTextsRequest";
+    public const HERO_SECTION = "App\Http\Requests\HeroSectionRequest";
+    public const TYPED_TEXTS = "App\Http\Requests\TypedTextsRequest";
 }

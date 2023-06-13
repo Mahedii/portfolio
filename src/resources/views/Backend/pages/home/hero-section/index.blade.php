@@ -60,7 +60,7 @@
                                 <div class="col-md-6">
                                     <label for="fullnameInput" class="form-label">Name<span class="text-danger">*</span></label>
                                     <input type="text" class="form-control ajax-validation-input @error('name') is-invalid @enderror" value="{{ $data->name }}" name="name">
-                                    <input type="hidden" name="table_secret_key" id="secret_key" value="{{ $data->encrypted_table_name }}">
+                                    <input type="hidden" name="table_secret_key" class="secret_key" value="{{ $data->encrypted_table_name }}">
                                     @if ($errors->has('name'))
                                         <span class="text-danger">{{ $errors->first('name') }}</span>
                                     @endif
@@ -139,14 +139,14 @@
                                             </li> --}}
 
                                             <li>
-                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item edit-item-btn edit-typing-text">
+                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item edit-item-btn edit-typing-text-data">
                                                     <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                     Edit
                                                 </a>
                                             </li>
 
                                             <li>
-                                                <a href="javascript:void(0);" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this?');">
+                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item delete-typing-text-data" onclick="return confirm('Are you sure you want to delete this?');">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                     Delete
                                                 </a>
@@ -176,12 +176,12 @@
             <div class="modal-body">
                 <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextAddFormData">
                     @csrf
-                    <input type="hidden" class="form-control" name="table_secret_key" value="{{ $typedTextsData[0]->encrypted_table_name }}">
+                    <input type="hidden" class="form-control secret_key" name="table_secret_key" value="{{ $typedTextsData[0]->encrypted_table_name }}">
                     <div class="row g-3">
                         <div class="col-xxl-12">
                             <div>
                                 <label for="typingText" class="form-label">Typing Text</label>
-                                <input type="text" class="form-control" name="text" placeholder="Enter typing text">
+                                <input type="text" class="form-control ajax-validation-input" name="text" placeholder="Enter typing text">
                             </div>
                         </div><!--end col-->
                         <div class="col-lg-12">
@@ -209,12 +209,12 @@
                 <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextUpdateFormData">
                     @csrf
                     <input type="hidden" class="form-control" id="slug" name="slug">
-                    <input type="hidden" class="form-control" id="table_secret_key" name="table_secret_key">
+                    <input type="hidden" class="form-control secret_key" id="typing_text_secret_key" name="table_secret_key" value="">
                     <div class="row g-3">
                         <div class="col-xxl-12">
                             <div>
                                 <label for="typingText" class="form-label">Typing Text</label>
-                                <input type="text" class="form-control" id="typingTextVal" name="text" placeholder="Enter typing text">
+                                <input type="text" class="form-control ajax-validation-input" id="typingTextVal" name="text" placeholder="Enter typing text">
                             </div>
                         </div><!--end col-->
                         <div class="col-lg-12">
@@ -262,7 +262,7 @@
         /**
          * Fetch selected inputs information for typed text & set them in a modal for update
          */
-        $('#typedTextData').on('click', '.edit-typing-text', function () {
+        $('#typedTextData').on('click', '.edit-typing-text-data', function () {
             var slug = $(this).data('slug');
             var table_secret_key = $(this).closest('tr').data('table-secret');
             var url = '/fetch/'+table_secret_key+'/'+slug;
@@ -273,7 +273,7 @@
                 url:url,
                 dataType:'json',
                 success:function(data){
-                    $('#table_secret_key').val(data.table_secret_key);
+                    $('#typing_text_secret_key').val(data.table_secret_key);
                     var tableData = data.field;
                     tableData.forEach(function(row) {
                         $('#slug').val(row.slug);
@@ -282,6 +282,94 @@
                     $('#zoomInEditModal').modal('show');
                 }
                 ,error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
+                }
+            });
+
+        });
+
+        /**
+         * Perform AJAX validation for a single input
+         */
+        $(document).on('keyup', '.ajax-validation-input', function() {
+            var input = $(this);
+            var value = input.val();
+            var field = input.attr('name');
+            var secret_key = $(this).closest('form').find('.secret_key').val();
+            // alert(secret_key);
+            // toastr.warning(field + ": " + value);
+
+            // Prepare the data to be sent via AJAX
+            var data = {
+                field: field,
+                value: value,
+                secret_key: secret_key
+            };
+
+            // Send the AJAX request
+            $.ajax({
+                url: "{{ route('ajaxValidationData') }}",
+                type: "POST",
+                data: data,
+                dataType:'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Validation passed, do something
+                        // ...
+                        input.siblings('.error-message').remove();
+                    } else {
+                        // Validation failed, display error message(s)
+                        var errors = response.errors;
+
+                        // Clear previous error messages
+                        input.siblings('.error-message').remove();
+
+                        // Display the new error messages
+                        for (var key in errors) {
+                            if (errors.hasOwnProperty(key)) {
+                                var errorMessage = errors[key][0];
+                                // toastr.error(errorMessage);
+                                input.after('<span class="text-danger error-message">' + errorMessage + '</span>');
+                            }
+                        }
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
+                }
+            });
+        });
+
+        /**
+         * Add typed text data
+         */
+        $(document).on("submit", "#typingTextAddFormData", function(e){
+
+            e.preventDefault();
+            var dataString = $('#typingTextAddFormData').serialize();
+            // alert(dataString);
+
+            $.ajax({
+                url: "{{ route('ajaxAddData') }}",
+                type: 'POST',
+                data: dataString,
+                dataType: 'json',
+                success: function(data) {
+                    if(data.status == 200) {
+                        toastr.success(data.message);
+                        table = $('#buttons-datatables').DataTable();
+                        table.clear();
+                        var rows = showData(data.field);
+
+                        $('#zoomInAddModal').modal('hide');
+                        $('#typingTextAddFormData')[0].reset();
+                    } else {
+                        toastr.error(data.message);
+                        $('#zoomInAddModal').modal('hide');
+                        $('#typingTextAddFormData')[0].reset();
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
                     toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
                 }
             });
@@ -333,37 +421,30 @@
         });
 
         /**
-         * Add typed text data
+         * Delete selected data for typed text
          */
-        $(document).on("submit", "#typingTextAddFormData", function(e){
-
-            e.preventDefault();
-            var dataString = $('#typingTextAddFormData').serialize();
-            // alert(dataString);
+        $('#typedTextData').on('click', '.delete-typing-text-data', function () {
+            var slug = $(this).data('slug');
+            var table_secret_key = $(this).closest('tr').data('table-secret');
+            var url = '/delete/'+table_secret_key+'/'+slug;
+            // alert(url);
 
             $.ajax({
-                url: "{{ route('ajaxAddData') }}",
-                type: 'POST',
-                data: dataString,
-                dataType: 'json',
-                success: function(data) {
-                    console.log(data.status);
-                    toastr.success(data.status);
+                type:'DELETE',
+                url:url,
+                dataType:'json',
+                success:function(data){
                     if(data.status == 200) {
                         toastr.success(data.message);
+                        // $(this).closest("tr").remove();
                         table = $('#buttons-datatables').DataTable();
                         table.clear();
                         var rows = showData(data.field);
-
-                        $('#zoomInAddModal').modal('hide');
-                        $('#typingTextAddFormData')[0].reset();
                     } else {
                         toastr.error(data.message);
-                        $('#zoomInAddModal').modal('hide');
-                        $('#typingTextAddFormData')[0].reset();
                     }
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
+                }
+                ,error: function (xhr, ajaxOptions, thrownError) {
                     toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
                 }
             });
@@ -397,13 +478,13 @@
                     '</button>' +
                     '<ul class="dropdown-menu dropdown-menu-end">' +
                         '<li>' +
-                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item edit-item-btn edit-typing-text" >' +
+                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item edit-item-btn edit-typing-text-data" >' +
                                 '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i>' +
                                 'Edit' +
                             '</a>' +
                         '</li>' +
                         '<li>' +
-                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item" onclick="return confirm(\'Are you sure you want to delete this?\');">' +
+                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item delete-typing-text-data" onclick="return confirm(\'Are you sure you want to delete this?\');">' +
                                 '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>' +
                                 'Delete' +
                             '</a>' +
@@ -416,59 +497,6 @@
 
             return actionContent;
         }
-
-        /**
-         * Perform AJAX validation for a single input
-         */
-        $(document).on('keyup', '.ajax-validation-input', function() {
-            var input = $(this);
-            var value = input.val();
-            var field = input.attr('name');
-            var secret_key = $("#secret_key").val();
-            // alert(secret_key);
-
-            // Prepare the data to be sent via AJAX
-            var data = {
-                field: field,
-                value: value,
-                secret_key: secret_key
-            };
-
-            // Send the AJAX request
-            $.ajax({
-                url: "{{ route('ajaxValidationData') }}",
-                type: "POST",
-                data: data,
-                dataType:'json',
-                success: function(response) {
-                    // alert(response.success);
-                    console.log(response);
-                    if (response.success) {
-                        // Validation passed, do something
-                        // ...
-                        input.siblings('.error-message').remove();
-                    } else {
-                        // Validation failed, display error message(s)
-                        var errors = response.errors;
-
-                        // Clear previous error messages
-                        input.siblings('.error-message').remove();
-
-                        // Display the new error messages
-                        for (var key in errors) {
-                            if (errors.hasOwnProperty(key)) {
-                                var errorMessage = errors[key][0];
-                                // toastr.error(errorMessage);
-                                input.after('<span class="text-danger error-message">' + errorMessage + '</span>');
-                            }
-                        }
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
-                }
-            });
-        });
     });
 
 </script>

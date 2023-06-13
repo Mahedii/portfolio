@@ -52,7 +52,7 @@ class UpdateDataService
     }
 
     /**
-     * Fetch updated table data
+     * Update selected table data
      *
      * @param string $tableSecretKey
      * @return int

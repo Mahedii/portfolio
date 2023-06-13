@@ -37,8 +37,6 @@ class AddDataService
 
         $insertTableData = $this->insertTableData($tableSecretKey);
 
-        return ["status" => $insertTableData];
-
         if ($insertTableData) {
             $tableData = $this->getUpdatedTableData($tableSecretKey);
             $result = [
@@ -57,7 +55,7 @@ class AddDataService
     }
 
     /**
-     * Fetch updated table data
+     * Insert data into table
      *
      * @param string $tableSecretKey
      */
@@ -71,31 +69,36 @@ class AddDataService
         // Get the value associated with the first key
         $firstKeyValue = $fieldsToUpdate[$firstKey];
 
-        $requestModel = array();
-        $requestModel[] = $tableSecretKey;
-        foreach (Tables::cases() as $case) {
-            $requestModel[] = $case->value;
-            // $result = strcmp($tableSecretKey, $case);
+        $requestModel = null;
 
-            // if ($result === 0) {
-            //     $requestModel[] = "matched";
-            // }
-            if ($tableSecretKey === $case->value) {
-                $requestModel[] = "matched";
-                $requestModels = Models::$case->value;
-                break;
+        // // #### Method 1 ####
+        // // #### Get value from config/const.php ####
+        // foreach (config('const.Tables') as $key => $data) {
+        //     // Check if the $tableSecretKey value matches with the const Tables key
+        //     if ($tableSecretKey === $key) {
+        //         // Get the value of const Models key
+        //         $requestModel = config('const.Models.' . $key);
+        //     }
+        // }
+
+        // #### Method 2 ####
+        // #### Get value from Enums ####
+        $tableEnumConstant = Tables::class . '::' . strtoupper($tableSecretKey);
+
+        // Check if the constant exists
+        if (defined($tableEnumConstant)) {
+            // Get the constant value from the model enum based on the matched table enum constant
+            $modelEnumConstant = Models::class . '::' . strtoupper($tableSecretKey);
+
+            // Check if the constant exists
+            if (defined($modelEnumConstant)) {
+                $requestModel = constant($modelEnumConstant);
             }
         }
-
-        return $requestModels;
 
         if ($requestModel == null) {
             return ["status" => "error", "message" => "No matching result found"];
         }
-
-        // if ($tableSecretKey == Tables::typed_texts->value) {
-        //     $requestModel = Models::typed_texts->value;
-        // }
 
         $slug = $this->generateSlug($requestModel, $firstKeyValue);
         $fieldsToUpdate['slug'] = $slug;
