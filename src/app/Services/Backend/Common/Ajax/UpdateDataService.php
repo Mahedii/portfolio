@@ -2,9 +2,12 @@
 
 namespace App\Services\Backend\Common\Ajax;
 
+use App\Enums\Tables;
+use App\Enums\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Validator;
 
 class UpdateDataService
 {
@@ -32,14 +35,44 @@ class UpdateDataService
     {
         $tableSecretKey = Crypt::decryptString($this->request->table_secret_key);
 
+        // #### Method 2 ####
+        // #### Get value from Enums ####
+        $requestClass = null;
+        $tablesEnumConstant = Tables::class . '::' . strtoupper($tableSecretKey);
+
+        // Check if the constant exists
+        if (defined($tablesEnumConstant)) {
+            // Get the constant value from the model enum based on the matched table enum constant
+            $requestsEnumConstant = Requests::class . '::' . strtoupper($tableSecretKey);
+
+            // Check if the constant exists
+            if (defined($requestsEnumConstant)) {
+                $requestClass = constant($requestsEnumConstant);
+            }
+        }
+
+        if ($requestClass == null) {
+            return ["status" => "error", "message" => "Data validation error: Request rules not found"];
+        } else {
+            $fieldsToValidate = $this->request->except(['slug', 'table_secret_key', '_token']);
+            $formRequest = new $requestClass($fieldsToValidate);
+            $validation = Validator::make($fieldsToValidate, $formRequest->rules(), $formRequest->messages());
+
+            if ($validation->fails()) {
+                return ["status" => "error", "message" => "Data validation error", 'errors' => $validation->errors()];
+            }
+        }
+
         $updateTableData = $this->updateTableData($tableSecretKey);
 
         if ($updateTableData) {
-            $tableData = $this->getUpdatedTableData($tableSecretKey);
+            $updatedRowData = $this->getUpdatedRowData($tableSecretKey);
+            $tableAllData = $this->getUpdatedTableData($tableSecretKey);
             $result = [
                 'status' => 200,
                 'message' => 'Data updated successfully',
-                'field' => $tableData,
+                'updatedRowData' => $updatedRowData,
+                'field' => $tableAllData,
             ];
         } else {
             $result = [
@@ -66,6 +99,21 @@ class UpdateDataService
             ->update($fieldsToUpdate);
 
         return $updateQuery;
+    }
+
+    /**
+     * Fetch updated row data
+     *
+     * @param string $tableSecretKey
+     * @return object
+     */
+    private function getUpdatedRowData(string $tableSecretKey): object
+    {
+        $updatedRowData = DB::table($tableSecretKey)
+            ->where('slug', $this->request->slug)
+            ->get();
+
+        return $updatedRowData;
     }
 
     /**

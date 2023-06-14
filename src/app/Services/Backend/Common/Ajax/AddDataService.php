@@ -4,10 +4,12 @@ namespace App\Services\Backend\Common\Ajax;
 
 use App\Enums\Models;
 use App\Enums\Tables;
+use App\Enums\Requests;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Validator;
 
 class AddDataService
 {
@@ -35,14 +37,42 @@ class AddDataService
     {
         $tableSecretKey = Crypt::decryptString($this->request->table_secret_key);
 
+        // #### Method 2 ####
+        // #### Get value from Enums ####
+        $requestClass = null;
+        $tablesEnumConstant = Tables::class . '::' . strtoupper($tableSecretKey);
+
+        // Check if the constant exists
+        if (defined($tablesEnumConstant)) {
+            // Get the constant value from the model enum based on the matched table enum constant
+            $requestsEnumConstant = Requests::class . '::' . strtoupper($tableSecretKey);
+
+            // Check if the constant exists
+            if (defined($requestsEnumConstant)) {
+                $requestClass = constant($requestsEnumConstant);
+            }
+        }
+
+        if ($requestClass == null) {
+            return ["status" => "error", "message" => "Data validation error: Request rules not found"];
+        } else {
+            $fieldsToValidate = $this->request->except(['slug', 'table_secret_key', '_token']);
+            $formRequest = new $requestClass($fieldsToValidate);
+            $validation = Validator::make($fieldsToValidate, $formRequest->rules(), $formRequest->messages());
+
+            if ($validation->fails()) {
+                return ["status" => "error", "message" => "Data validation error", 'errors' => $validation->errors()];
+            }
+        }
+
         $insertTableData = $this->insertTableData($tableSecretKey);
 
         if ($insertTableData) {
-            $tableData = $this->getUpdatedTableData($tableSecretKey);
+            $tableAllData = $this->getUpdatedTableData($tableSecretKey);
             $result = [
                 'status' => 200,
                 'message' => 'Data inserted successfully',
-                'field' => $tableData,
+                'field' => $tableAllData,
             ];
         } else {
             $result = [
@@ -83,16 +113,16 @@ class AddDataService
 
         // #### Method 2 ####
         // #### Get value from Enums ####
-        $tableEnumConstant = Tables::class . '::' . strtoupper($tableSecretKey);
+        $tablesEnumConstant = Tables::class . '::' . strtoupper($tableSecretKey);
 
         // Check if the constant exists
-        if (defined($tableEnumConstant)) {
+        if (defined($tablesEnumConstant)) {
             // Get the constant value from the model enum based on the matched table enum constant
-            $modelEnumConstant = Models::class . '::' . strtoupper($tableSecretKey);
+            $modelsEnumConstant = Models::class . '::' . strtoupper($tableSecretKey);
 
             // Check if the constant exists
-            if (defined($modelEnumConstant)) {
-                $requestModel = constant($modelEnumConstant);
+            if (defined($modelsEnumConstant)) {
+                $requestModel = constant($modelsEnumConstant);
             }
         }
 

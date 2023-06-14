@@ -12,8 +12,8 @@
 @endsection
 @section('content')
 @component('Backend.components.breadcrumb')
-@slot('li_1') Tables @endslot
-@slot('title')Datatables @endslot
+@slot('li_1') Home @endslot
+@slot('title')Hero Section @endslot
 @endcomponent
 
 <div class="border-0">
@@ -50,17 +50,17 @@
                     </div>
                 </div> --}}
             </div>
-
             <div class="card-body">
                 <div class="live-preview">
-                    <form method="POST" action="" enctype="multipart/form-data" class="row g-3">
+                    <form action="javascript:void(0);" enctype="multipart/form-data" class="row g-3" id="heroSectionUpdateForm">
                         @csrf
                         @foreach ($heroSectionData as $data)
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label for="fullnameInput" class="form-label">Name<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control ajax-validation-input @error('name') is-invalid @enderror" value="{{ $data->name }}" name="name">
+                                    <input type="text" class="form-control ajax-validation-input hero_sections_name @error('name') is-invalid @enderror" value="{{ $data->name }}" name="name">
                                     <input type="hidden" name="table_secret_key" class="secret_key" value="{{ $data->encrypted_table_name }}">
+                                    <input type="hidden" name="slug" value="{{ $data->slug }}">
                                     @if ($errors->has('name'))
                                         <span class="text-danger">{{ $errors->first('name') }}</span>
                                     @endif
@@ -70,7 +70,7 @@
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label for="quote" class="form-label">Quote<span class="text-danger">*</span></label>
-                                    <textarea class="form-control ajax-validation-input" name="quote" id="ckeditor-classic" rows="3">{{ Str::limit($data->quote, 20) }}</textarea>
+                                    <textarea class="form-control ajax-validation-input hero_sections_quote" name="quote" id="ckeditor-classic" rows="3">{{ Str::limit($data->quote, 20) }}</textarea>
                                     @if ($errors->has('quote'))
                                         <span class="text-danger">{{ $errors->first('quote') }}</span>
                                     @endif
@@ -120,7 +120,7 @@
                     </thead>
                     <tbody id="typedTextData">
                         @foreach($typedTextsData as $key => $data)
-                            <tr data-table-secret="{{ $data->encrypted_table_name }}" data-id="{{ $data->id }}">
+                            <tr data-table-secret="{{ $data->encrypted_table_name }}" data-id="{{ $data->id }}" id="row-{{ $data->id }}">
                                 <td>{{ ++$key }}</td>
                                 <td>{{ $data->text }}</td>
                                 <td>
@@ -146,7 +146,7 @@
                                             </li>
 
                                             <li>
-                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item delete-typing-text-data" onclick="return confirm('Are you sure you want to delete this?');">
+                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item delete-typing-text-data">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                     Delete
                                                 </a>
@@ -174,7 +174,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextAddFormData">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextAddForm">
                     @csrf
                     <input type="hidden" class="form-control secret_key" name="table_secret_key" value="{{ $typedTextsData[0]->encrypted_table_name }}">
                     <div class="row g-3">
@@ -206,9 +206,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextUpdateFormData">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextUpdateForm">
                     @csrf
                     <input type="hidden" class="form-control" id="slug" name="slug">
+                    <input type="hidden" class="form-control" id="typed-text-row-id">
                     <input type="hidden" class="form-control secret_key" id="typing_text_secret_key" name="table_secret_key" value="">
                     <div class="row g-3">
                         <div class="col-xxl-12">
@@ -235,271 +236,37 @@
     </div>
 </div>
 
-<script type="text/javascript">
+<!-- Delete Modal For Typed Texts -->
+<div id="zoomInDeleteModal" class="modal fade zoomIn" tabindex="-1" role="dialog" aria-labelledby="zoomInDeleteModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextDeleteForm">
+                    @csrf
+                    <input type="hidden" class="form-control" id="delete_field_typing_text_slug">
+                    <input type="hidden" class="form-control secret_key "  id="delete_field_typing_text_secret_key">
+                </form>
+                <lord-icon
+                    src="https://cdn.lordicon.com/tdrtiskw.json"
+                    trigger="loop"
+                    colors="primary:#f7b84b,secondary:#405189"
+                    style="width:130px;height:130px">
+                </lord-icon>
 
-    $(document).ready(function () {
+                <div class="mt-4">
+                    <h4 class="mb-3">Are you sure you want to proceed?</h4>
+                    <p class="text-muted mb-4"> If you are not sure than press the cancel button</p>
+                    <div class="hstack gap-2 justify-content-center">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <a href="javascript:void(0);" class="btn btn-danger confirm-delete-typing-text-data">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
-        /**
-         * Set toastr options
-         */
-        toastr.options = {
-            closeButton: true,
-            newestOnTop: true,
-            progressBar: true,
-            positionClass: 'toast-top-right',
-            timeOut: 3000,
-        };
-
-        /**
-         * Set CSRF token for form request
-         */
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        /**
-         * Fetch selected inputs information for typed text & set them in a modal for update
-         */
-        $('#typedTextData').on('click', '.edit-typing-text-data', function () {
-            var slug = $(this).data('slug');
-            var table_secret_key = $(this).closest('tr').data('table-secret');
-            var url = '/fetch/'+table_secret_key+'/'+slug;
-            // alert(url);
-
-            $.ajax({
-                type:'GET',
-                url:url,
-                dataType:'json',
-                success:function(data){
-                    $('#typing_text_secret_key').val(data.table_secret_key);
-                    var tableData = data.field;
-                    tableData.forEach(function(row) {
-                        $('#slug').val(row.slug);
-                        $('#typingTextVal').val(row.text);
-                    });
-                    $('#zoomInEditModal').modal('show');
-                }
-                ,error: function (xhr, ajaxOptions, thrownError) {
-                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
-                }
-            });
-
-        });
-
-        /**
-         * Perform AJAX validation for a single input
-         */
-        $(document).on('keyup', '.ajax-validation-input', function() {
-            var input = $(this);
-            var value = input.val();
-            var field = input.attr('name');
-            var secret_key = $(this).closest('form').find('.secret_key').val();
-            // alert(secret_key);
-            // toastr.warning(field + ": " + value);
-
-            // Prepare the data to be sent via AJAX
-            var data = {
-                field: field,
-                value: value,
-                secret_key: secret_key
-            };
-
-            // Send the AJAX request
-            $.ajax({
-                url: "{{ route('ajaxValidationData') }}",
-                type: "POST",
-                data: data,
-                dataType:'json',
-                success: function(response) {
-                    if (response.success) {
-                        // Validation passed, do something
-                        // ...
-                        input.siblings('.error-message').remove();
-                    } else {
-                        // Validation failed, display error message(s)
-                        var errors = response.errors;
-
-                        // Clear previous error messages
-                        input.siblings('.error-message').remove();
-
-                        // Display the new error messages
-                        for (var key in errors) {
-                            if (errors.hasOwnProperty(key)) {
-                                var errorMessage = errors[key][0];
-                                // toastr.error(errorMessage);
-                                input.after('<span class="text-danger error-message">' + errorMessage + '</span>');
-                            }
-                        }
-                    }
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
-                }
-            });
-        });
-
-        /**
-         * Add typed text data
-         */
-        $(document).on("submit", "#typingTextAddFormData", function(e){
-
-            e.preventDefault();
-            var dataString = $('#typingTextAddFormData').serialize();
-            // alert(dataString);
-
-            $.ajax({
-                url: "{{ route('ajaxAddData') }}",
-                type: 'POST',
-                data: dataString,
-                dataType: 'json',
-                success: function(data) {
-                    if(data.status == 200) {
-                        toastr.success(data.message);
-                        table = $('#buttons-datatables').DataTable();
-                        table.clear();
-                        var rows = showData(data.field);
-
-                        $('#zoomInAddModal').modal('hide');
-                        $('#typingTextAddFormData')[0].reset();
-                    } else {
-                        toastr.error(data.message);
-                        $('#zoomInAddModal').modal('hide');
-                        $('#typingTextAddFormData')[0].reset();
-                    }
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
-                }
-            });
-
-        });
-
-        /**
-         * Update typed text data
-         */
-        $(document).on("submit", "#typingTextUpdateFormData", function(e){
-
-            e.preventDefault();
-
-            var form = $('#typingTextUpdateFormData')[0];
-            let formData = new FormData(form);
-
-            var dataString = $('#typingTextUpdateFormData').serialize();
-            // dataType: 'json',
-
-            // alert(dataString);
-
-            $.ajax({
-                url: "{{ route('ajaxUpdateData') }}",
-                type: 'POST',
-                data: formData,
-                processData: false,
-                cache: false,
-                contentType: false,
-                success: function(data) {
-                    if(data.status == 200) {
-                        toastr.success(data.message);
-                        table = $('#buttons-datatables').DataTable();
-                        table.clear();
-                        var rows = showData(data.field);
-
-                        $('#zoomInEditModal').modal('hide');
-                        $('#typingTextUpdateFormData')[0].reset();
-                    } else {
-                        toastr.error(data.message);
-                        $('#zoomInEditModal').modal('hide');
-                        $('#typingTextUpdateFormData')[0].reset();
-                    }
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
-                }
-            });
-
-        });
-
-        /**
-         * Delete selected data for typed text
-         */
-        $('#typedTextData').on('click', '.delete-typing-text-data', function () {
-            var slug = $(this).data('slug');
-            var table_secret_key = $(this).closest('tr').data('table-secret');
-            var url = '/delete/'+table_secret_key+'/'+slug;
-            // alert(url);
-
-            $.ajax({
-                type:'DELETE',
-                url:url,
-                dataType:'json',
-                success:function(data){
-                    if(data.status == 200) {
-                        toastr.success(data.message);
-                        // $(this).closest("tr").remove();
-                        table = $('#buttons-datatables').DataTable();
-                        table.clear();
-                        var rows = showData(data.field);
-                    } else {
-                        toastr.error(data.message);
-                    }
-                }
-                ,error: function (xhr, ajaxOptions, thrownError) {
-                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
-                }
-            });
-
-        });
-
-        /**
-         * Show fetched datatable data
-         */
-        function showData(data){
-
-            var table = $('#buttons-datatables').DataTable();
-            var id = 1;
-
-            $.each(data, function( index, value ) {
-                var row = table.row.add([id++, value.text, createActions(value)]).draw(false).node();
-                $(row).attr('data-table-secret', value.secret_key); // Set data-table attribute
-                $(row).attr('data-id', value.id);
-            });
-
-        }
-
-        /**
-         * Set action buttons for datatable
-         */
-        function createActions(data) {
-            var actionContent =
-                '<div class="dropdown d-inline-block">' +
-                    '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                        '<i class="ri-more-fill align-middle"></i>' +
-                    '</button>' +
-                    '<ul class="dropdown-menu dropdown-menu-end">' +
-                        '<li>' +
-                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item edit-item-btn edit-typing-text-data" >' +
-                                '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i>' +
-                                'Edit' +
-                            '</a>' +
-                        '</li>' +
-                        '<li>' +
-                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item delete-typing-text-data" onclick="return confirm(\'Are you sure you want to delete this?\');">' +
-                                '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>' +
-                                'Delete' +
-                            '</a>' +
-                        '</li>' +
-                    '</ul>' +
-                '</div>';
-
-            // <a class="dropdown-item" href="{{ route("pagePath", ":slug") }}">Text</a>
-            // actionContent = actionContent.replace(":slug", data.slug);
-
-            return actionContent;
-        }
-    });
-
-</script>
+@include('Backend.pages.home.hero-section.ajax.index')
 
 @endsection
 @section('script')

@@ -35,11 +35,11 @@ class DeleteDataService
         $deleteTableData = $this->deleteTableData($tableSecretKey);
 
         if ($deleteTableData) {
-            $tableData = $this->getUpdatedTableData($tableSecretKey);
+            $tableAllData = $this->getUpdatedTableData($tableSecretKey);
             $result = [
                 'status' => 200,
                 'message' => 'Data deleted successfully',
-                'field' => $tableData,
+                'field' => $tableAllData,
             ];
         } else {
             $result = [
