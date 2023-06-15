@@ -3,17 +3,18 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\Backend\Common\CommonController;
-use App\Http\Controllers\Backend\Common\Ajax\FetchDataController;
-use App\Http\Controllers\Backend\Common\Ajax\ValidationDataController;
 use App\Http\Controllers\Backend\Common\Ajax\AddDataController;
-use App\Http\Controllers\Backend\Common\Ajax\UpdateDataController;
+use App\Http\Controllers\Backend\Common\Ajax\FetchDataController;
 use App\Http\Controllers\Backend\Common\Ajax\DeleteDataController;
+use App\Http\Controllers\Backend\Common\Ajax\UpdateDataController;
 use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
+use App\Http\Controllers\Backend\Common\Ajax\ValidationDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/update', UpdateDataController::class)->name('ajaxUpdateData');
     Route::delete('/delete/{table}/{data}', DeleteDataController::class)->name('ajaxDeleteData');
     Route::post('/validate', ValidationDataController::class)->name('ajaxValidationData');
+
+    Route::get('/test', function () {
+        return view('Backend.pages.test');
+    });
+    Route::post('/test', TestController::class)->name('testData');
 });
 
 Route::controller(SocialLoginController::class)->group(function () {

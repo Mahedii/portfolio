@@ -11,6 +11,9 @@ class HeroSectionRequest extends FormRequest
         return [
             'name' => 'required|string|max:10',
             'quote' => 'required|string|max:200',
+            'imageFile' => 'required|array',
+            'imageFile.*' => 'file|mimes:jpeg,png,svg,jpg|max:2048', // Adjust file types and size limit as needed
+            'imageFile.*' => 'max:1', // Adjust the maximum file count as needed
         ];
     }
 
@@ -23,6 +26,7 @@ class HeroSectionRequest extends FormRequest
             'quote.required' => 'The quote field is required.',
             'quote.string' => 'The quote field must be a string.',
             'quote.max' => 'The quote field may not be greater than :max characters.',
+            'imageFile.required' => 'The image field is required.',
         ];
     }
 }
