@@ -17,9 +17,10 @@ class TestController extends Controller
     public function __invoke(Request $request)
     {
         try {
-            if ($request->has('multiplefilepond')) {
-                // dd($request);
-                foreach ($request->multiplefilepond as $file) {
+            dd($request);
+            if ($request->hasfile('multiplefile')) {
+                dd($request);
+                foreach ($request->multiplefile as $file) {
                     $file = json_decode($file, true);
                     $filename = $file['name'];
                     $fileData = base64_decode($file['data']);
