@@ -225,6 +225,7 @@
                         toastr.success(data.message);
                     } else {
                         toastr.error(data.message);
+                        console.log(data.errors);
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {

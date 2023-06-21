@@ -4,7 +4,6 @@ return [
     'Tables' => [
         'hero_sections' => 'hero_sections',
         'typed_texts' => 'typed_texts',
-        'key' => 'value',
     ],
 
     'Models' => [

@@ -18,10 +18,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('quote');
+            $table->tinyText('path');
             $table->text('slug')->unique();
             $table->timestamps();
         });
-        HeroSection::create(['name' => 'Mahadi', 'quote' => 'Architecture is the learned game', 'slug' => 'hero_sections_data', 'created_at' => now(),]);
+        HeroSection::create(['name' => 'Mahadi', 'quote' => 'Architecture is the learned game', 'path' => 'file_path.ext', 'slug' => 'hero_sections_data', 'created_at' => now(),]);
     }
 
     /**

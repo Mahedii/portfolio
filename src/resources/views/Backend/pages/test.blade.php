@@ -148,7 +148,7 @@
 
                         <div class="file-drop-area">
                             <input type="file" name="multiplefile[]" id="file-input" multiple>
-                            <label for="file-input">Drag & Drop files or Click to Upload</label>
+                            <label for="file-input">Click to Upload Files</label>
                             <div class="file-previews"></div>
                             <button class="prev-button">&lt;</button>
                             <button class="next-button">&gt;</button>
@@ -177,66 +177,86 @@
 
     $(document).ready(function () {
 
+        // Event listener for file input change
         document.getElementById("file-input").addEventListener("change", handleFileInputChange);
 
+        // Event listeners for drag and drop functionality
         document.querySelector(".file-previews").addEventListener("dragstart", handleDragStart);
         document.querySelector(".file-previews").addEventListener("dragenter", handleDragEnter);
         document.querySelector(".file-previews").addEventListener("dragend", handleDragEnd);
         document.querySelector(".file-previews").addEventListener("dragover", handleDragOver);
         document.querySelector(".file-drop-area").addEventListener("dragover", handleDragOver);
-
         document.querySelector(".file-drop-area").addEventListener("drop", handleDrop);
 
+        // Event listeners for previous and next buttons
         document.querySelector(".prev-button").addEventListener("click", handlePrevButtonClick);
         document.querySelector(".next-button").addEventListener("click", handleNextButtonClick);
+
+        // Event listeners for scroll and change events to update arrow button visibility
         document.querySelector(".file-previews").addEventListener("scroll", updateArrowButtonVisibility);
         document.getElementById("file-input").addEventListener("change", updateArrowButtonVisibility);
 
-
+        // Variables to store the state and data
         let draggingElement = null;
         let initialIndex = 0;
         let currentIndex = 0;
         let selectedFiles = [];
+
+        // Timeout variable for scroll event
+        let scrollTimeout;
+        const filePreviews = document.querySelector(".file-previews");
+        filePreviews.addEventListener("scroll", () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(updateArrowButtonVisibility, 250);
+        });
 
         /**
          * Handle file input change events.
          */
         function handleFileInputChange(event) {
             const files = event.target.files;
-            // selectedFiles = Array.from(files);
-            addFilesToArray(files);
-            previewFiles(selectedFiles);
-            setMultipleFileValue(selectedFiles);
-        }
-
-        function handleDrop(event) {
-            event.preventDefault();
-
-            const files = event.dataTransfer.files;
-            // selectedFiles = Array.from(files);
             addFilesToArray(files);
             previewFiles(selectedFiles);
             setMultipleFileValue(selectedFiles);
         }
 
         /**
-         * Add all files to the array
+         * Handle file drop events.
+         */
+        function handleDrop(event) {
+            event.preventDefault();
+            const files = event.dataTransfer.files;
+            addFilesToArray(files);
+
+            // Check if the dropped file is already in the selectedFiles array
+            const droppedFileIndex = selectedFiles.findIndex(file => file.name === files[0].name);
+            if (droppedFileIndex === -1) {
+                previewFiles(selectedFiles);
+            }
+
+            setMultipleFileValue(selectedFiles);
+        }
+
+        /**
+         * Add files to the selectedFiles array.
          */
         function addFilesToArray(files) {
             for (let i = 0; i < files.length; i++) {
-                selectedFiles.push(files[i]);
+                if (!selectedFiles.includes(files[i])) {
+                    selectedFiles.push(files[i]);
+                }
             }
         }
 
         /**
-         * Remove selected files from the array
+         * Remove selected files from the selectedFiles array.
          */
         function removeFileFromArray(index) {
             selectedFiles.splice(index, 1);
         }
 
         /**
-         * Set the files from array to the input
+         * Set the files from the selectedFiles array to the file input.
          */
         function setMultipleFileValue(files) {
             const fileInput = document.getElementById("file-input");
@@ -250,7 +270,7 @@
         }
 
         /**
-         * Handle file preview, cancel, detail view
+         * Preview the selected files.
          */
         function previewFiles(files) {
             const filePreviews = document.querySelector(".file-previews");
@@ -258,55 +278,64 @@
 
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                // selectedFiles.push(file);
                 const reader = new FileReader();
 
+                // Event listener for when the FileReader has loaded the file
                 reader.onload = (e) => {
-                    const filePreviews = document.createElement("div");
-                    filePreviews.className = "file-preview";
-
-                    const img = document.createElement("img");
-                    img.src = e.target.result;
-
-                    const name = document.createElement("div");
-                    name.className = "name";
-                    name.textContent = file.name;
-
-                    const size = document.createElement("div");
-                    size.className = "size";
-                    size.textContent = `${(file.size / 1024).toFixed(2)} KB`;
-                    // size.textContent = formatFileSize(file.size);
-
-                    const cancel = document.createElement("div");
-                    cancel.className = "cancel";
-                    cancel.textContent = "Cancel";
-
-                    img.addEventListener("click", () => {
-                        showImagePreview(e.target.result);
-                    });
-
-                    cancel.addEventListener("click", () => {
-                        filePreviews.remove();
-                        removeFileFromArray(i);
-                        setMultipleFileValue(selectedFiles);
-                        updateArrowButtonVisibility();
-                    });
-
-                    filePreviews.appendChild(img);
-                    filePreviews.appendChild(name);
-                    filePreviews.appendChild(size);
-                    filePreviews.appendChild(cancel);
-
-                    document.querySelector(".file-previews").appendChild(filePreviews);
+                    const filePreview = createFilePreview(file, e.target.result, i);
+                    filePreview.addEventListener("dragstart", handleDragStart);
+                    filePreviews.appendChild(filePreview);
                     updateArrowButtonVisibility();
                 };
-
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(file); // Read the file as data URL
             }
         }
 
         /**
-         * Format input file size
+         * Create a file preview element.
+         */
+        function createFilePreview(file, imageURL, index) {
+            const filePreviews = document.createElement("div");
+            filePreviews.className = "file-preview";
+            filePreviews.draggable = true;
+
+            const img = document.createElement("img");
+            img.src = imageURL;
+
+            const name = document.createElement("div");
+            name.className = "name";
+            name.textContent = file.name;
+
+            const size = document.createElement("div");
+            size.className = "size";
+            size.textContent = `${(file.size / 1024).toFixed(2)} KB`;
+            // size.textContent = formatFileSize(file.size);
+
+            const cancel = document.createElement("div");
+            cancel.className = "cancel";
+            cancel.textContent = "Cancel";
+
+            img.addEventListener("click", () => {
+                showImagePreview(imageURL);
+            });
+
+            cancel.addEventListener("click", () => {
+                filePreviews.remove();
+                removeFileFromArray(index);
+                setMultipleFileValue(selectedFiles);
+                updateArrowButtonVisibility();
+            });
+
+            filePreviews.appendChild(img);
+            filePreviews.appendChild(name);
+            filePreviews.appendChild(size);
+            filePreviews.appendChild(cancel);
+
+            return filePreviews;
+        }
+
+        /**
+         * Format the input file size.
          */
         function formatFileSize(size) {
             if (size === 0) {
@@ -321,7 +350,7 @@
         }
 
         /**
-         * Update arrow button visibility according to preview file width
+         * Update arrow button visibility according to the preview file width.
          */
         function updateArrowButtonVisibility() {
             const fileInput = document.getElementById("file-input");
@@ -339,34 +368,33 @@
         }
 
         /**
-         * Previous Button click action
+         * Handle previous button click action.
          */
         function handlePrevButtonClick(event) {
-            event.preventDefault(); // Prevent page reload
-
+            event.preventDefault();
             const filePreviews = document.querySelector(".file-previews");
             const slideWidth = (1 / 3) * filePreviews.offsetWidth;
             filePreviews.scrollBy({
-                left: -slideWidth, //filePreviews.offsetWidth,
+                left: -slideWidth,
                 behavior: "smooth"
             });
         }
 
         /**
-         * Next Button click action
+         * Handle next button click action.
          */
         function handleNextButtonClick(event) {
-            event.preventDefault(); // Prevent page reload
+            event.preventDefault();
             const filePreviews = document.querySelector(".file-previews");
             const slideWidth = (1 / 3) * filePreviews.offsetWidth;
             filePreviews.scrollBy({
-                left: slideWidth, //filePreviews.offsetWidth,
+                left: slideWidth,
                 behavior: "smooth"
             });
         }
 
         /**
-         * Handle
+         * Handle drag start events.
          */
         function handleDragStart(event) {
             draggingElement = event.target.closest(".file-preview");
@@ -375,16 +403,28 @@
             initialIndex = Array.from(draggingElement.parentNode.children).indexOf(draggingElement);
             currentIndex = initialIndex;
 
-            event.dataTransfer.setDragImage(new Image(), 0, 0);
+            const clone = draggingElement.cloneNode(true);
+            clone.style.opacity = "0.5"; // Adjust the opacity of the dragging clone as desired
+
+            event.dataTransfer.setDragImage(clone, 0, 0);
+
+            // Store the dragged file's index in a data attribute
+            event.dataTransfer.setData("text/plain", initialIndex.toString());
 
             // Add scroll behavior to the file previews container while dragging
             document.querySelector(".file-previews").style.scrollBehavior = "auto";
         }
 
+        /**
+         * Handle drag over events.
+         */
         function handleDragOver(event) {
             event.preventDefault();
         }
 
+        /**
+         * Handle drag enter events.
+         */
         function handleDragEnter(event) {
             event.preventDefault();
             const targetElement = event.target.closest(".file-preview");
@@ -402,15 +442,27 @@
             }
         }
 
+        /**
+         * Handle drag end events.
+         */
         function handleDragEnd() {
             if (draggingElement) {
                 draggingElement.classList.remove("dragging");
                 draggingElement = null;
+
+                const filePreviews = document.querySelector(".file-previews");
+                const updatedFiles = Array.from(filePreviews.children).map((child) => {
+                    const index = Array.from(child.parentNode.children).indexOf(child);
+                    return selectedFiles[index];
+                });
+
+                selectedFiles = updatedFiles;
+                setMultipleFileValue(selectedFiles);
             }
         }
 
         /**
-         * Show the preview image
+         * Show the preview image.
          */
         function showImagePreview(imageUrl) {
             const previewModal = document.createElement("div");
@@ -430,7 +482,6 @@
     });
 
 </script>
-
 
 <script src="{{ URL::asset('assets/libs/prismjs/prismjs.min.js') }}"></script>
 

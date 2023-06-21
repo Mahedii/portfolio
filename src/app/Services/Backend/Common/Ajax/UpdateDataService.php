@@ -92,7 +92,7 @@ class UpdateDataService
      */
     private function updateTableData(string $tableSecretKey): int
     {
-        $fieldsToUpdate = $this->request->except(['slug', 'table_secret_key', '_token']);
+        $fieldsToUpdate = $this->request->except(['slug', 'table_secret_key', '_token', 'multiplefile']);
 
         $updateQuery = DB::table($tableSecretKey)
             ->where('slug', $this->request->slug)
