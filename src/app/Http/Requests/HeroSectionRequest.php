@@ -11,8 +11,8 @@ class HeroSectionRequest extends FormRequest
         return [
             'name' => 'required|string|max:10',
             'quote' => 'required|string|max:200',
-            'multiplefile' => 'required|array',
-            'multiplefile.*' => 'file|mimes:jpeg,png,svg,jpg|max:2048', // Adjust file types and size limit as needed
+            'file_path' => 'required',
+            'file_path' => 'file|mimes:jpeg,png,svg,jpg|max:2048', // Adjust file types and size limit as needed
         ];
     }
 
@@ -25,9 +25,9 @@ class HeroSectionRequest extends FormRequest
             'quote.required' => 'The quote field is required.',
             'quote.string' => 'The quote field must be a string.',
             'quote.max' => 'The quote field may not be greater than :max characters.',
-            'multiplefile.required' => 'This field is required.',
-            'multiplefile.file' => "File format doesn't match, accepted formats are: jpeg, png, svg, jpg",
-            'multiplefile.max' => "File max size can not exceed more than :max kb",
+            'file_path.required' => 'This field is required.',
+            'file_path.file' => "File format doesn't match, accepted formats are: jpeg, png, svg, jpg",
+            'file_path.max' => "File max size can not exceed more than :max kb",
         ];
     }
 }

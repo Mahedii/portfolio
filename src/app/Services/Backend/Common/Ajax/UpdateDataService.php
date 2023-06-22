@@ -2,12 +2,16 @@
 
 namespace App\Services\Backend\Common\Ajax;
 
+use File;
+use App\Enums\Models;
 use App\Enums\Tables;
 use App\Enums\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\CommonFiles\CommonFiles;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image as ResizeImage;
 
 class UpdateDataService
 {
@@ -38,6 +42,7 @@ class UpdateDataService
         // #### Method 2 ####
         // #### Get value from Enums ####
         $requestClass = null;
+        $requestModel = null;
         $tablesEnumConstant = Tables::class . '::' . strtoupper($tableSecretKey);
 
         // Check if the constant exists
@@ -45,21 +50,32 @@ class UpdateDataService
             // Get the constant value from the model enum based on the matched table enum constant
             $requestsEnumConstant = Requests::class . '::' . strtoupper($tableSecretKey);
 
+            // Get the constant value from the model enum based on the matched table enum constant
+            $modelsEnumConstant = Models::class . '::' . strtoupper($tableSecretKey);
+
             // Check if the constant exists
             if (defined($requestsEnumConstant)) {
                 $requestClass = constant($requestsEnumConstant);
+            }
+
+            if (defined($modelsEnumConstant)) {
+                $requestModel = constant($modelsEnumConstant);
             }
         }
 
         if ($requestClass == null) {
             return ["status" => "error", "message" => "Data validation error: Request rules not found"];
+        } elseif ($requestModel == null) {
+            return ["status" => "error", "message" => "Data validation error: Request model not found"];
         } else {
-            $fieldsToValidate = $this->request->except(['slug', 'table_secret_key', '_token']);
-            $formRequest = new $requestClass($fieldsToValidate);
-            $validation = Validator::make($fieldsToValidate, $formRequest->rules(), $formRequest->messages());
+            $validation = $this->validateData($requestClass);
 
             if ($validation->fails()) {
-                return ["status" => "error", "message" => "Data validation error", 'errors' => $validation->errors()];
+                return [
+                    "status" => "error",
+                    "message" => "Data validation error",
+                    "errors" => $validation->errors()->toArray()
+                ];
             }
         }
 
@@ -75,13 +91,37 @@ class UpdateDataService
                 'field' => $tableAllData,
             ];
         } else {
+            // $errorMessage = 'Error: Data can not be updated';
+            $queryLog = DB::getQueryLog();
+            $errorMessage = $queryLog[count($queryLog) - 1]['error'];
+
+            // if (!empty($queryLog)) {
+            //     $errorInfo = end($queryLog)['error'];
+            //     $errorMessage .= ': ' . $errorInfo;
+            // }
+
             $result = [
                 'status' => 500,
-                'message' => 'Data can not be updated.',
+                'message' => $errorMessage,
             ];
         }
 
         return $result;
+    }
+
+    /**
+     * Validate request data
+     *
+     * @param string $requestClass
+     * @return object
+     */
+    private function validateData(string $requestClass): object
+    {
+        $fieldsToValidate = $this->request->except(['slug', 'table_secret_key', '_token']);
+        $formRequest = new $requestClass($fieldsToValidate);
+        $validation = Validator::make($fieldsToValidate, $formRequest->rules(), $formRequest->messages());
+
+        return $validation;
     }
 
     /**
@@ -92,7 +132,46 @@ class UpdateDataService
      */
     private function updateTableData(string $tableSecretKey): int
     {
-        $fieldsToUpdate = $this->request->except(['slug', 'table_secret_key', '_token', 'multiplefile']);
+        $table_data = DB::table($tableSecretKey)->where('slug', $this->request->slug)->get();
+        // $checkCommonFiles = DB::table("common_files")->where('table_name', $tableSecretKey)->where('table_id', $table_data->id)->where('slug', $this->request->slug)->get();
+
+        $fieldsToUpdate = $this->request->except(['slug', 'table_secret_key', '_token']);
+
+        if ($this->request->hasfile('file_path')) {
+            $file = $this->request->file_path;
+
+            // $fileName = $file->getClientOriginalName();
+            //$fileExtension = $file->extension();
+            $fileExtension = strtolower($file->getClientOriginalExtension());
+            $fileName = $tableSecretKey . "_image." . $fileExtension;
+
+            $path = public_path('assets/images/' . $tableSecretKey . '/');
+
+            $this->createDirectory($path);
+
+            // ResizeImage::make($file)->resize(300, 200)->save(public_path($filePath));
+            if ($file->move($path, $fileName)) {
+                $filePath = 'assets/images/' . $tableSecretKey . '/' . $fileName;
+            }
+
+            // $this->commonFilesCreateOrUpdate($checkCommonFiles, $tableSecretKey, $table_data->id, $filePath);
+
+            $fieldsToUpdate['file_path'] = $filePath;
+        } elseif ($this->request->hasfile('file_paths')) {
+            foreach ($this->request->file_paths as $multi_file) {
+                $fileName = $multi_file->getClientOriginalName();
+
+                $path = public_path('assets/images/' . $tableSecretKey . '/');
+
+                $this->createDirectory($path);
+
+                if ($multi_file->move($path, $fileName)) {
+                    $filePath = 'assets/images/' . $tableSecretKey . '/' . $fileName;
+
+                    $this->commonFilesCreateOrUpdate($checkCommonFiles, $tableSecretKey, $table_data->id, $filePath);
+                }
+            }
+        }
 
         $updateQuery = DB::table($tableSecretKey)
             ->where('slug', $this->request->slug)
@@ -114,6 +193,42 @@ class UpdateDataService
             ->get();
 
         return $updatedRowData;
+    }
+
+    /**
+     * Create directory if not exist
+     *
+     * @param string $path
+     * @return void
+     */
+    private function createDirectory(string $path): void
+    {
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0777, true, true);
+        }
+    }
+
+    /**
+     * Check and insert/update common_files table
+     *
+     * @param int $checkCommonFiles
+     * @param string $table_name
+     * @param int $table_id
+     * @param string $file_path
+     * @return void
+     */
+    private function commonFilesCreateOrUpdate(int $checkCommonFiles, string $table_name, int $table_id, string $file_path): void
+    {
+        if ($checkCommonFiles) {
+            CommonFiles::where([['table_name', $table_name], ['table_id', $table_id], ['slug', $this->request->slug]])->update(['file_path' => $filePath]);
+        } else {
+            CommonFiles::create([
+                'table_name' => $table_name,
+                'table_id' => $table_id,
+                'file_slug' => $this->request->slug,
+                'file_path' => $filePath
+            ]);
+        }
     }
 
     /**

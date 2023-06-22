@@ -1,0 +1,106 @@
+/* Custom image upload input styles */
+
+.file-drop-area {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.file-drop-area input[type="file"] {
+    display: none;
+}
+
+.file-previews {
+    display: flex;
+    flex-wrap: nowrap; /* Use wrap for disabling image slide horizontally */
+    margin-top: 20px;
+    padding-bottom: 10px; /* Add some bottom padding for better visual */
+    touch-action: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
+    -ms-overflow-style: none; /* Hide scrollbar on Internet Explorer and Edge */
+    scrollbar-width: none; /* Hide scrollbar on Firefox */
+}
+
+.file-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    margin-right: 10px;
+}
+
+.file-preview img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 5px;
+}
+
+.file-preview .name {
+    font-size: 12px;
+}
+
+.file-preview .size {
+    font-size: 10px;
+}
+
+.file-preview .cancel {
+    color: red;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.file-preview.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.drag-over {
+    border: 2px dashed #999;
+}
+.slider {
+    position: relative;
+    overflow: hidden;
+}
+.prev-button,
+.next-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgb(255, 255, 255);
+    color: #000000;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-top: 60px;
+    transition: opacity 0.2s;
+    opacity: 0;
+}
+.prev-button {
+    left: 10px;
+}
+
+.next-button {
+    right: 10px;
+}
+
+/* Custom image upload input styles ends*/

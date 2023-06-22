@@ -18,7 +18,7 @@ class HeroSection extends Model
     protected $fillable = [
         'name',
         'quote',
-        'path',
+        'file_path',
         'slug',
     ];
 }
