@@ -81,6 +81,8 @@ class UpdateDataService
 
         $updateTableData = $this->updateTableData($tableSecretKey);
 
+        // return $updateTableData;
+
         if ($updateTableData) {
             $updatedRowData = $this->getUpdatedRowData($tableSecretKey);
             $tableAllData = $this->getUpdatedTableData($tableSecretKey);
@@ -91,9 +93,9 @@ class UpdateDataService
                 'field' => $tableAllData,
             ];
         } else {
-            // $errorMessage = 'Error: Data can not be updated';
-            $queryLog = DB::getQueryLog();
-            $errorMessage = $queryLog[count($queryLog) - 1]['error'];
+            $errorMessage = 'Error: Data can not be updated';
+            // $queryLog = DB::getQueryLog();
+            // $errorMessage = $queryLog[count($queryLog) - 1]['error'];
 
             // if (!empty($queryLog)) {
             //     $errorInfo = end($queryLog)['error'];
@@ -133,7 +135,11 @@ class UpdateDataService
     private function updateTableData(string $tableSecretKey): int
     {
         $table_data = DB::table($tableSecretKey)->where('slug', $this->request->slug)->get();
-        // $checkCommonFiles = DB::table("common_files")->where('table_name', $tableSecretKey)->where('table_id', $table_data->id)->where('slug', $this->request->slug)->get();
+        // $checkCommonFiles = DB::table("common_files")->where('table_name', $tableSecretKey)->where('table_id', $table_data->id)->where('file_slug', $this->request->slug)->get();
+        // return [
+        //     'status' => 500,
+        //     'message' => $checkCommonFiles,
+        // ];
 
         $fieldsToUpdate = $this->request->except(['slug', 'table_secret_key', '_token']);
 
