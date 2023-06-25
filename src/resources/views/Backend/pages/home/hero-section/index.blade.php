@@ -83,12 +83,9 @@
                                     <p class="text-muted">FilePond is a JavaScript library that
                                         optimizes multiple images for faster uploads and offers a great, accessible, silky
                                         smooth user experience.</p>
-                                    <div class="file-drop-area">
-                                        <label for="file-input">Click to Upload Files</label>
-                                        <input type="file" class="ajax-validation-input" id="file-input" name="file_path">
-                                        <div class="file-previews"></div>
-                                        <button class="prev-button">&lt;</button>
-                                        <button class="next-button">&gt;</button>
+                                        <input type="file" class="ajax-validation-input" id="file-inputs" name="file_path">
+                                    <div class="fetched-file-preview">
+                                        {{-- <img src="{{ asset($data->file_path) }}" alt=""/> --}}
                                     </div>
                                 </div>
                             </div>

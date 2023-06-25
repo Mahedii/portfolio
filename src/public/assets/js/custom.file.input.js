@@ -38,6 +38,14 @@ $(document).ready(function () {
      */
     function handleFileInputChange(event) {
         const files = event.target.files;
+        const fileInput = document.getElementById("file-input");
+        if (!event.target.multiple) {
+            // Clear the selectedFiles array when input type is not set to multiple
+            selectedFiles = [];
+            // fileInput.value = null;
+            const filePreviews = document.querySelector(".file-previews");
+            filePreviews.innerHTML = "";
+        }
         addFilesToArray(files);
         previewFiles(selectedFiles);
         setMultipleFileValue(selectedFiles);

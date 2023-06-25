@@ -134,8 +134,19 @@ class UpdateDataService
      */
     private function updateTableData(string $tableSecretKey): int
     {
-        $table_data = DB::table($tableSecretKey)->where('slug', $this->request->slug)->get();
-        // $checkCommonFiles = DB::table("common_files")->where('table_name', $tableSecretKey)->where('table_id', $table_data->id)->where('file_slug', $this->request->slug)->get();
+        $fetchTableData = DB::table($tableSecretKey)
+        ->where('slug', $this->request->slug)
+        ->select('id')
+        ->first();
+
+        if ($fetchTableData) {
+            // Fetch data from the common_files table
+            $checkCommonFiles = DB::table('common_files')
+                ->where('table_name', $tableSecretKey)
+                ->where('table_id', $fetchTableData->id)
+                ->where('file_slug', $this->request->slug)
+                ->first();
+        }
         // return [
         //     'status' => 500,
         //     'message' => $checkCommonFiles,
@@ -149,7 +160,8 @@ class UpdateDataService
             // $fileName = $file->getClientOriginalName();
             //$fileExtension = $file->extension();
             $fileExtension = strtolower($file->getClientOriginalExtension());
-            $fileName = $tableSecretKey . "_image." . $fileExtension;
+            // $fileName = $tableSecretKey . "_image." . $fileExtension;
+            $fileName = $tableSecretKey . "_image.png";
 
             $path = public_path('assets/images/' . $tableSecretKey . '/');
 
@@ -160,9 +172,9 @@ class UpdateDataService
                 $filePath = 'assets/images/' . $tableSecretKey . '/' . $fileName;
             }
 
-            // $this->commonFilesCreateOrUpdate($checkCommonFiles, $tableSecretKey, $table_data->id, $filePath);
+            $this->commonFilesCreateOrUpdate($checkCommonFiles, $tableSecretKey, $fetchTableData->id, $filePath);
 
-            $fieldsToUpdate['file_path'] = $filePath;
+            $fieldsToUpdate['file_path'] = "fff";
         } elseif ($this->request->hasfile('file_paths')) {
             foreach ($this->request->file_paths as $multi_file) {
                 $fileName = $multi_file->getClientOriginalName();
@@ -174,7 +186,7 @@ class UpdateDataService
                 if ($multi_file->move($path, $fileName)) {
                     $filePath = 'assets/images/' . $tableSecretKey . '/' . $fileName;
 
-                    $this->commonFilesCreateOrUpdate($checkCommonFiles, $tableSecretKey, $table_data->id, $filePath);
+                    $this->commonFilesCreateOrUpdate($checkCommonFiles, $tableSecretKey, $fetchTableData->id, $filePath);
                 }
             }
         }
@@ -217,22 +229,28 @@ class UpdateDataService
     /**
      * Check and insert/update common_files table
      *
-     * @param int $checkCommonFiles
+     * @param object $checkCommonFiles
      * @param string $table_name
      * @param int $table_id
      * @param string $file_path
      * @return void
      */
-    private function commonFilesCreateOrUpdate(int $checkCommonFiles, string $table_name, int $table_id, string $file_path): void
+    private function commonFilesCreateOrUpdate(object $checkCommonFiles, string $table_name, int $table_id, string $file_path): void
     {
         if ($checkCommonFiles) {
-            CommonFiles::where([['table_name', $table_name], ['table_id', $table_id], ['slug', $this->request->slug]])->update(['file_path' => $filePath]);
+            // Data exists, update the common_files table
+            DB::table('common_files')
+            ->where('table_name', $table_name)
+            ->where('table_id', $table_id)
+            ->where('file_slug', $this->request->slug)
+            ->update(['file_path' => $file_path]);
         } else {
-            CommonFiles::create([
+            // Data does not exist, create new entry in the common_files table
+            DB::table('common_files')->insert([
                 'table_name' => $table_name,
                 'table_id' => $table_id,
                 'file_slug' => $this->request->slug,
-                'file_path' => $filePath
+                'file_path' => $file_path,
             ]);
         }
     }
