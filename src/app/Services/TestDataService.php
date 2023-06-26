@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Backend\Common\Ajax;
+namespace App\Services;
 
 use File;
 use App\Enums\Models;
@@ -13,7 +13,7 @@ use App\Models\CommonFiles\CommonFiles;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image as ResizeImage;
 
-class UpdateDataService
+class TestDataService
 {
     /**
      * Client form request container
@@ -37,7 +37,8 @@ class UpdateDataService
      */
     public function getResponse(): array
     {
-        $tableSecretKey = Crypt::decryptString($this->request->table_secret_key);
+        // $tableSecretKey = Crypt::decryptString($this->request->table_secret_key);
+        $tableSecretKey = "hero_sections";
 
         // #### Method 2 ####
         // #### Get value from Enums ####
@@ -81,6 +82,8 @@ class UpdateDataService
 
         $updateTableData = $this->updateTableData($requestModel, $tableSecretKey);
 
+        // return $updateTableData;
+
         if ($updateTableData) {
             $updatedRowData = $this->getUpdatedRowData($tableSecretKey);
             $tableAllData = $this->getUpdatedTableData($tableSecretKey);
@@ -92,6 +95,13 @@ class UpdateDataService
             ];
         } else {
             $errorMessage = 'Error: Data can not be updated';
+            // $queryLog = DB::getQueryLog();
+            // $errorMessage = $queryLog[count($queryLog) - 1]['error'];
+
+            // if (!empty($queryLog)) {
+            //     $errorInfo = end($queryLog)['error'];
+            //     $errorMessage .= ': ' . $errorInfo;
+            // }
 
             $result = [
                 'status' => 500,
@@ -139,6 +149,10 @@ class UpdateDataService
                 ->where('file_slug', $this->request->slug)
                 ->first();
         }
+        // return [
+        //     'status' => 500,
+        //     'message' => $checkCommonFiles,
+        // ];
 
         $fieldsToUpdate = $this->request->except(['slug', 'table_secret_key', '_token']);
 
@@ -146,10 +160,10 @@ class UpdateDataService
             $file = $this->request->file_path;
 
             // $fileName = $file->getClientOriginalName();
-            // $fileName = $tableSecretKey . "_image.png";
-            $fileExtension = $file->extension();
+            //$fileExtension = $file->extension();
             $fileExtension = strtolower($file->getClientOriginalExtension());
-            $fileName = $tableSecretKey . "_image." . $fileExtension;
+            // $fileName = $tableSecretKey . "_image." . $fileExtension;
+            $fileName = $tableSecretKey . "_image.png";
 
             $path = public_path('assets/images/' . $tableSecretKey . '/');
 
@@ -178,6 +192,10 @@ class UpdateDataService
                 }
             }
         }
+        // dd($fieldsToUpdate);
+        // $updateQuery = DB::table($tableSecretKey)
+        //     ->where('slug', $this->request->slug)
+        //     ->update($fieldsToUpdate);
 
         $updateQuery = $requestModel::where('slug', $this->request->slug)->update($fieldsToUpdate);
 

@@ -24,30 +24,42 @@
 <form method="POST" action="{{ route('testData') }}" enctype="multipart/form-data" id="testForm" autocomplete="off">
     @csrf
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title mb-0">Dropzone</h4>
-                </div><!-- end card header -->
+    <div class="row mt-2">
+        <div class="col-md-6">
+            <label for="fullnameInput" class="form-label">Name<span class="text-danger">*</span></label>
+            <input type="text" class="form-control ajax-validation-input hero_sections_name @error('name') is-invalid @enderror" value="Mahadi" name="name">
+            <input type="hidden" name="table_secret_key" class="secret_key" value="hero_sections">
+            <input type="hidden" name="slug" value="hero_sections_data">
+            @if ($errors->has('name'))
+                <span class="text-danger">{{ $errors->first('name') }}</span>
+            @endif
+        </div>
+    </div>
 
-                <div class="card-body">
-                    <p class="text-muted">DropzoneJS is an open source library that provides drag’n’drop file uploads
-                        with image previews.</p>
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <label for="quote" class="form-label">Quote<span class="text-danger">*</span></label>
+            <textarea class="form-control ajax-validation-input hero_sections_quote" name="quote" id="ckeditor-classic" rows="3">Hello</textarea>
+            @if ($errors->has('quote'))
+                <span class="text-danger">{{ $errors->first('quote') }}</span>
+            @endif
+        </div>
+    </div>
 
-                        <div class="file-drop-area">
-                            <input type="file" name="multiplefile[]" id="file-input" multiple>
-                            <label for="file-input">Click to Upload Files</label>
-                            <div class="file-previews"></div>
-                            <button class="prev-button">&lt;</button>
-                            <button class="next-button">&gt;</button>
-                        </div>
-
-                </div>
-                <!-- end card body -->
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <label for="quote" class="form-label">Image<span class="text-danger">*</span></label>
+            <p class="text-muted">FilePond is a JavaScript library that
+                optimizes multiple images for faster uploads and offers a great, accessible, silky
+                smooth user experience.</p>
+            <div class="file-drop-area">
+                <label for="file-input">Click to Upload Files</label>
+                <input type="file" class="ajax-validation-input" id="file-input" name="file_path">
+                <div class="file-previews"></div>
+                <button class="prev-button">&lt;</button>
+                <button class="next-button">&gt;</button>
             </div>
-            <!-- end card -->
-        </div> <!-- end col -->
+        </div>
     </div>
     <!-- end row -->
 

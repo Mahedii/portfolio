@@ -293,8 +293,33 @@
                 contentType: false,
                 success: function(data) {
                     if(data.status == 200) {
+
+                        $('.error-message').remove();
+
+                        // Clear file previews
+                        $(".file-drop-area .file-previews").empty();
+
+                        // Update image-container image with the updated image path
+                        // Generate a unique query parameter
+                        var timestamp = new Date().getTime();
+
+                        // Update image path with timestamp query parameter
+                        var updatedImagePath = "{{ asset('') }}" + data.updatedRowData[0].file_path + "?t=" + timestamp;
+                        var previewImage = $(".file-previews .image-container .preview-image");
+                        previewImage.attr("src", updatedImagePath);
+
+                        // // Update image container with the updated image path
+                        // var updatedImagePath = data.updatedRowData[0].file_path;
+                        // var imageContainer = $('<div class="image-container"></div>');
+                        // var previewImage = $('<img class="preview-image" src="' + updatedImagePath + '" alt=""/>');
+                        // var deleteIcon = $('<span class="delete-image-icon"><i class="ri-delete-bin-fill align-bottom"></i></span>');
+                        // imageContainer.append(previewImage);
+                        // imageContainer.append(deleteIcon);
+                        // $(".file-previews").append(imageContainer);
+
                         $(".hero_sections_name").val(data.updatedRowData[0].name);
                         $(".hero_sections_quote").val(data.updatedRowData[0].quote);
+
                         toastr.success(data.message);
                     } else {
                         console.log(data.message);

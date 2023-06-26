@@ -104,3 +104,34 @@
 }
 
 /* Custom image upload input styles ends*/
+
+.file-preview {
+    position: relative;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.preview-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.delete-image-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 15px;
+    color: red;
+    background-color: rgb(255, 255, 255);
+    padding: 2px;
+    cursor: pointer;
+}
+
+.delete-image-icon:hover {
+    /* color: darkred; */
+    background-color: rgb(255, 255, 255, 0.1);
+}

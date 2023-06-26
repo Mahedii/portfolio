@@ -6,6 +6,7 @@ use File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image as ResizeImage;
+use App\Services\TestDataService;
 
 class TestController extends Controller
 {
@@ -16,6 +17,14 @@ class TestController extends Controller
      */
     public function __invoke(Request $request)
     {
+        try {
+            $testDataService = new TestDataService($request);
+            $response = $testDataService->getResponse();
+            dd($response);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+
         try {
             dd($request);
 
