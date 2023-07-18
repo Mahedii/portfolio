@@ -112,7 +112,7 @@ class UpdateDataService
     {
         $fieldsToValidate = $this->request->except(['slug', 'table_secret_key', '_token']);
         $formRequest = new $requestClass($fieldsToValidate);
-        $validation = Validator::make($fieldsToValidate, $formRequest->rules(), $formRequest->messages());
+        $validation = Validator::make($fieldsToValidate, $formRequest->rulesForUpdate(), $formRequest->messages());
 
         return $validation;
     }

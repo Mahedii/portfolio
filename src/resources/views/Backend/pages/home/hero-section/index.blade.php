@@ -61,6 +61,7 @@
                                     <input type="text" class="form-control ajax-validation-input hero_sections_name @error('name') is-invalid @enderror" value="{{ $data->name }}" name="name">
                                     <input type="hidden" name="table_secret_key" class="secret_key" value="{{ $data->encrypted_table_name }}">
                                     <input type="hidden" name="slug" value="{{ $data->slug }}">
+                                    <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="update">
                                     @if ($errors->has('name'))
                                         <span class="text-danger">{{ $errors->first('name') }}</span>
                                     @endif
@@ -206,6 +207,7 @@
                             <div>
                                 <label for="typingText" class="form-label">Typing Text</label>
                                 <input type="text" class="form-control ajax-validation-input" name="text" placeholder="Enter typing text">
+                                <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="create">
                             </div>
                         </div><!--end col-->
                         <div class="col-lg-12">
@@ -240,6 +242,7 @@
                             <div>
                                 <label for="typingText" class="form-label">Typing Text</label>
                                 <input type="text" class="form-control ajax-validation-input" id="typingTextVal" name="text" placeholder="Enter typing text">
+                                <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="update">
                             </div>
                         </div><!--end col-->
                         <div class="col-lg-12">

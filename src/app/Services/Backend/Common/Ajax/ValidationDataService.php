@@ -59,20 +59,44 @@ class ValidationDataService
         $messages = [];
         $fieldName = $this->request->field;
         $value = $this->request->value;
+        $methodTypeValue = $this->request->methodTypeValue;
 
         if (class_exists($requestClass)) {
             // Instantiate the form request class based on the specified $requestClass
             $formRequest = new $requestClass();
+            if ($methodTypeValue === 'create') {
+                if (method_exists($formRequest, 'rulesForCreate')) {
+                    // Get the validation rules for the specified field
+                    $rules = $formRequest->rulesForCreate();
 
-            if (method_exists($formRequest, 'rules')) {
-                // Get the validation rules for the specified field
-                $rules = $formRequest->rules();
+                    // Get the specific rule for the field
+                    $fieldRules = $rules[$fieldName] ?? [];
 
-                // Get the specific rule for the field
-                $fieldRules = $rules[$fieldName] ?? [];
+                    // Create a temporary array with the validation rules for the specified field
+                    $tempRules = [$fieldName => $fieldRules];
+                }
+            } elseif ($methodTypeValue === 'update') {
+                if (method_exists($formRequest, 'rulesForUpdate')) {
+                    // Get the validation rules for the specified field
+                    $rules = $formRequest->rulesForUpdate();
 
-                // Create a temporary array with the validation rules for the specified field
-                $tempRules = [$fieldName => $fieldRules];
+                    // Get the specific rule for the field
+                    $fieldRules = $rules[$fieldName] ?? [];
+
+                    // Create a temporary array with the validation rules for the specified field
+                    $tempRules = [$fieldName => $fieldRules];
+                }
+            } else {
+                if (method_exists($formRequest, 'rules')) {
+                    // Get the validation rules for the specified field
+                    $rules = $formRequest->rules();
+
+                    // Get the specific rule for the field
+                    $fieldRules = $rules[$fieldName] ?? [];
+
+                    // Create a temporary array with the validation rules for the specified field
+                    $tempRules = [$fieldName => $fieldRules];
+                }
             }
 
             if (method_exists($formRequest, 'messages')) {
@@ -95,7 +119,7 @@ class ValidationDataService
             $result = ['success' => true];
         }
 
-        // Validation passed, return success response
+        // return response
         return $result;
     }
 }

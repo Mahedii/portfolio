@@ -16,6 +16,25 @@ class HeroSectionRequest extends FormRequest
         ];
     }
 
+    public function rulesForCreate()
+    {
+        return [
+            'name' => 'required|string|max:10',
+            'quote' => 'required|string|max:200',
+            'file_path' => 'required',
+            'file_path' => 'file|mimes:jpeg,png,svg,jpg|max:2048', // Adjust file types and size limit as needed
+        ];
+    }
+
+    public function rulesForUpdate()
+    {
+        return [
+            'name' => 'required|string|max:10',
+            'quote' => 'required|string|max:200',
+            'file_path' => 'file|mimes:jpeg,png,svg,jpg|max:2048|nullable', // Adjust file types and size limit as needed
+        ];
+    }
+
     public function messages()
     {
         return [

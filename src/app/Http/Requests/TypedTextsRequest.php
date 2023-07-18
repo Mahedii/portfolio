@@ -13,6 +13,20 @@ class TypedTextsRequest extends FormRequest
         ];
     }
 
+    public function rulesForCreate()
+    {
+        return [
+            'text' => 'required|string|max:20',
+        ];
+    }
+
+    public function rulesForUpdate()
+    {
+        return [
+            'text' => 'required|string|max:20',
+        ];
+    }
+
     public function messages()
     {
         return [

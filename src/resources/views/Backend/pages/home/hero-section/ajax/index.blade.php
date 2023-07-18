@@ -134,9 +134,10 @@
                 var otherInput = $(this);
                 var otherValue = otherInput.val();
                 var otherField = otherInput.attr('name');
+                var methodTypeValue = $(this).closest('form').find('.method_type').val();
 
                 // Skip the current input
-                if (otherField === changed_field) {
+                if (otherField === changed_field || otherField === "method_type") {
                     return;
                 }
 
@@ -144,6 +145,7 @@
                 var otherData = {
                     field: otherField,
                     value: otherValue,
+                    methodTypeValue: methodTypeValue,
                     secret_key: secret_key
                 };
 
