@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\CommonFiles;
+namespace App\Models\WorkHistory;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Crypt;
 
-class CommonFiles extends Model
+class WorkHistoryList extends Model
 {
     use HasFactory;
 
@@ -16,10 +16,11 @@ class CommonFiles extends Model
     }
 
     protected $fillable = [
-        'table_name',
-        'table_row_id',
-        'file_slug',
-        'file_path',
+        'company_name',
+        'role',
+        'duration',
+        'role_description',
+        'slug',
         'creator',
         'editor',
     ];

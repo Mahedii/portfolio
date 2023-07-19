@@ -18,6 +18,8 @@ return new class extends Migration
             $table->id();
             $table->string('text');
             $table->string('slug')->unique();
+            $table->string('creator')->nullable();
+            $table->string('editor')->nullable();
             $table->timestamps();
         });
         TypedTexts::create(['text' => 'Software Engineer', 'slug' => 'software-engineer', 'created_at' => now(),]);

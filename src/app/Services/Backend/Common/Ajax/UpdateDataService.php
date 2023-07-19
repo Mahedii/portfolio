@@ -110,7 +110,7 @@ class UpdateDataService
      */
     private function validateData(string $requestClass): object
     {
-        $fieldsToValidate = $this->request->except(['slug', 'table_secret_key', '_token']);
+        $fieldsToValidate = $this->request->except(['slug', 'table_secret_key', 'method_type', '_token']);
         $formRequest = new $requestClass($fieldsToValidate);
         $validation = Validator::make($fieldsToValidate, $formRequest->rulesForUpdate(), $formRequest->messages());
 
@@ -135,53 +135,60 @@ class UpdateDataService
             // Fetch data from the common_files table
             $checkCommonFiles = DB::table('common_files')
                 ->where('table_name', $tableSecretKey)
-                ->where('table_id', $fetchTableData->id)
+                ->where('table_row_id', $fetchTableData->id)
                 ->where('file_slug', $this->request->slug)
                 ->first();
+            if ($checkCommonFiles) {
+                $foundStatus = true;
+            } else {
+                $foundStatus = false;
+            }
         }
 
-        $fieldsToUpdate = $this->request->except(['slug', 'table_secret_key', '_token']);
+        $fieldsToUpdate = $this->request->except(['slug', 'table_secret_key', 'method_type', '_token']);
 
         if ($this->request->hasfile('file_path')) {
             $file = $this->request->file_path;
-
-            // $fileName = $file->getClientOriginalName();
-            // $fileName = $tableSecretKey . "_image.png";
-            $fileExtension = $file->extension();
-            $fileExtension = strtolower($file->getClientOriginalExtension());
-            $fileName = $tableSecretKey . "_image." . $fileExtension;
-
-            $path = public_path('assets/images/' . $tableSecretKey . '/');
-
-            $this->createDirectory($path);
-
-            // ResizeImage::make($file)->resize(300, 200)->save(public_path($filePath));
-            if ($file->move($path, $fileName)) {
-                $filePath = 'assets/images/' . $tableSecretKey . '/' . $fileName;
-            }
-
-            $this->commonFilesCreateOrUpdate($checkCommonFiles, $tableSecretKey, $fetchTableData->id, $filePath);
-
+            $filePath = $this->getPathForUploadedFile($tableSecretKey, $file);
+            $this->commonFilesCreateOrUpdate($foundStatus, $tableSecretKey, $fetchTableData->id, $filePath);
             $fieldsToUpdate['file_path'] = $filePath;
         } elseif ($this->request->hasfile('file_paths')) {
             foreach ($this->request->file_paths as $multi_file) {
-                $fileName = $multi_file->getClientOriginalName();
-
-                $path = public_path('assets/images/' . $tableSecretKey . '/');
-
-                $this->createDirectory($path);
-
-                if ($multi_file->move($path, $fileName)) {
-                    $filePath = 'assets/images/' . $tableSecretKey . '/' . $fileName;
-
-                    $this->commonFilesCreateOrUpdate($checkCommonFiles, $tableSecretKey, $fetchTableData->id, $filePath);
-                }
+                $filePath = $this->getPathForUploadedFile($tableSecretKey, $multi_file);
+                $this->commonFilesCreateOrUpdate($foundStatus, $tableSecretKey, $fetchTableData->id, $filePath);
             }
         }
 
         $updateQuery = $requestModel::where('slug', $this->request->slug)->update($fieldsToUpdate);
 
         return $updateQuery;
+    }
+
+    /**
+     * Get path for uploaded files
+     *
+     * @param object $file
+     * @param string $tableSecretKey
+     * @return string
+     */
+    private function getPathForUploadedFile(string $tableSecretKey, object $file): string
+    {
+        // $fileName = $file->getClientOriginalName();
+        // $fileName = $tableSecretKey . "_image.png";
+        $fileExtension = $file->extension();
+        $fileExtension = strtolower($file->getClientOriginalExtension());
+        $fileName = $tableSecretKey . "_image." . $fileExtension;
+
+        $path = public_path('assets/images/' . $tableSecretKey . '/' . $this->request->slug);
+
+        $this->createDirectory($path);
+
+        // ResizeImage::make($file)->resize(300, 200)->save(public_path($filePath));
+        if ($file->move($path, $fileName)) {
+            $filePath = 'assets/images/' . $tableSecretKey . '/' . $this->request->slug . '/' . $fileName;
+        }
+
+        return $filePath;
     }
 
     /**
@@ -215,26 +222,26 @@ class UpdateDataService
     /**
      * Check and insert/update common_files table
      *
-     * @param object $checkCommonFiles
+     * @param bool $foundStatus
      * @param string $table_name
-     * @param int $table_id
+     * @param int $table_row_id
      * @param string $file_path
      * @return void
      */
-    private function commonFilesCreateOrUpdate(object $checkCommonFiles, string $table_name, int $table_id, string $file_path): void
+    private function commonFilesCreateOrUpdate(bool $foundStatus, string $table_name, int $table_row_id, string $file_path): void
     {
-        if ($checkCommonFiles) {
+        if ($foundStatus == true) {
             // Data exists, update the common_files table
             DB::table('common_files')
             ->where('table_name', $table_name)
-            ->where('table_id', $table_id)
+            ->where('table_row_id', $table_row_id)
             ->where('file_slug', $this->request->slug)
             ->update(['file_path' => $file_path]);
         } else {
             // Data does not exist, create new entry in the common_files table
             DB::table('common_files')->insert([
                 'table_name' => $table_name,
-                'table_id' => $table_id,
+                'table_row_id' => $table_row_id,
                 'file_slug' => $this->request->slug,
                 'file_path' => $file_path,
             ]);

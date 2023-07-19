@@ -18,5 +18,7 @@ class TypedTexts extends Model
     protected $fillable = [
         'text',
         'slug',
+        'creator',
+        'editor',
     ];
 }

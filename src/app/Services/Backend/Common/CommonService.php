@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\HeroSection\TypedTexts;
 use App\Models\HeroSection\HeroSection;
+use App\Models\WorkHistory\WorkHistory;
+use App\Models\WorkHistory\WorkHistoryList;
 
 class CommonService
 {
@@ -38,7 +40,13 @@ class CommonService
                 "typedTextsData" => $typedTextsData
             ];
         } elseif ($keyword == "work-history") {
-            $componentArray = [];
+            $workHistoryData = WorkHistory::all();
+            $workHistoryListData = WorkHistoryList::orderBy('id', 'DESC')->get();
+
+            $componentArray = [
+                "workHistoryData" => $workHistoryData,
+                "workHistoryListData" => $workHistoryListData
+            ];
         } else {
             $componentArray = [];
         }

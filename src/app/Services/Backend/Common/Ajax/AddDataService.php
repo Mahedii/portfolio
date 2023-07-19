@@ -56,7 +56,7 @@ class AddDataService
         if ($requestClass == null) {
             return ["status" => "error", "message" => "Data validation error: Request rules not found"];
         } else {
-            $fieldsToValidate = $this->request->except(['slug', 'table_secret_key', '_token']);
+            $fieldsToValidate = $this->request->except(['slug', 'table_secret_key', 'method_type', '_token']);
             $formRequest = new $requestClass($fieldsToValidate);
             $validation = Validator::make($fieldsToValidate, $formRequest->rules(), $formRequest->messages());
 
@@ -91,13 +91,13 @@ class AddDataService
      */
     private function insertTableData(string $tableSecretKey)
     {
-        $fieldsToUpdate = $this->request->except(['table_secret_key', '_token']);
+        $fieldsToInsert = $this->request->except(['table_secret_key', 'method_type', '_token']);
 
         // Get the first key
-        $firstKey = array_keys($fieldsToUpdate)[0];
+        $firstKey = array_keys($fieldsToInsert)[0];
 
         // Get the value associated with the first key
-        $firstKeyValue = $fieldsToUpdate[$firstKey];
+        $firstKeyValue = $fieldsToInsert[$firstKey];
 
         $requestModel = null;
 
@@ -131,10 +131,71 @@ class AddDataService
         }
 
         $slug = $this->generateSlug($requestModel, $firstKeyValue);
-        $fieldsToUpdate['slug'] = $slug;
+        $fieldsToInsert['slug'] = $slug;
 
-        $insertQuery = DB::table($tableSecretKey)->insert($fieldsToUpdate);
+        if ($this->request->hasfile('file_path')) {
+            $file = $this->request->file_path;
+            $filePath = $this->getPathForUploadedFile($tableSecretKey, $slug, $file);
+            $this->commonFilesCreate($tableSecretKey, $insertQuery->id, $slug, $filePath);
+            $fieldsToInsert['file_path'] = $filePath;
+        } elseif ($this->request->hasfile('file_paths')) {
+            foreach ($this->request->file_paths as $multi_file) {
+                $filePath = $this->getPathForUploadedFile($tableSecretKey, $slug, $multi_file);
+                // $this->commonFilesCreateForMultipleFile($tableSecretKey, $slug, $filePath);
+            }
+        }
+
+        $insertQuery = DB::table($tableSecretKey)->insert($fieldsToInsert);
+
         return $insertQuery;
+    }
+
+    /**
+     * Get path for uploaded files
+     *
+     * @param string $tableSecretKey
+     * @param string $slug
+     * @param object $file
+     * @return string
+     */
+    private function getPathForUploadedFile(string $tableSecretKey, string $slug, object $file): string
+    {
+        // $fileName = $file->getClientOriginalName();
+        // $fileName = $tableSecretKey . "_image.png";
+        $fileExtension = $file->extension();
+        $fileExtension = strtolower($file->getClientOriginalExtension());
+        $fileName = $tableSecretKey . "_image." . $fileExtension;
+
+        $path = public_path('assets/images/' . $tableSecretKey . '/' . $slug);
+
+        $this->createDirectory($path);
+
+        // ResizeImage::make($file)->resize(300, 200)->save(public_path($filePath));
+        if ($file->move($path, $fileName)) {
+            $filePath = 'assets/images/' . $tableSecretKey . '/' . $slug . '/' . $fileName;
+        }
+
+        return $filePath;
+    }
+
+    /**
+     * Insert common_files table
+     *
+     * @param string $table_name
+     * @param int $table_row_id
+     * @param string $file_slug
+     * @param string $file_path
+     * @return void
+     */
+    private function commonFilesCreate(string $table_name, int $table_row_id, string $file_slug, string $file_path): void
+    {
+        // Data does not exist, create new entry in the common_files table
+        DB::table('common_files')->insert([
+            'table_name' => $table_name,
+            'table_row_id' => $table_row_id,
+            'file_slug' => $file_slug,
+            'file_path' => $file_path,
+        ]);
     }
 
     /**

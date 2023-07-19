@@ -20,5 +20,7 @@ class HeroSection extends Model
         'quote',
         'file_path',
         'slug',
+        'creator',
+        'editor',
     ];
 }

@@ -16,9 +16,11 @@ return new class extends Migration
         Schema::create('common_files', function (Blueprint $table) {
             $table->id();
             $table->string('table_name');
-            $table->string('table_id');
-            $table->string('file_slug');
+            $table->string('table_row_id')->nullable();
+            $table->string('file_slug')->nullable();
             $table->tinyText('file_path');
+            $table->string('creator')->nullable();
+            $table->string('editor')->nullable();
             $table->timestamps();
         });
     }

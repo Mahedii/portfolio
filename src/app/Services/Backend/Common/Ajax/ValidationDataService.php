@@ -34,17 +34,37 @@ class ValidationDataService
     {
         $tableSecretKey = Crypt::decryptString($this->request->secret_key);
 
-        // #### Method 1 ####
-        // #### Get value from config/const.php ####
-        foreach (config('const.Tables') as $key => $data) {
-            // Check if the $tableSecretKey value matches with the const Tables key
-            if ($tableSecretKey === $key) {
-                // Get the value of const Requests key
-                $requestClass = config('const.Requests.' . $key);
+        // // #### Method 1 ####
+        // // #### Get value from config/const.php ####
+        // foreach (config('const.Tables') as $key => $data) {
+        //     // Check if the $tableSecretKey value matches with the const Tables key
+        //     if ($tableSecretKey === $key) {
+        //         // Get the value of const Requests key
+        //         $requestClass = config('const.Requests.' . $key);
+        //     }
+        // }
+
+        // #### Method 2 ####
+        // #### Get value from Enums ####
+        $requestClass = null;
+        $tablesEnumConstant = Tables::class . '::' . strtoupper($tableSecretKey);
+
+        // Check if the constant exists
+        if (defined($tablesEnumConstant)) {
+            // Get the constant value from the model enum based on the matched table enum constant
+            $requestsEnumConstant = Requests::class . '::' . strtoupper($tableSecretKey);
+
+            // Check if the constant exists
+            if (defined($requestsEnumConstant)) {
+                $requestClass = constant($requestsEnumConstant);
             }
         }
 
-        return $this->ajaxValidation($requestClass);
+        if ($requestClass == null) {
+            return ['success' => false, "status" => "error", "message" => "Data validation error: Request rules not found"];
+        } else {
+            return $this->ajaxValidation($requestClass);
+        }
     }
 
     /**

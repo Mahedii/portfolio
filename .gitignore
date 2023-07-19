@@ -23,4 +23,5 @@ Homestead.json
 .phpunit.result.cache
 /theme_files
 /src/vendor
-/src/storage/framework/views
+/src/storage/framework/views/*.php
+# /src/public/assets/images

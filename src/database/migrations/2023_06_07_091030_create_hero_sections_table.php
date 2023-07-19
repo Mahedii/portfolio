@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text('quote');
             $table->tinyText('file_path');
             $table->text('slug')->unique();
+            $table->string('creator')->nullable();
+            $table->string('editor')->nullable();
             $table->timestamps();
         });
         HeroSection::create(['name' => 'Mahadi', 'quote' => 'Architecture is the learned game', 'file_path' => 'file_path.ext', 'slug' => 'hero_sections_data', 'created_at' => now(),]);

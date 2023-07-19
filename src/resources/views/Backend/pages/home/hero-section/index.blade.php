@@ -171,7 +171,7 @@
                                             </li>
 
                                             <li>
-                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item delete-typing-text-data">
+                                                <a href="#" data-slug="{{$data->slug}}" class="dropdown-item delete-typing-text-data">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                     Delete
                                                 </a>
