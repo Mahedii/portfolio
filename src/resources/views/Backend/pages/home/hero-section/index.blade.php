@@ -30,7 +30,7 @@
 
         <div class="col-sm" style="margin-bottom: 1rem;">
             <div class="d-flex justify-content-sm-end">
-                <a href="{{ url()->previous() }}" class="btn btn-success" id="addproduct-btn">
+                <a href="{{ url()->previous() }}" class="btn btn-success" id="">
                     <i class="ri-arrow-left-line align-bottom me-1"></i>
                     Back
                 </a>
@@ -106,7 +106,12 @@
 
                         <div class="col-12">
                             <div class="text-end">
-                                <button type="submit" class="btn btn-primary">Update</button>
+                                <button type="submit" class="btn btn-primary ajax-submit">
+                                    <div class="submit-btn-text">Update</div>
+                                    <img class="ajax-spinner hide" src="{{ URL::asset('assets/images/spinner/spinner-ball-1.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-done hide" src="{{ URL::asset('assets/images/spinner/check-mark.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-failed hide" src="{{ URL::asset('assets/images/spinner/x-mark.svg') }}" alt="" height="25px" width="50px">
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -164,14 +169,14 @@
                                             </li> --}}
 
                                             <li>
-                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item edit-item-btn edit-typing-text-data">
+                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item edit-item-btn ajax-edit-data-btn">
                                                     <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                     Edit
                                                 </a>
                                             </li>
 
                                             <li>
-                                                <a href="#" data-slug="{{$data->slug}}" class="dropdown-item delete-typing-text-data">
+                                                <a href="#" data-slug="{{$data->slug}}" class="dropdown-item ajax-delete-data-btn">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                     Delete
                                                 </a>
@@ -213,7 +218,12 @@
                         <div class="col-lg-12">
                             <div class="hstack gap-2 justify-content-end">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="submit" class="btn btn-primary ajax-submit">
+                                    <div class="submit-btn-text">Add</div>
+                                    <img class="ajax-spinner hide" src="{{ URL::asset('assets/images/spinner/spinner-ball-1.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-done hide" src="{{ URL::asset('assets/images/spinner/check-mark.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-failed hide" src="{{ URL::asset('assets/images/spinner/x-mark.svg') }}" alt="" height="25px" width="50px">
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -248,7 +258,12 @@
                         <div class="col-lg-12">
                             <div class="hstack gap-2 justify-content-end">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Update</button>
+                                <button type="submit" class="btn btn-primary ajax-submit">
+                                    <div class="submit-btn-text">Update</div>
+                                    <img class="ajax-spinner hide" src="{{ URL::asset('assets/images/spinner/spinner-ball-1.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-done hide" src="{{ URL::asset('assets/images/spinner/check-mark.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-failed hide" src="{{ URL::asset('assets/images/spinner/x-mark.svg') }}" alt="" height="25px" width="50px">
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -270,8 +285,8 @@
             <div class="modal-body text-center p-5">
                 <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextDeleteForm">
                     @csrf
-                    <input type="hidden" class="form-control" id="delete_field_typing_text_slug">
-                    <input type="hidden" class="form-control secret_key "  id="delete_field_typing_text_secret_key">
+                    <input type="hidden" class="form-control delete_field_row_slug" id="delete_field_row_slug">
+                    <input type="hidden" class="form-control secret_key delete_field_table_secret_key"  id="delete_field_table_secret_key">
                 </form>
                 <lord-icon
                     src="https://cdn.lordicon.com/tdrtiskw.json"
@@ -285,7 +300,7 @@
                     <p class="text-muted mb-4"> If you are not sure than press the cancel button</p>
                     <div class="hstack gap-2 justify-content-center">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        <a href="javascript:void(0);" class="btn btn-danger confirm-delete-typing-text-data">Delete</a>
+                        <a href="javascript:void(0);" class="btn btn-danger confirm-ajax-delete-data-btn">Delete</a>
                     </div>
                 </div>
             </div>

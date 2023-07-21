@@ -30,7 +30,7 @@
 
         <div class="col-sm" style="margin-bottom: 1rem;">
             <div class="d-flex justify-content-sm-end">
-                <a href="{{ url()->previous() }}" class="btn btn-success" id="addproduct-btn">
+                <a href="{{ url()->previous() }}" class="btn btn-success" id="">
                     <i class="ri-arrow-left-line align-bottom me-1"></i>
                     Back
                 </a>
@@ -127,14 +127,14 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="typedTextData">
+                    <tbody id="workHistoryListData">
                         @foreach($workHistoryListData as $key => $data)
                             <tr data-table-secret="{{ $data->encrypted_table_name }}" data-id="{{ $data->id }}" id="row-{{ $data->id }}">
                                 <td>{{ ++$key }}</td>
                                 <td>{{ $data->company_name }}</td>
                                 <td>{{ $data->role }}</td>
                                 <td>{{ $data->duration }}</td>
-                                <td>{{ Str::limit($data->role_description, 20) }}</td>
+                                <td>{!! html_entity_decode(Str::limit($data->role_description, 20), ENT_QUOTES, 'UTF-8') !!}</td>
                                 <td>
                                     <div class="dropdown d-inline-block">
                                         <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
@@ -151,14 +151,14 @@
                                             </li> --}}
 
                                             <li>
-                                                <a href="javascript:void(0);" data-slug="{{$data->slug}}" class="dropdown-item edit-item-btn edit-typing-text-data">
+                                                <a href="{{ route('loadDataAndRedirect',['path' => 'home.work-history.edit.index', 'table' => $data->encrypted_table_name, 'data' => $data->slug]) }}" data-slug="{{$data->slug}}" class="dropdown-item edit-item-btn">
                                                     <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                     Edit
                                                 </a>
                                             </li>
 
                                             <li>
-                                                <a href="#" data-slug="{{$data->slug}}" class="dropdown-item delete-typing-text-data">
+                                                <a href="#" data-slug="{{$data->slug}}" class="dropdown-item ajax-delete-data-btn">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                     Delete
                                                 </a>
@@ -186,21 +186,44 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextAddForm">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="workHistoryListAddForm">
                     @csrf
                     <input type="hidden" class="form-control secret_key" name="table_secret_key" value="{{ $workHistoryListData[0]->encrypted_table_name }}">
                     <div class="row g-3">
                         <div class="col-xxl-12">
                             <div>
-                                <label for="typingText" class="form-label">Typing Text</label>
-                                <input type="text" class="form-control ajax-validation-input" name="text" placeholder="Enter typing text">
+                                <label for="company_name" class="form-label">Company</label>
+                                <input type="company_name" class="form-control ajax-validation-input" name="company_name">
                                 <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="create">
                             </div>
-                        </div><!--end col-->
+                        </div>
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="role" class="form-label">Role</label>
+                                <input type="role" class="form-control ajax-validation-input" name="role">
+                            </div>
+                        </div>
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="duration" class="form-label">Duration</label>
+                                <input type="duration" class="form-control ajax-validation-input" name="duration">
+                            </div>
+                        </div>
+                        <div class="col-xxl-12">
+                            <div>
+                                <label for="role_description" class="form-label">Description</label>
+                                <textarea class="form-control ajax-validation-input role_description" name="role_description" id="role-description-ckeditor-classic" rows="3"></textarea>
+                            </div>
+                        </div>
                         <div class="col-lg-12">
                             <div class="hstack gap-2 justify-content-end">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="submit" class="btn btn-primary ajax-submit">
+                                    <div class="submit-btn-text">Add</div>
+                                    <img class="ajax-spinner hide" src="{{ URL::asset('assets/images/spinner/spinner-ball-1.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-done hide" src="{{ URL::asset('assets/images/spinner/check-mark.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-failed hide" src="{{ URL::asset('assets/images/spinner/x-mark.svg') }}" alt="" height="25px" width="50px">
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -219,23 +242,46 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextUpdateForm">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="workHistoryListUpdateForm">
                     @csrf
-                    <input type="hidden" class="form-control" id="slug" name="slug">
-                    <input type="hidden" class="form-control" id="typed-text-row-id">
-                    <input type="hidden" class="form-control secret_key" id="typing_text_secret_key" name="table_secret_key" value="">
+                    <input type="hidden" class="form-control slug" id="slug" name="slug">
+                    <input type="hidden" class="form-control edit-row-id" id="edit-row-id">
+                    <input type="hidden" class="form-control secret_key table_secret_key" id="typing_text_secret_key" name="table_secret_key" value="">
                     <div class="row g-3">
                         <div class="col-xxl-12">
                             <div>
-                                <label for="typingText" class="form-label">Typing Text</label>
-                                <input type="text" class="form-control ajax-validation-input" id="typingTextVal" name="text" placeholder="Enter typing text">
+                                <label for="company_name" class="form-label">Company</label>
+                                <input type="company_name" class="form-control ajax-validation-input company_name" name="company_name">
                                 <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="update">
                             </div>
-                        </div><!--end col-->
+                        </div>
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="role" class="form-label">Role</label>
+                                <input type="role" class="form-control ajax-validation-input role" name="role">
+                            </div>
+                        </div>
+                        <div class="col-xxl-6">
+                            <div>
+                                <label for="duration" class="form-label">Duration</label>
+                                <input type="duration" class="form-control ajax-validation-input duration" name="duration">
+                            </div>
+                        </div>
+                        <div class="col-xxl-12">
+                            <div>
+                                <label for="role_description" class="form-label">Description</label>
+                                <textarea class="form-control ajax-validation-input role_description" name="role_description" id="edit-role-description-ckeditor-classic" rows="3"></textarea>
+                            </div>
+                        </div>
                         <div class="col-lg-12">
                             <div class="hstack gap-2 justify-content-end">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Update</button>
+                                <button type="submit" class="btn btn-primary ajax-submit">
+                                    <div class="submit-btn-text">Update</div>
+                                    <img class="ajax-spinner hide" src="{{ URL::asset('assets/images/spinner/spinner-ball-1.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-done hide" src="{{ URL::asset('assets/images/spinner/check-mark.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-failed hide" src="{{ URL::asset('assets/images/spinner/x-mark.svg') }}" alt="" height="25px" width="50px">
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -257,8 +303,8 @@
             <div class="modal-body text-center p-5">
                 <form action="javascript:void(0);" enctype="multipart/form-data" id="workingHistoryListsDeleteForm">
                     @csrf
-                    <input type="hidden" class="form-control" id="delete_field_typing_text_slug">
-                    <input type="hidden" class="form-control secret_key "  id="delete_field_typing_text_secret_key">
+                    <input type="hidden" class="form-control delete_field_row_slug" id="delete_field_row_slug">
+                    <input type="hidden" class="form-control secret_key delete_field_table_key" id="delete_field_table_key">
                 </form>
                 <lord-icon
                     src="https://cdn.lordicon.com/tdrtiskw.json"
@@ -272,7 +318,7 @@
                     <p class="text-muted mb-4"> If you are not sure than press the cancel button</p>
                     <div class="hstack gap-2 justify-content-center">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        <a href="javascript:void(0);" class="btn btn-danger confirm-delete-work-history-lists-data">Delete</a>
+                        <a href="javascript:void(0);" class="btn btn-danger confirm-ajax-delete-data-btn">Delete</a>
                     </div>
                 </div>
             </div>

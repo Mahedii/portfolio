@@ -26,7 +26,7 @@
          * Fetch selected inputs information for typed text
          * Set them in a modal for update
          */
-        $('#typedTextData').on('click', '.edit-typing-text-data', function () {
+        $('#typedTextData').on('click', '.ajax-edit-data-btn', function () {
             var slug = $(this).data('slug');
             var table_secret_key = $(this).closest('tr').data('table-secret');
             var id = $(this).closest('tr').data('id');
@@ -58,12 +58,12 @@
          * Fetch selected inputs information for typed text
          * Set them in a modal for delete
          */
-        $('#typedTextData').on('click', '.delete-typing-text-data', function () {
+        $('#typedTextData').on('click', '.ajax-delete-data-btn', function () {
             var slug = $(this).data('slug');
             var table_secret_key = $(this).closest('tr').data('table-secret');
 
-            $("#delete_field_typing_text_slug").val(slug);
-            $("#delete_field_typing_text_secret_key").val(table_secret_key);
+            $("#zoomInDeleteModal .delete_field_row_slug").val(slug);
+            $("#zoomInDeleteModal .delete_field_table_secret_key").val(table_secret_key);
 
             $('#zoomInDeleteModal').modal('show');
         });
@@ -185,6 +185,11 @@
         $(document).on("submit", "#typingTextAddForm", function(e){
 
             e.preventDefault();
+
+            $('#typingTextAddForm .ajax-submit .submit-btn-text').toggleClass('hide');
+            $('#typingTextAddForm .ajax-submit .ajax-spinner').toggleClass('hide');
+            var classNameOrId = "#typingTextAddForm";
+
             var dataString = $('#typingTextAddForm').serialize();
             // alert(dataString);
 
@@ -195,6 +200,8 @@
                 dataType: 'json',
                 success: function(data) {
                     if(data.status == 200) {
+                        ajaxSpinnerLoadToggle(classNameOrId);
+                        ajaxLoadSubmitBtnToggle(classNameOrId);
                         toastr.success(data.message);
                         table = $('#buttons-datatables').DataTable();
                         table.clear();
@@ -220,6 +227,10 @@
 
             e.preventDefault();
 
+            $('#typingTextUpdateForm .ajax-submit .submit-btn-text').toggleClass('hide');
+            $('#typingTextUpdateForm .ajax-submit .ajax-spinner').toggleClass('hide');
+            var classNameOrId = "#typingTextUpdateForm";
+
             var form = $('#typingTextUpdateForm')[0];
             let formData = new FormData(form);
             var rowId = $("#typed-text-row-id").val();
@@ -235,6 +246,8 @@
                 contentType: false,
                 success: function(data) {
                     if(data.status == 200) {
+                        ajaxSpinnerLoadToggle(classNameOrId);
+                        ajaxLoadSubmitBtnToggle(classNameOrId);
                         toastr.success(data.message);
 
                         var updatedRowData = data.updatedRowData;
@@ -277,11 +290,49 @@
         });
 
         /**
+         * Delete selected data for typed text
+         */
+         $('#zoomInDeleteModal').on('click', '.confirm-ajax-delete-data-btn', function () {
+            var slug = $('#delete_field_row_slug').val();
+            var table_secret_key = $('#delete_field_table_secret_key').val();
+            var url = '/delete/'+table_secret_key+'/'+slug;
+            // alert(url);
+
+            $.ajax({
+                type:'DELETE',
+                url:url,
+                dataType:'json',
+                success:function(data){
+                    if(data.status == 200) {
+                        toastr.success(data.message);
+                        // $(this).closest("tr").remove();
+                        table = $('#buttons-datatables').DataTable();
+                        table.clear();
+                        var rows = showData(data.field);
+
+                        $('#zoomInDeleteModal').modal('hide');
+                        $('#typingTextDeleteForm')[0].reset();
+                    } else {
+                        toastr.error(data.message);
+                    }
+                }
+                ,error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
+                }
+            });
+
+        });
+
+        /**
          * Update hero section data
          */
         $(document).on("submit", "#heroSectionUpdateForm", function(e){
 
             e.preventDefault();
+
+            $('#heroSectionUpdateForm .ajax-submit .submit-btn-text').toggleClass('hide');
+            $('#heroSectionUpdateForm .ajax-submit .ajax-spinner').toggleClass('hide');
+            var classNameOrId = "#heroSectionUpdateForm";
 
             var form = $('#heroSectionUpdateForm')[0];
             let formData = new FormData(form);
@@ -295,6 +346,9 @@
                 contentType: false,
                 success: function(data) {
                     if(data.status == 200) {
+
+                        ajaxSpinnerLoadToggle(classNameOrId);
+                        ajaxLoadSubmitBtnToggle(classNameOrId);
 
                         $('.error-message').remove();
 
@@ -352,40 +406,6 @@
         });
 
         /**
-         * Delete selected data for typed text
-         */
-        $('#zoomInDeleteModal').on('click', '.confirm-delete-typing-text-data', function () {
-            var slug = $('#delete_field_typing_text_slug').val();
-            var table_secret_key = $('#delete_field_typing_text_secret_key').val();
-            var url = '/delete/'+table_secret_key+'/'+slug;
-            // alert(url);
-
-            $.ajax({
-                type:'DELETE',
-                url:url,
-                dataType:'json',
-                success:function(data){
-                    if(data.status == 200) {
-                        toastr.success(data.message);
-                        // $(this).closest("tr").remove();
-                        table = $('#buttons-datatables').DataTable();
-                        table.clear();
-                        var rows = showData(data.field);
-
-                        $('#zoomInDeleteModal').modal('hide');
-                        $('#typingTextDeleteForm')[0].reset();
-                    } else {
-                        toastr.error(data.message);
-                    }
-                }
-                ,error: function (xhr, ajaxOptions, thrownError) {
-                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
-                }
-            });
-
-        });
-
-        /**
          * Show fetched datatable data
          */
         function showData(data){
@@ -403,6 +423,27 @@
         }
 
         /**
+         * Toggle hide class in ajax-spinner & ajax-load-done classes
+         */
+        function ajaxSpinnerLoadToggle(classNameOrId) {
+            setTimeout(function() {
+                $(classNameOrId + " .ajax-submit .ajax-spinner").toggleClass("hide");
+                // For failed icon just replace ".ajax-load-done" with ".ajax-load-failed"
+                $(classNameOrId + " .ajax-load-done").toggleClass("hide");
+            }, 1000);
+        }
+
+        /**
+         * Toggle hide class in ajax-load-done & submit-btn-text classes
+         */
+        function ajaxLoadSubmitBtnToggle(classNameOrId) {
+            setTimeout(function() {
+                $(classNameOrId + " .ajax-load-done").toggleClass("hide");
+                $(classNameOrId + " .ajax-submit .submit-btn-text").toggleClass('hide');
+            }, 3000);
+        }
+
+        /**
          * Set action buttons for datatable
          */
         function createActions(data) {
@@ -413,13 +454,13 @@
                     '</button>' +
                     '<ul class="dropdown-menu dropdown-menu-end">' +
                         '<li>' +
-                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item edit-item-btn edit-typing-text-data" >' +
+                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item edit-item-btn ajax-edit-data-btn" >' +
                                 '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i>' +
                                 'Edit' +
                             '</a>' +
                         '</li>' +
                         '<li>' +
-                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item delete-typing-text-data" onclick="return confirm(\'Are you sure you want to delete this?\');">' +
+                            '<a href="#" data-slug="' + data.slug + '" class="dropdown-item ajax-delete-data-btn">' +
                                 '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>' +
                                 'Delete' +
                             '</a>' +

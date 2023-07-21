@@ -15,6 +15,8 @@ use App\Http\Controllers\Backend\Common\Ajax\DeleteDataController;
 use App\Http\Controllers\Backend\Common\Ajax\UpdateDataController;
 use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
 use App\Http\Controllers\Backend\Common\Ajax\ValidationDataController;
+use App\Http\Controllers\Backend\Common\LoadDataAndRedirectController;
+use App\Http\Controllers\Backend\Common\UpdateDataAndRedirectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +51,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/update', UpdateDataController::class)->name('ajaxUpdateData');
     Route::delete('/delete/{table}/{data}', DeleteDataController::class)->name('ajaxDeleteData');
     Route::post('/validate', ValidationDataController::class)->name('ajaxValidationData');
+
+    Route::get('/load/{path}/{table}/{data}', [LoadDataAndRedirectController::class, 'index'])->name('loadDataAndRedirect');
+    Route::post('/data/update', UpdateDataAndRedirectController::class)->name('updateDataAndRedirect');
 
     Route::get('/test', function () {
         return view('Backend.pages.test');

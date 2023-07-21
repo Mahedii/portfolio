@@ -2,6 +2,9 @@
 
     $(document).ready(function () {
 
+        ckEditor_Generator("role-description-ckeditor-classic");
+        ckEditor_Generator("edit-role-description-ckeditor-classic");
+
         /**
          * Set toastr options
          */
@@ -12,11 +15,6 @@
             positionClass: 'toast-top-right',
             timeOut: 3000,
         };
-
-        $(".ajax-submit").click(function() {
-                $('.ajax-submit .submit-btn-text').toggleClass('hide');
-                $('.ajax-submit .ajax-spinner').toggleClass('hide');
-        })
 
         /**
          * Set CSRF token for form request
@@ -31,7 +29,7 @@
          * Fetch selected inputs information for typed text
          * Set them in a modal for update
          */
-        $('#typedTextData').on('click', '.edit-typing-text-data', function () {
+        $('#workHistoryListData').on('click', '.ajax-edit-data-btn', function () {
             var slug = $(this).data('slug');
             var table_secret_key = $(this).closest('tr').data('table-secret');
             var id = $(this).closest('tr').data('id');
@@ -43,12 +41,15 @@
                 url:url,
                 dataType:'json',
                 success:function(data){
-                    $('#typing_text_secret_key').val(data.table_secret_key);
-                    $('#typed-text-row-id').val("row-"+id);
+                    $('#zoomInEditModal .table_secret_key').val(data.table_secret_key);
+                    $('#zoomInEditModal .edit-row-id').val("row-"+id);
                     var tableData = data.field;
                     tableData.forEach(function(row) {
-                        $('#slug').val(row.slug);
-                        $('#typingTextVal').val(row.text);
+                        $('#zoomInEditModal .slug').val(row.slug);
+                        $('#zoomInEditModal .company_name').val(row.company_name);
+                        $('#zoomInEditModal .role').val(row.role);
+                        $('#zoomInEditModal .duration').val(row.duration);
+                        $('.role_description').val(row.role_description);
                     });
                     $('#zoomInEditModal').modal('show');
                 }
@@ -60,15 +61,15 @@
         });
 
         /**
-         * Fetch selected inputs information for typed text
+         * Fetch selected inputs information
          * Set them in a modal for delete
          */
-        $('#typedTextData').on('click', '.delete-typing-text-data', function () {
+        $('#workHistoryListData').on('click', '.ajax-delete-data-btn', function () {
             var slug = $(this).data('slug');
             var table_secret_key = $(this).closest('tr').data('table-secret');
 
-            $("#delete_field_typing_text_slug").val(slug);
-            $("#delete_field_typing_text_secret_key").val(table_secret_key);
+            $("#zoomInDeleteModal .delete_field_row_slug").val(slug);
+            $("#zoomInDeleteModal .delete_field_table_key").val(table_secret_key);
 
             $('#zoomInDeleteModal').modal('show');
         });
@@ -185,12 +186,17 @@
         }
 
         /**
-         * Add typed text data
+         * Add work-history list data
          */
-        $(document).on("submit", "#typingTextAddForm", function(e){
+        $(document).on("submit", "#workHistoryListAddForm", function(e){
 
             e.preventDefault();
-            var dataString = $('#typingTextAddForm').serialize();
+
+            $('#workHistoryListAddForm .ajax-submit .submit-btn-text').toggleClass('hide');
+            $('#workHistoryListAddForm .ajax-submit .ajax-spinner').toggleClass('hide');
+            var classNameOrId = "#workHistoryListAddForm";
+
+            var dataString = $('#workHistoryListAddForm').serialize();
             // alert(dataString);
 
             $.ajax({
@@ -200,13 +206,16 @@
                 dataType: 'json',
                 success: function(data) {
                     if(data.status == 200) {
+                        ajaxSpinnerLoadToggle(classNameOrId);
+                        ajaxLoadSubmitBtnToggle(classNameOrId);
                         toastr.success(data.message);
+
                         table = $('#buttons-datatables').DataTable();
                         table.clear();
                         var rows = showData(data.field);
 
                         $('#zoomInAddModal').modal('hide');
-                        $('#typingTextAddForm')[0].reset();
+                        $('#workHistoryListAddForm')[0].reset();
                     } else {
                         toastr.error(data.message);
                     }
@@ -219,15 +228,19 @@
         });
 
         /**
-         * Update typed text data
+         * Update work-history list data
          */
-        $(document).on("submit", "#typingTextUpdateForm", function(e){
+        $(document).on("submit", "#workHistoryListUpdateForm", function(e){
 
             e.preventDefault();
 
-            var form = $('#typingTextUpdateForm')[0];
+            $('#workHistoryListUpdateForm .ajax-submit .submit-btn-text').toggleClass('hide');
+            $('#workHistoryListUpdateForm .ajax-submit .ajax-spinner').toggleClass('hide');
+            var classNameOrId = "#workHistoryListUpdateForm";
+
+            var form = $('#workHistoryListUpdateForm')[0];
             let formData = new FormData(form);
-            var rowId = $("#typed-text-row-id").val();
+            var rowId = $("#workHistoryListUpdateForm .edit-row-id").val();
 
             // alert(dataString);
 
@@ -240,6 +253,8 @@
                 contentType: false,
                 success: function(data) {
                     if(data.status == 200) {
+                        ajaxSpinnerLoadToggle(classNameOrId);
+                        ajaxLoadSubmitBtnToggle(classNameOrId);
                         toastr.success(data.message);
 
                         var updatedRowData = data.updatedRowData;
@@ -253,7 +268,7 @@
                         row.draw(false).node();
 
                         $('#zoomInEditModal').modal('hide');
-                        $('#typingTextUpdateForm')[0].reset();
+                        $('#workHistoryListUpdateForm')[0].reset();
                     } else {
                         toastr.error(data.message);
 
@@ -282,11 +297,15 @@
         });
 
         /**
-         * Update hero section data
+         * Update work-history data
          */
         $(document).on("submit", "#workHistoryUpdateForm", function(e){
 
             e.preventDefault();
+
+            $('#workHistoryUpdateForm .ajax-submit .submit-btn-text').toggleClass('hide');
+            $('#workHistoryUpdateForm .ajax-submit .ajax-spinner').toggleClass('hide');
+            var classNameOrId = "#workHistoryUpdateForm";
 
             var form = $('#workHistoryUpdateForm')[0];
             let formData = new FormData(form);
@@ -301,21 +320,13 @@
                 success: function(data) {
                     if(data.status == 200) {
 
-                        setTimeout(function() {
-                            $(".ajax-submit .ajax-spinner").toggleClass("hide");
-                            // For failed icon just replace ".ajax-load-done" with ".ajax-load-failed"
-                            $(".ajax-load-done").toggleClass("hide");
-                        }, 1000);
+                        ajaxSpinnerLoadToggle(classNameOrId);
+                        ajaxLoadSubmitBtnToggle(classNameOrId);
 
                         $('.error-message').remove();
 
                         $(".work_histories_title").val(data.updatedRowData[0].title);
                         $(".work_histories_description").val(data.updatedRowData[0].title_description);
-
-                        setTimeout(function() {
-                            $(".ajax-load-done").toggleClass("hide");
-                            $('.ajax-submit .submit-btn-text').toggleClass('hide');
-                        }, 5000);
 
                         toastr.success(data.message);
                     } else {
@@ -347,11 +358,11 @@
         });
 
         /**
-         * Delete selected data for typed text
+         * Delete selected work-history list data
          */
-        $('#zoomInDeleteModal').on('click', '.confirm-delete-work-history-lists-data', function () {
-            var slug = $('#delete_field_typing_text_slug').val();
-            var table_secret_key = $('#delete_field_typing_text_secret_key').val();
+        $('#zoomInDeleteModal').on('click', '.confirm-ajax-delete-data-btn', function () {
+            var slug = $('#delete_field_row_slug').val();
+            var table_secret_key = $('#delete_field_table_key').val();
             var url = '/delete/'+table_secret_key+'/'+slug;
             // alert(url);
 
@@ -389,12 +400,33 @@
             var id = 1;
 
             $.each(data, function( index, value ) {
-                var row = table.row.add([id++, value.text, createActions(value)]).draw(false).node();
+                var row = table.row.add([id++, value.company_name, value.role, value.duration, value.role_description.substr(0, 20), createActions(value)]).draw(false).node();
                 $(row).attr('data-table-secret', value.secret_key); // Set data-table attribute
                 $(row).attr('data-id', value.id);
                 $(row).attr('id', 'row-'+value.id);
             });
 
+        }
+
+        /**
+         * Toggle hide class in ajax-spinner & ajax-load-done classes
+         */
+         function ajaxSpinnerLoadToggle(classNameOrId) {
+            setTimeout(function() {
+                $(classNameOrId + " .ajax-submit .ajax-spinner").toggleClass("hide");
+                // For failed icon just replace ".ajax-load-done" with ".ajax-load-failed"
+                $(classNameOrId + " .ajax-load-done").toggleClass("hide");
+            }, 1000);
+        }
+
+        /**
+         * Toggle hide class in ajax-load-done & submit-btn-text classes
+         */
+        function ajaxLoadSubmitBtnToggle(classNameOrId) {
+            setTimeout(function() {
+                $(classNameOrId + " .ajax-load-done").toggleClass("hide");
+                $(classNameOrId + " .ajax-submit .submit-btn-text").toggleClass('hide');
+            }, 3000);
         }
 
         /**
@@ -408,13 +440,13 @@
                     '</button>' +
                     '<ul class="dropdown-menu dropdown-menu-end">' +
                         '<li>' +
-                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item edit-item-btn edit-typing-text-data" >' +
+                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item edit-item-btn ajax-edit-data-btn" >' +
                                 '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i>' +
                                 'Edit' +
                             '</a>' +
                         '</li>' +
                         '<li>' +
-                            '<a href="javascript:void(0);" data-slug="' + data.slug + '" class="dropdown-item delete-typing-text-data" onclick="return confirm(\'Are you sure you want to delete this?\');">' +
+                            '<a href="#" data-slug="' + data.slug + '" class="dropdown-item ajax-delete-data-btn">' +
                                 '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>' +
                                 'Delete' +
                             '</a>' +
