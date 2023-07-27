@@ -13,7 +13,7 @@
 @section('content')
 @component('Backend.components.breadcrumb')
 @slot('li_1') Home @endslot
-@slot('title')Work History @endslot
+@slot('title') Education History @endslot
 @endcomponent
 
 <div class="border-0">
@@ -43,7 +43,7 @@
     <div class="col-xxl-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Work History</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Education History</h4>
                 {{-- <div class="flex-shrink-0">
                     <div class="form-check form-switch form-switch-right form-switch-md">
                         <label for="gutters-showcode" class="form-label text-muted">Show Code</label>
@@ -52,13 +52,13 @@
             </div>
             <div class="card-body">
                 <div class="live-preview">
-                    <form action="javascript:void(0);" enctype="multipart/form-data" class="row g-3" id="workHistoryUpdateForm">
+                    <form action="javascript:void(0);" enctype="multipart/form-data" class="row g-3" id="educationHistoryUpdateForm">
                         @csrf
-                        @foreach ($workHistoryData as $data)
+                        @foreach ($educationHistoryData as $data)
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label for="fullnameInput" class="form-label">Title<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control ajax-validation-input work_histories_title @error('title') is-invalid @enderror" value="{{ $data->title }}" name="title">
+                                    <input type="text" class="form-control ajax-validation-input education_histories_title @error('title') is-invalid @enderror" value="{{ $data->title }}" name="title">
                                     <input type="hidden" name="table_secret_key" class="secret_key" value="{{ $data->encrypted_table_name }}">
                                     <input type="hidden" name="slug" value="{{ $data->slug }}">
                                     <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="update">
@@ -71,7 +71,7 @@
                             <div class="row mt-2">
                                 <div class="col-md-12">
                                     <label for="title_description" class="form-label">Description<span class="text-danger">*</span></label>
-                                    <textarea class="form-control ajax-validation-input work_histories_description" name="title_description" id="ckeditor-classic" rows="3">{{ Str::limit($data->title_description, 500) }}</textarea>
+                                    <textarea class="form-control ajax-validation-input education_histories_description" name="title_description" id="ckeditor-classic" rows="3">{{ Str::limit($data->title_description, 500) }}</textarea>
                                     @if ($errors->has('title_description'))
                                         <span class="text-danger">{{ $errors->first('title_description') }}</span>
                                     @endif
@@ -103,7 +103,7 @@
             <div class="row g-4">
                 <div class="col-sm">
                     <div class="d-flex justify-content-sm">
-                        <h5 class="card-title m-3">Work History Lists</h5>
+                        <h5 class="card-title m-3">Education History Lists</h5>
                     </div>
                 </div>
                 <div class="col-sm">
@@ -120,21 +120,19 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Company</th>
-                            <th>Role</th>
-                            <th>Duration</th>
-                            <th>Description</th>
+                            <th>Institution</th>
+                            <th>Degree</th>
+                            <th>Year</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="workHistoryListData">
-                        @foreach($workHistoryListData as $key => $data)
+                    <tbody id="educationHistoryListsData">
+                        @foreach($educationHistoryListData as $key => $data)
                             <tr data-table-secret="{{ $data->encrypted_table_name }}" data-id="{{ $data->id }}" id="row-{{ $data->id }}">
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $data->company_name }}</td>
-                                <td>{{ $data->role }}</td>
-                                <td>{{ $data->duration }}</td>
-                                <td>{!! html_entity_decode(Str::limit($data->role_description, 20), ENT_QUOTES, 'UTF-8') !!}</td>
+                                <td>{{ $data->institute_name }}</td>
+                                <td>{{ $data->degree }}</td>
+                                <td>{{ $data->year }}</td>
                                 <td>
                                     <div class="dropdown d-inline-block">
                                         <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
@@ -151,7 +149,7 @@
                                             </li> --}}
 
                                             <li>
-                                                <a href="{{ route('loadDataAndRedirect',['path' => 'home.work-history.edit.index', 'table' => $data->encrypted_table_name, 'data' => $data->slug]) }}" data-slug="{{$data->slug}}" class="dropdown-item edit-item-btn">
+                                                <a href="{{ route('loadDataAndRedirect',['path' => 'home.education-history.edit.index', 'table' => $data->encrypted_table_name, 'data' => $data->slug]) }}" data-slug="{{$data->slug}}" class="dropdown-item edit-item-btn">
                                                     <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                     Edit
                                                 </a>
@@ -177,42 +175,36 @@
 </div>
 <!--end row-->
 
-<!-- Add Modal For Work History List -->
+<!-- Add Modal For Education History List -->
 <div id="zoomInAddModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInAddModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="zoomInEditModalLabel">Add Typing Text</h5>
+                <h5 class="modal-title" id="zoomInEditModalLabel">Add Education History List</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="workHistoryListAddForm">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="educationHistoryListAddForm">
                     @csrf
-                    <input type="hidden" class="form-control secret_key" name="table_secret_key" value="{{ $workHistoryListData[0]->encrypted_table_name }}">
+                    <input type="hidden" class="form-control secret_key" name="table_secret_key" value="{{ $educationHistoryListData[0]->encrypted_table_name }}">
                     <div class="row g-3">
                         <div class="col-xxl-12">
                             <div>
-                                <label for="company_name" class="form-label">Company</label>
-                                <input type="company_name" class="form-control ajax-validation-input" name="company_name">
+                                <label for="institute_name" class="form-label">Institute</label>
+                                <input type="institute_name" class="form-control ajax-validation-input" name="institute_name">
                                 <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="create">
                             </div>
                         </div>
                         <div class="col-xxl-6">
                             <div>
-                                <label for="role" class="form-label">Role</label>
-                                <input type="role" class="form-control ajax-validation-input" name="role">
+                                <label for="degree" class="form-label">Degree</label>
+                                <input type="degree" class="form-control ajax-validation-input" name="degree">
                             </div>
                         </div>
                         <div class="col-xxl-6">
                             <div>
-                                <label for="duration" class="form-label">Duration</label>
-                                <input type="duration" class="form-control ajax-validation-input" name="duration">
-                            </div>
-                        </div>
-                        <div class="col-xxl-12">
-                            <div>
-                                <label for="role_description" class="form-label">Description</label>
-                                <textarea class="form-control ajax-validation-input role_description" name="role_description" id="role-description-ckeditor-classic" rows="3"></textarea>
+                                <label for="year" class="form-label">Year</label>
+                                <input type="year" class="form-control ajax-validation-input" name="year">
                             </div>
                         </div>
                         <div class="col-lg-12">
@@ -233,12 +225,12 @@
     </div>
 </div>
 
-<!-- Delete Modal For Work History List -->
+<!-- Delete Modal For Education History List -->
 <div id="zoomInDeleteModal" class="modal fade zoomIn" tabindex="-1" role="dialog" aria-labelledby="zoomInDeleteModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center p-5">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="workingHistoryListsDeleteForm">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="educationHistoryListsDeleteForm">
                     @csrf
                     <input type="hidden" class="form-control delete_field_row_slug" id="delete_field_row_slug">
                     <input type="hidden" class="form-control secret_key delete_field_table_key" id="delete_field_table_key">
@@ -263,7 +255,7 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-@include('Backend.pages.home.work-history.ajax.index')
+@include('Backend.pages.home.education-history.ajax.index')
 
 @endsection
 @section('script')

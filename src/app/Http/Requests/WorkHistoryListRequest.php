@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class WorkHistoryListRequest extends FormRequest
+class EducationHistoryListRequest extends FormRequest
 {
     public function rules()
     {

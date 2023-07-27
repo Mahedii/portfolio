@@ -8,6 +8,8 @@ use App\Models\HeroSection\TypedTexts;
 use App\Models\HeroSection\HeroSection;
 use App\Models\WorkHistory\WorkHistory;
 use App\Models\WorkHistory\WorkHistoryList;
+use App\Models\EducationHistory\EducationHistory;
+use App\Models\EducationHistory\EducationHistoryList;
 
 class CommonService
 {
@@ -46,6 +48,14 @@ class CommonService
             $componentArray = [
                 "workHistoryData" => $workHistoryData,
                 "workHistoryListData" => $workHistoryListData
+            ];
+        } elseif ($keyword == "education-history") {
+            $educationHistoryData = EducationHistory::all();
+            $educationHistoryListData = EducationHistoryList::orderBy('id', 'DESC')->get();
+
+            $componentArray = [
+                "educationHistoryData" => $educationHistoryData,
+                "educationHistoryListData" => $educationHistoryListData
             ];
         } else {
             $componentArray = [];

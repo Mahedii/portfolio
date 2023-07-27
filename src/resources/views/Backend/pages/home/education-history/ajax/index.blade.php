@@ -2,9 +2,6 @@
 
     $(document).ready(function () {
 
-        ckEditor_Generator("role-description-ckeditor-classic");
-        ckEditor_Generator("edit-role-description-ckeditor-classic");
-
         /**
          * Set toastr options
          */
@@ -26,45 +23,10 @@
         });
 
         /**
-         * Fetch selected inputs information for work-history list
-         * Set them in a modal for update
-         */
-        $('#workHistoryListData').on('click', '.ajax-edit-data-btn', function () {
-            var slug = $(this).data('slug');
-            var table_secret_key = $(this).closest('tr').data('table-secret');
-            var id = $(this).closest('tr').data('id');
-            var url = '/fetch/'+table_secret_key+'/'+slug;
-            // alert(url);
-
-            $.ajax({
-                type:'GET',
-                url:url,
-                dataType:'json',
-                success:function(data){
-                    $('#zoomInEditModal .table_secret_key').val(data.table_secret_key);
-                    $('#zoomInEditModal .edit-row-id').val("row-"+id);
-                    var tableData = data.field;
-                    tableData.forEach(function(row) {
-                        $('#zoomInEditModal .slug').val(row.slug);
-                        $('#zoomInEditModal .company_name').val(row.company_name);
-                        $('#zoomInEditModal .role').val(row.role);
-                        $('#zoomInEditModal .duration').val(row.duration);
-                        $('.role_description').val(row.role_description);
-                    });
-                    $('#zoomInEditModal').modal('show');
-                }
-                ,error: function (xhr, ajaxOptions, thrownError) {
-                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
-                }
-            });
-
-        });
-
-        /**
          * Fetch selected inputs information
          * Set them in a modal for delete
          */
-        $('#workHistoryListData').on('click', '.ajax-delete-data-btn', function () {
+        $('#educationHistoryListsData').on('click', '.ajax-delete-data-btn', function () {
             var slug = $(this).data('slug');
             var table_secret_key = $(this).closest('tr').data('table-secret');
 
@@ -186,17 +148,17 @@
         }
 
         /**
-         * Add work-history list data
+         * Add education-history list data
          */
-        $(document).on("submit", "#workHistoryListAddForm", function(e){
+        $(document).on("submit", "#educationHistoryListAddForm", function(e){
 
             e.preventDefault();
 
-            $('#workHistoryListAddForm .ajax-submit .submit-btn-text').toggleClass('hide');
-            $('#workHistoryListAddForm .ajax-submit .ajax-spinner').toggleClass('hide');
-            var classNameOrId = "#workHistoryListAddForm";
+            $('#educationHistoryListAddForm .ajax-submit .submit-btn-text').toggleClass('hide');
+            $('#educationHistoryListAddForm .ajax-submit .ajax-spinner').toggleClass('hide');
+            var classNameOrId = "#educationHistoryListAddForm";
 
-            var dataString = $('#workHistoryListAddForm').serialize();
+            var dataString = $('#educationHistoryListAddForm').serialize();
             // alert(dataString);
 
             $.ajax({
@@ -215,7 +177,7 @@
                         var rows = showData(data.field);
 
                         $('#zoomInAddModal').modal('hide');
-                        $('#workHistoryListAddForm')[0].reset();
+                        $('#educationHistoryListAddForm')[0].reset();
                     } else {
                         toastr.error(data.message);
                     }
@@ -228,86 +190,17 @@
         });
 
         /**
-         * Update work-history list data
+         * Update education-history data
          */
-        $(document).on("submit", "#workHistoryListUpdateForm", function(e){
+        $(document).on("submit", "#educationHistoryUpdateForm", function(e){
 
             e.preventDefault();
 
-            $('#workHistoryListUpdateForm .ajax-submit .submit-btn-text').toggleClass('hide');
-            $('#workHistoryListUpdateForm .ajax-submit .ajax-spinner').toggleClass('hide');
-            var classNameOrId = "#workHistoryListUpdateForm";
+            $('#educationHistoryUpdateForm .ajax-submit .submit-btn-text').toggleClass('hide');
+            $('#educationHistoryUpdateForm .ajax-submit .ajax-spinner').toggleClass('hide');
+            var classNameOrId = "#educationHistoryUpdateForm";
 
-            var form = $('#workHistoryListUpdateForm')[0];
-            let formData = new FormData(form);
-            var rowId = $("#workHistoryListUpdateForm .edit-row-id").val();
-
-            // alert(dataString);
-
-            $.ajax({
-                url: "{{ route('ajaxUpdateData') }}",
-                type: 'POST',
-                data: formData,
-                processData: false,
-                cache: false,
-                contentType: false,
-                success: function(data) {
-                    if(data.status == 200) {
-                        ajaxSpinnerLoadToggle(classNameOrId);
-                        ajaxLoadSubmitBtnToggle(classNameOrId);
-                        toastr.success(data.message);
-
-                        var updatedRowData = data.updatedRowData;
-                        var rowId = updatedRowData[0].id;
-
-                        var table = $('#buttons-datatables').DataTable();
-                        var row = table.row('#row-' + rowId);
-
-                        row.cell(row.index(), 1).data(updatedRowData[0].text); // Replace 'text' with the appropriate field name
-                        row.cell(row.index(), 2).data(createActions(updatedRowData[0]));
-                        row.draw(false).node();
-
-                        $('#zoomInEditModal').modal('hide');
-                        $('#workHistoryListUpdateForm')[0].reset();
-                    } else {
-                        toastr.error(data.message);
-
-                        // Display validation error messages if any
-                        if (data.errors) {
-                            var errors = data.errors;
-
-                            // Clear previous error messages
-                            $('.error-message').remove();
-
-                            // Display the new error messages
-                            for (var key in errors) {
-                                if (errors.hasOwnProperty(key)) {
-                                    var errorMessage = errors[key][0];
-                                    $('input[name="' + key + '"]').after('<span class="text-danger error-message">' + errorMessage + '</span>');
-                                }
-                            }
-                        }
-                    }
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    toastr.error("Status: "+xhr.status+ " Message: "+thrownError);
-                }
-            });
-
-        });
-
-        /**
-         * Update work-history data
-         */
-        $(document).on("submit", "#workHistoryUpdateForm", function(e){
-
-            e.preventDefault();
-
-            $('#workHistoryUpdateForm .ajax-submit .submit-btn-text').toggleClass('hide');
-            $('#workHistoryUpdateForm .ajax-submit .ajax-spinner').toggleClass('hide');
-            var classNameOrId = "#workHistoryUpdateForm";
-
-            var form = $('#workHistoryUpdateForm')[0];
+            var form = $('#educationHistoryUpdateForm')[0];
             let formData = new FormData(form);
 
             $.ajax({
@@ -325,8 +218,8 @@
 
                         $('.error-message').remove();
 
-                        $(".work_histories_title").val(data.updatedRowData[0].title);
-                        $(".work_histories_description").val(data.updatedRowData[0].title_description);
+                        $(".education_histories_title").val(data.updatedRowData[0].title);
+                        $(".education_histories_description").val(data.updatedRowData[0].title_description);
 
                         toastr.success(data.message);
                     } else {
@@ -358,7 +251,7 @@
         });
 
         /**
-         * Delete selected work-history list data
+         * Delete selected education-history list data
          */
         $('#zoomInDeleteModal').on('click', '.confirm-ajax-delete-data-btn', function () {
             var slug = $('#delete_field_row_slug').val();
@@ -379,7 +272,7 @@
                         var rows = showData(data.field);
 
                         $('#zoomInDeleteModal').modal('hide');
-                        $('#workingHistoryListsDeleteForm')[0].reset();
+                        $('#educationHistoryListsDeleteForm')[0].reset();
                     } else {
                         toastr.error(data.message);
                     }
@@ -400,7 +293,7 @@
             var id = 1;
 
             $.each(data, function( index, value ) {
-                var row = table.row.add([id++, value.company_name, value.role, value.duration, value.role_description.substr(0, 20), createActions(value)]).draw(false).node();
+                var row = table.row.add([id++, value.institute_name, value.degree, value.year, createActions(value)]).draw(false).node();
                 $(row).attr('data-table-secret', value.secret_key); // Set data-table attribute
                 $(row).attr('data-id', value.id);
                 $(row).attr('id', 'row-'+value.id);

@@ -1528,7 +1528,43 @@
                 </div>
             </div>
         </div>
-        <!-- ========== End skills ========== -->
+        <!-- ========== End resume ========== -->
+
+
+        <!-- ========== institutions ========== -->
+        <div class="container section-margin pt-section border-top d-grid grid-md-2" data-dsn-gap="30px 120px">
+            <div class="box-left p-relative  pinned-scroll" data-dsn-option='{"end":"250"}'>
+                <div class="section-title  pinned-element">
+                    <h2 class="title-h2 text-upper">My past institutions</h2>
+                    <p class="max-w350 mt-20">
+                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nullat.
+                    </p>
+                </div>
+            </div>
+            <div class="box-right">
+                <div class="dsn-resume">
+
+                    <div class="resume-item">
+                        <h4 class="sm-title-block resume-title mb-15">Google</h4>
+                        <h6 class="resume-position">SeniorProduct Designer (Jan 2021 - Present)</h6>
+                    </div>
+
+
+                    <div class="resume-item">
+                        <h4 class="sm-title-block resume-title mb-15">Webflow </h4>
+                        <h6 class="resume-position">Lead UI Designer (June 2019 - Dec 2020)</h6>
+                    </div>
+
+
+                    <div class="resume-item">
+                        <h4 class="sm-title-block resume-title mb-15">Figma</h4>
+                        <h6 class="resume-position">Lead UI Designer (March 2016 - May 2019)</h6>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ========== End institutions ========== -->
 
 
         <!-- ========== Stories ========== -->

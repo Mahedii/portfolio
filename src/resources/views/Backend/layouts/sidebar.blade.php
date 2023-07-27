@@ -35,7 +35,7 @@
                 <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.header')</span></li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'header/navbar']) }}">
+                    <a class="nav-link menu-link {{ (request()->is('admin/header/navbar*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'header/navbar']) }}">
                         <i class="ri-rocket-line"></i> <span>@lang('translation.navbar')</span>
                     </a>
                 </li>
@@ -43,7 +43,7 @@
                 <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.footer')</span></li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'footer']) }}">
+                    <a class="nav-link menu-link {{ (request()->is('admin/footer*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'footer']) }}">
                         <i class="ri-rocket-line"></i> <span>@lang('translation.footer')</span>
                     </a>
                 </li>
@@ -51,49 +51,49 @@
                 <li class="menu-title"><i class="ri-more-fill"></i> <span>@lang('translation.home-page')</span></li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/hero-section']) }}">
+                    <a class="nav-link menu-link {{ (request()->is('admin/home/hero-section*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/hero-section']) }}">
                         <i class="ri-layout-grid-line"></i> <span>@lang('translation.hero-section')</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/about-me']) }}">
+                    <a class="nav-link menu-link {{ (request()->is('admin/home/about-me*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/about-me']) }}">
                         <i class="ri-rocket-line"></i> <span>@lang('translation.about-me')</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/work-history']) }}">
+                    <a class="nav-link menu-link {{ (request()->is('admin/home/work-history*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/work-history']) }}">
                         <i class="ri-rocket-line"></i> <span>@lang('translation.work-history')</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/my-skills']) }}">
+                    <a class="nav-link menu-link {{ (request()->is('admin/home/my-skills*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/my-skills']) }}">
                         <i class="ri-honour-line"></i> <span>@lang('translation.my-skills')</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/my-education']) }}">
-                        <i class="ri-honour-line"></i> <span>@lang('translation.my-education')</span>
+                    <a class="nav-link menu-link {{ (request()->is('admin/home/education-history*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/education-history']) }}">
+                        <i class="ri-honour-line"></i> <span>@lang('translation.education-history')</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/my-works']) }}">
+                    <a class="nav-link menu-link {{ (request()->is('admin/home/my-works*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/my-works']) }}">
                         <i class="ri-honour-line"></i> <span>@lang('translation.my-works')</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'home/contact-me']) }}">
+                    <a class="nav-link menu-link {{ (request()->is('admin/home/contact-me*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/contact-me']) }}">
                         <i class="ri-honour-line"></i> <span>@lang('translation.contact-me')</span>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="{{ route('pagePath', ['path' => 'social-links']) }}">
+                    <a class="nav-link menu-link {{ (request()->is('admin/home/social-links*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'social-links']) }}">
                         <i class="ri-rocket-line"></i> <span>@lang('translation.social-links')</span>
                     </a>
                 </li>
@@ -103,7 +103,7 @@
                     <a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
                         <i class="ri-dashboard-2-line"></i> <span>@lang('translation.dashboards')</span>
                     </a>
-                    <div class="collapse menu-dropdown" id="sidebarDashboards">
+                    <div class="collapse menu-dropdown {{ (request()->is('admin/home/social-links')) ||  (request()->is('admin/home/contact-me*'))  ? 'show' : '' }}" id="sidebarDashboards">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="dashboard-analytics" class="nav-link">@lang('translation.analytics')</a>
