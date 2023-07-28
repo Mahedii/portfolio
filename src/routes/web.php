@@ -9,6 +9,8 @@ use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\Backend\Common\CommonController;
+use App\Http\Controllers\Common\Command\ArtisanController;
+use App\Http\Controllers\Common\Command\PackageController;
 use App\Http\Controllers\Backend\Common\Ajax\AddDataController;
 use App\Http\Controllers\Backend\Common\Ajax\FetchDataController;
 use App\Http\Controllers\Backend\Common\Ajax\DeleteDataController;
@@ -54,6 +56,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/load/{path}/{table}/{data}', [LoadDataAndRedirectController::class, 'index'])->name('loadDataAndRedirect');
     Route::post('/data/update', UpdateDataAndRedirectController::class)->name('updateDataAndRedirect');
+
+    Route::get('/artisan/command/{value}', ArtisanController::class)->name('artisanController');
+    Route::post('/composer-package/require', PackageController::class)->name('composerPackageController');
 
     Route::get('/test', function () {
         return view('Backend.pages.test');

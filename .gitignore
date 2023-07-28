@@ -22,6 +22,7 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 /theme_files
+/src/public/vendor/
 /src/vendor
 /src/storage/framework/views/*.php
 # /src/public/assets/images

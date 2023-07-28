@@ -254,43 +254,40 @@
 
                         <div class="p-2">
                             <div class="row g-0">
-                                <div class="col">
-                                    <a class="dropdown-icon-item" href="#!">
-                                        <img src="{{ URL::asset('assets/images/brands/github.png') }}" alt="Github">
-                                        <span>GitHub</span>
+                                <div class="col-4">
+                                    <a class="dropdown-icon-item web-app artisan-command" data-value="clear-cache" href="javascript:void(0);">
+                                        @svg('healthicons-f-cleaning')
+                                        <span>Clear Cache</span>
                                     </a>
                                 </div>
-                                <div class="col">
-                                    <a class="dropdown-icon-item" href="#!">
-                                        <img src="{{ URL::asset('assets/images/brands/bitbucket.png') }}" alt="bitbucket">
-                                        <span>Bitbucket</span>
+                                <div class="col-4">
+                                    <a class="dropdown-icon-item web-app artisan-command" data-value="clear-configuration" href="#!">
+                                        @svg('iconpark-config-o')
+                                        <span>Configuration</span>
                                     </a>
                                 </div>
-                                <div class="col">
-                                    <a class="dropdown-icon-item" href="#!">
-                                        <img src="{{ URL::asset('assets/images/brands/dribbble.png') }}" alt="dribbble">
-                                        <span>Dribbble</span>
+                                <div class="col-4">
+                                    <a class="dropdown-icon-item web-app artisan-command" data-value="optimize" href="#!">
+                                        @svg('iconpark-optimize')
+                                        <span>Optimize</span>
                                     </a>
                                 </div>
-                            </div>
-
-                            <div class="row g-0">
-                                <div class="col">
-                                    <a class="dropdown-icon-item" href="#!">
-                                        <img src="{{ URL::asset('assets/images/brands/dropbox.png') }}" alt="dropbox">
-                                        <span>Dropbox</span>
+                                <div class="col-4">
+                                    <a href="javascript:void(0);" class="dropdown-icon-item web-app composer-command" data-bs-toggle="modal" data-bs-target="#zoomInComposerPackageAddModal" data-value="install-package">
+                                        @svg('grommet-install')
+                                        <span>Install Package</span>
                                     </a>
                                 </div>
-                                <div class="col">
-                                    <a class="dropdown-icon-item" href="#!">
-                                        <img src="{{ URL::asset('assets/images/brands/mail_chimp.png') }}" alt="mail_chimp">
-                                        <span>Mail Chimp</span>
+                                <div class="col-4">
+                                    <a class="dropdown-icon-item web-app artisan-command" data-value="cache-icons" href="#!">
+                                        @svg('eos-cached')
+                                        <span>Cache Icons</span>
                                     </a>
                                 </div>
-                                <div class="col">
-                                    <a class="dropdown-icon-item" href="#!">
-                                        <img src="{{ URL::asset('assets/images/brands/slack.png') }}" alt="slack">
-                                        <span>Slack</span>
+                                <div class="col-4">
+                                    <a class="dropdown-icon-item web-app artisan-command" data-value="clear-cache-icons" href="#!">
+                                        @svg('carbon-clean')
+                                        <span>Clear Cache Icons</span>
                                     </a>
                                 </div>
                             </div>
@@ -768,3 +765,39 @@
         </div>
     </div>
 </header>
+
+<!-- Add Modal For Composer Package -->
+<div id="zoomInComposerPackageAddModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInComposerPackageAddModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="zoomInEditModalLabel">Install Composer Package</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="composerPackageAddForm">
+                    @csrf
+                    <div class="row g-3">
+                        <div class="col-xxl-12">
+                            <div>
+                                <label for="typingText" class="form-label">Package Name</label>
+                                <input type="text" class="form-control" name="package_name" required placeholder="Enter package name, ex: blade-ui-kit/blade-icons">
+                            </div>
+                        </div><!--end col-->
+                        <div class="col-lg-12">
+                            <div class="hstack gap-2 justify-content-end">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary ajax-submit">
+                                    <div class="submit-btn-text">Add</div>
+                                    <img class="ajax-spinner hide" src="{{ URL::asset('assets/images/spinner/spinner-ball-1.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-done hide" src="{{ URL::asset('assets/images/spinner/check-mark.svg') }}" alt="" height="25px" width="50px">
+                                    <img class="ajax-load-failed hide" src="{{ URL::asset('assets/images/spinner/x-mark.svg') }}" alt="" height="25px" width="50px">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

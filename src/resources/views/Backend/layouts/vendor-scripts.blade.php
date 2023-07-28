@@ -1,3 +1,5 @@
+@include('Backend.common.command.ajax.index')
+
 <script src="{{ URL::asset('assets/libs/bootstrap/bootstrap.min.js') }}"></script>
 <script src="{{ URL::asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
 <script src="{{ URL::asset('assets/libs/node-waves/node-waves.min.js') }}"></script>

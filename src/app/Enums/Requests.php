@@ -10,4 +10,6 @@ enum Requests: string
     public const WORK_HISTORY_LISTS = "App\Http\Requests\WorkHistoryListRequest";
     public const EDUCATION_HISTORIES = "App\Http\Requests\EducationHistoryRequest";
     public const EDUCATION_HISTORY_LISTS = "App\Http\Requests\EducationHistoryListRequest";
+    public const SKILLS = "App\Http\Requests\SkillRequest";
+    public const SKILLS_LISTS = "App\Http\Requests\SkillsListRequest";
 }

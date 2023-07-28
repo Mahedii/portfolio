@@ -11,4 +11,6 @@ enum Tables: string
     public const WORK_HISTORY_LISTS = "work_history_lists";
     public const EDUCATION_HISTORIES = "education_histories";
     public const EDUCATION_HISTORY_LISTS = "education_history_lists";
+    public const SKILLS = "skills";
+    public const SKILLS_LISTS = "skills_lists";
 }

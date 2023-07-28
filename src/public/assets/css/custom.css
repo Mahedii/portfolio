@@ -143,3 +143,9 @@
     background-color: rgb(255, 255, 255, 0.1);
 }
 
+/* Custom svg size for web-app */
+.web-app svg {
+    width: 28px;
+    height: 28px;
+}
+/* Custom svg size for web-app ends */

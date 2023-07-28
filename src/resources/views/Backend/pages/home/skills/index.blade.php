@@ -13,7 +13,7 @@
 @section('content')
 @component('Backend.components.breadcrumb')
 @slot('li_1') Home @endslot
-@slot('title')Hero Section @endslot
+@slot('title')Skills @endslot
 @endcomponent
 
 <div class="border-0">
@@ -43,7 +43,7 @@
     <div class="col-xxl-12">
         <div class="card">
             <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1">Hero Section</h4>
+                <h4 class="card-title mb-0 flex-grow-1">Skills Section</h4>
                 {{-- <div class="flex-shrink-0">
                     <div class="form-check form-switch form-switch-right form-switch-md">
                         <label for="gutters-showcode" class="form-label text-muted">Show Code</label>
@@ -52,53 +52,29 @@
             </div>
             <div class="card-body">
                 <div class="live-preview">
-                    <form action="javascript:void(0);" enctype="multipart/form-data" class="row g-3" id="heroSectionUpdateForm">
+                    <form action="javascript:void(0);" enctype="multipart/form-data" class="row g-3" id="skillsUpdateForm">
                         @csrf
-                        @foreach ($heroSectionData as $data)
+                        @foreach ($skillsData as $data)
                             <div class="row mt-2">
                                 <div class="col-md-6">
-                                    <label for="fullnameInput" class="form-label">Name<span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control ajax-validation-input hero_sections_name @error('name') is-invalid @enderror" value="{{ $data->name }}" name="name">
+                                    <label for="title" class="form-label">Title<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control ajax-validation-input skills_title @error('title') is-invalid @enderror" value="{{ $data->title }}" name="title">
                                     <input type="hidden" name="table_secret_key" class="secret_key" value="{{ $data->encrypted_table_name }}">
                                     <input type="hidden" name="slug" value="{{ $data->slug }}">
                                     <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="update">
-                                    @if ($errors->has('name'))
-                                        <span class="text-danger">{{ $errors->first('name') }}</span>
+                                    @if ($errors->has('title'))
+                                        <span class="text-danger">{{ $errors->first('title') }}</span>
                                     @endif
                                 </div>
                             </div>
 
                             <div class="row mt-2">
                                 <div class="col-md-12">
-                                    <label for="quote" class="form-label">Quote<span class="text-danger">*</span></label>
-                                    <textarea class="form-control ajax-validation-input hero_sections_quote" name="quote" id="ckeditor-classic" rows="3">{{ Str::limit($data->quote, 20) }}</textarea>
-                                    @if ($errors->has('quote'))
-                                        <span class="text-danger">{{ $errors->first('quote') }}</span>
+                                    <label for="title_description" class="form-label">Description<span class="text-danger">*</span></label>
+                                    <textarea class="form-control ajax-validation-input skills_title_description" name="title_description" rows="3">{{ Str::limit($data->title_description, 20) }}</textarea>
+                                    @if ($errors->has('title_description'))
+                                        <span class="text-danger">{{ $errors->first('title_description') }}</span>
                                     @endif
-                                </div>
-                            </div>
-
-                            <div class="row mt-2">
-                                <div class="col-md-12">
-                                    <label for="quote" class="form-label">Image<span class="text-danger">*</span></label>
-                                    <p class="text-muted">FilePond is a JavaScript library that
-                                        optimizes multiple images for faster uploads and offers a great, accessible, silky
-                                        smooth user experience.</p>
-                                    <div class="file-drop-area">
-                                        <label for="file-input">Click to Upload Files</label>
-                                        <input type="file" class="ajax-validation-input" id="file-input" name="file_path">
-                                        <div class="file-previews"></div>
-                                        <button class="prev-button">&lt;</button>
-                                        <button class="next-button">&gt;</button>
-                                    </div>
-                                    <div class="file-previews">
-                                        <div class="file-preview">
-                                            <div class="image-container">
-                                                <img class="preview-image" src="{{ asset($data->file_path) }}" alt=""/>
-                                                <span class="delete-image-icon"><i class="ri-delete-bin-fill align-bottom"></i></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
@@ -127,7 +103,7 @@
             <div class="row g-4">
                 <div class="col-sm">
                     <div class="d-flex justify-content-sm">
-                        <h5 class="card-title m-3">Typed Texts</h5>
+                        <h5 class="card-title m-3">Skill Lists</h5>
                     </div>
                 </div>
                 <div class="col-sm">
@@ -144,15 +120,17 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Text</th>
+                            <th>Skill Name</th>
+                            <th>Icon Name</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="typedTextData">
-                        @foreach($typedTextsData as $key => $data)
+                    <tbody id="skillsListsData">
+                        @foreach($skillsListsData as $key => $data)
                             <tr data-table-secret="{{ $data->encrypted_table_name }}" data-id="{{ $data->id }}" id="row-{{ $data->id }}">
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $data->text }}</td>
+                                <td>{{ $data->skill_name }}</td>
+                                <td>{{ $data->icon_name }}</td>
                                 <td>
                                     <div class="dropdown d-inline-block">
                                         <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
@@ -195,26 +173,33 @@
 </div>
 <!--end row-->
 
-<!-- Add Modal For Typed Texts -->
+<!-- Add Modal For Skills List -->
 <div id="zoomInAddModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInAddModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="zoomInEditModalLabel">Add Typing Text</h5>
+                <h5 class="modal-title" id="zoomInAddModalLabel">Add Skills</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextAddForm">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="skillsListsAddForm">
                     @csrf
-                    <input type="hidden" class="form-control secret_key" name="table_secret_key" value="{{ $typedTextsData[0]->encrypted_table_name }}">
+                    <input type="hidden" class="form-control secret_key" name="table_secret_key" value="{{ $skillsListsData[0]->encrypted_table_name }}">
                     <div class="row g-3">
                         <div class="col-xxl-12">
                             <div>
-                                <label for="typingText" class="form-label">Typing Text</label>
-                                <input type="text" class="form-control ajax-validation-input" name="text" placeholder="Enter typing text">
+                                <label for="typingText" class="form-label">Skill Name</label>
+                                <input type="text" class="form-control ajax-validation-input @error('skill_name') is-invalid @enderror" name="skill_name">
                                 <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="create">
                             </div>
-                        </div><!--end col-->
+                        </div>
+                        <div class="col-xxl-12">
+                            <div>
+                                <label for="typingText" class="form-label">Icon Name</label>
+                                <input type="text" class="form-control ajax-validation-input @error('icon_name') is-invalid @enderror" name="icon_name">
+                                <div class="form-text">Get icon name from <a href="https://blade-ui-kit.com/blade-icons" target="_blank">https://blade-ui-kit.com/blade-icons</a>. </div>
+                            </div>
+                        </div>
                         <div class="col-lg-12">
                             <div class="hstack gap-2 justify-content-end">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -233,28 +218,34 @@
     </div>
 </div>
 
-<!-- Edit Modal For Typed Texts -->
+<!-- Edit Modal For skills -->
 <div id="zoomInEditModal" class="modal fade zoomIn" tabindex="-1" aria-labelledby="zoomInEditModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="zoomInEditModalLabel">Update Typing Text</h5>
+                <h5 class="modal-title" id="zoomInEditModalLabel">Update Skill</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextUpdateForm">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="skillsListsUpdateForm">
                     @csrf
                     <input type="hidden" class="form-control" id="slug" name="slug">
-                    <input type="hidden" class="form-control" id="typed-text-row-id">
-                    <input type="hidden" class="form-control secret_key" id="typing_text_secret_key" name="table_secret_key" value="">
+                    <input type="hidden" class="form-control" id="skills-row-id">
+                    <input type="hidden" class="form-control secret_key" id="skills_secret_key" name="table_secret_key" value="">
                     <div class="row g-3">
                         <div class="col-xxl-12">
                             <div>
-                                <label for="typingText" class="form-label">Typing Text</label>
-                                <input type="text" class="form-control ajax-validation-input" id="typingTextVal" name="text" placeholder="Enter typing text">
+                                <label for="skill_name" class="form-label">Skill Name</label>
+                                <input type="text" class="form-control ajax-validation-input" id="skillNameVal" name="skill_name">
                                 <input type="hidden" class="ajax-validation-input method_type" name="method_type" value="update">
                             </div>
-                        </div><!--end col-->
+                        </div>
+                        <div class="col-xxl-12">
+                            <div>
+                                <label for="icon_name" class="form-label">Icon Name</label>
+                                <input type="text" class="form-control ajax-validation-input" id="iconNameVal" name="icon_name">
+                            </div>
+                        </div>
                         <div class="col-lg-12">
                             <div class="hstack gap-2 justify-content-end">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -278,12 +269,12 @@
     </div>
 </div>
 
-<!-- Delete Modal For Typed Texts -->
+<!-- Delete Modal For skills -->
 <div id="zoomInDeleteModal" class="modal fade zoomIn" tabindex="-1" role="dialog" aria-labelledby="zoomInDeleteModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center p-5">
-                <form action="javascript:void(0);" enctype="multipart/form-data" id="typingTextDeleteForm">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="skillsListsDeleteForm">
                     @csrf
                     <input type="hidden" class="form-control delete_field_row_slug" id="delete_field_row_slug">
                     <input type="hidden" class="form-control secret_key delete_field_table_secret_key"  id="delete_field_table_secret_key">
@@ -308,12 +299,10 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-@include('Backend.pages.home.hero-section.ajax.index')
+@include('Backend.pages.home.skills.ajax.index')
 
 @endsection
 @section('script')
-
-<script src="{{ URL::asset('assets/js/custom.file.input.js') }}"></script>
 
 <script src="{{ URL::asset('assets/libs/prismjs/prismjs.min.js') }}"></script>
 

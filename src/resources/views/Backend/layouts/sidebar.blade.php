@@ -69,8 +69,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link {{ (request()->is('admin/home/my-skills*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/my-skills']) }}">
-                        <i class="ri-honour-line"></i> <span>@lang('translation.my-skills')</span>
+                    <a class="nav-link menu-link {{ (request()->is('admin/home/skills*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/skills']) }}">
+                        <i class="ri-honour-line"></i> <span>@lang('translation.skills')</span>
                     </a>
                 </li>
 

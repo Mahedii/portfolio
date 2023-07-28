@@ -3,6 +3,8 @@
 namespace App\Services\Backend\Common;
 
 use App\Models\User;
+use App\Models\Skills\Skills;
+use App\Models\Skills\SkillsList;
 use Illuminate\Support\Facades\Auth;
 use App\Models\HeroSection\TypedTexts;
 use App\Models\HeroSection\HeroSection;
@@ -56,6 +58,14 @@ class CommonService
             $componentArray = [
                 "educationHistoryData" => $educationHistoryData,
                 "educationHistoryListData" => $educationHistoryListData
+            ];
+        } elseif ($keyword == "skills") {
+            $skillsData = Skills::all();
+            $skillsListsData = SkillsList::orderBy('id', 'DESC')->get();
+
+            $componentArray = [
+                "skillsData" => $skillsData,
+                "skillsListsData" => $skillsListsData
             ];
         } else {
             $componentArray = [];

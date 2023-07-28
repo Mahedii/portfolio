@@ -967,6 +967,30 @@
                             <img src="{!! asset('frontend/assets/img/services/4.png') !!}" alt="">
                         </div>
                     </li>
+
+                    <li class="d-grid align-items-center ">
+                        <h3 class="heading">UI/UX <br> Solution</h3>
+
+                        <p>Add value to your business
+                            with targeted, optimised SEO copywriting that works to get you noticed.</p>
+
+
+                        <div class="icon">
+                            <img src="{!! asset('frontend/assets/img/services/2.png') !!}" alt="">
+                        </div>
+                    </li>
+
+                    <li class="d-grid align-items-center ">
+                        <h3 class="heading">Motion Video <br> & TVC</h3>
+
+                        <p>Add value to your business
+                            with targeted, optimised SEO copywriting that works to get you noticed.</p>
+
+
+                        <div class="icon">
+                            <img src="{!! asset('frontend/assets/img/services/4.png') !!}" alt="">
+                        </div>
+                    </li>
                 </ul>
             </div>
         </section>
@@ -1847,7 +1871,17 @@
                             <div class="form-group dsn-up">
                                 <div class="entry-box">
 
-                                    <textarea id="form_message" class="form-control" name="message"
+                                    <input id="form_subject" type="text" name="subject" placeholder="Type your subject"
+                                            required="required"
+                                            data-error="subject is required."/>
+                                </div>
+                                <div class="help-block with-errors"></div>
+                            </div>
+
+                            <div class="form-group dsn-up">
+                                <div class="entry-box">
+
+                                    <textarea id="form_message" class="form-control" name="message" row="5"
                                                 placeholder="Tell us about you and the world" required="required"
                                                 data-error="Please,leave us a message."></textarea>
                                 </div>
