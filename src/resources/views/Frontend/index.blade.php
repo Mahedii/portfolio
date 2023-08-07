@@ -758,16 +758,16 @@
 
 
     <!-- ========== Play Video ========== -->
-    <div class="section-video  section-margin background-section p-relative section-padding hv-100 dsn-animate-video v-dark-head" data-dsn-option='{"speed":5}' >
+    {{-- <div class="section-video  section-margin background-section p-relative section-padding hv-100 dsn-animate-video v-dark-head" data-dsn-option='{"speed":5}' >
         <div class="container d-flex align-items-center h-100">
             <div class="content d-grid grid-3 justify-content-between align-items-center w-100">
                 <h6 class="title animate-left text-left">PLAY <span style="font-size: 50px">GAME</span></h6>
                 <div class="dsn-normal-btn dsn-icon-heading-color d-flex justify-content-center">
-                    {{-- <a class="vid background-section move-circle has-icon-left" href="https://vimeo.com/175353205" target="_blank" rel="nofollow" data-dsn="parallax">
+                    <a class="vid background-section move-circle has-icon-left" href="https://vimeo.com/175353205" target="_blank" rel="nofollow" data-dsn="parallax">
                         <span class="dsn-icon dsn-bg-before btn-icon-left heading-color z-index-1"><i class="fas fa-play"></i></span>
                         <span class="title-btn p-relative z-index-1">PLAY</span>
-                    </a> --}}
-                    {{-- <a href="#" data-dsn-split="chars" class="effect-ajax" data-dsn-ajax="slider">HEADPHONES</a> --}}
+                    </a>
+                    <a href="#" data-dsn-split="chars" class="effect-ajax" data-dsn-ajax="slider">HEADPHONES</a>
                 </div>
                 <h6 class="title animate-right text-right">REEL <span style="font-size: 50px">GAME</span></h6>
             </div>
@@ -778,13 +778,13 @@
             </div>
 
         </div>
-    </div>
+    </div> --}}
     <!-- ========== End Play Video ========== -->
 
 
     <div id="page_wrapper" class="wrapper">
         <!-- ========== About Section ========== -->
-        <div class="about-personal container section-margin">
+        {{-- <div class="about-personal container section-margin">
             <div class="box-content pt-section">
                 <div class="box-content-inner background-section">
                     <div class="section-title d-flex ">
@@ -860,26 +860,33 @@
                 </div>
             </div>
 
-        </div>
+        </div> --}}
         <!-- ========== End About Section ========== -->
 
-        <div class=" box-gallery-vertical section-margin section-padding" data-dsn="color">
+        <div class="box-gallery-vertical section-margin section-padding" data-dsn="color">
             <div class="mask-bg"></div>
             <div class="container">
                 <div class="row align-items-center h-100">
                     <div class="col-lg-6 ">
                         <div class="box-im" data-dsn-grid="move-up">
-                            <img class="has-top-bottom" src="{!! asset('frontend/assets/img/project/project9/7.jpg') !!}" alt=""
+                            <img class="has-top-bottom" src="{!! asset('frontend/assets/img/p1.jpg') !!}" alt=""
                                 data-dsn-move="20%">
                         </div>
                     </div>
 
                     <div class="col-lg-6">
 
-
                         <div class="box-info">
 
-                            <div class="vertical-title" data-dsn-animate="up">
+                            <div class="section-title d-flex ">
+                                <div class="sub-section-title ">
+                                    <p class="description d-inline-block p-relative mb-10">
+                                        ABOUT US
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="vertical-title px-2 background-theme" data-dsn-animate="up">
                                 <h2>Time Tag Watch.</h2>
                             </div>
 

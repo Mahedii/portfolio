@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string('editor')->nullable();
             $table->timestamps();
         });
-        TypedTexts::create(['text' => 'Software Engineer', 'slug' => 'software-engineer', 'created_at' => now(),]);
-        TypedTexts::create(['text' => 'Freelancer', 'slug' => 'freelancer', 'created_at' => now(),]);
-        TypedTexts::create(['text' => 'Learner', 'slug' => 'learner', 'created_at' => now(),]);
+        TypedTexts::create(['text' => 'Software Engineer', 'slug' => 'software-engineer', 'created_at' => now()]);
+        TypedTexts::create(['text' => 'Freelancer', 'slug' => 'freelancer', 'created_at' => now()]);
+        TypedTexts::create(['text' => 'Learner', 'slug' => 'learner', 'created_at' => now()]);
     }
 
     /**

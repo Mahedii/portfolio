@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('editor')->nullable();
             $table->timestamps();
         });
-        EducationHistory::create(['title' => 'Education Experience', 'title_description' => 'Architecture is the learned game', 'slug' => 'education_histories_data', 'created_at' => now(),]);
+        EducationHistory::create(['title' => 'Education Experience', 'title_description' => 'Architecture is the learned game', 'slug' => 'education_histories_data', 'created_at' => now()]);
     }
 
     /**

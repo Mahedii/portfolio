@@ -13,4 +13,9 @@ enum Models: string
     public const EDUCATION_HISTORY_LISTS = "App\Models\EducationHistory\EducationHistoryList";
     public const SKILLS = "App\Models\Skills\Skills";
     public const SKILLS_LISTS = "App\Models\Skills\SkillsList";
+    public const ABOUT_MYSELVES = "App\Models\AboutMe\AboutMyself";
+    public const SOCIAL_MEDIA = "App\Models\SocialMedia\SocialMedia";
+    public const CONTACT_SECTIONS = "App\Models\ContactMe\ContactSection";
+    public const CONTACT_ME_INFORMATION = "App\Models\ContactMe\ContactMeInformation";
+    public const MESSAGES = "App\Models\ContactMe\Message";
 }

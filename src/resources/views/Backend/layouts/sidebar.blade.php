@@ -70,7 +70,7 @@
 
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ (request()->is('admin/home/skills*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/skills']) }}">
-                        <i class="ri-honour-line"></i> <span>@lang('translation.skills')</span>
+                        <i class="ri-honour-line"></i> <span>@lang('translation.my-skills')</span>
                     </a>
                 </li>
 
@@ -93,17 +93,40 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link {{ (request()->is('admin/home/social-links*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'social-links']) }}">
-                        <i class="ri-rocket-line"></i> <span>@lang('translation.social-links')</span>
+                    <a class="nav-link menu-link" href="#sidebarContactUs" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarContactUs">
+                        <i class="ri-file-list-3-line"></i> <span>Contact</span>
+                    </a>
+                    <div class="collapse menu-dropdown {{ (request()->is('admin/contact/contact-section*')) ||  (request()->is('admin/contact/contact-me-informations*')) ||  (request()->is('admin/contact/messages*'))  ? 'show' : '' }}" id="sidebarContactUs">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('pagePath', ['path' => 'contact/contact-section']) }}" class="nav-link {{ (request()->is('admin/contact/contact-section*')) ? 'active' : '' }}">Contact Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('pagePath', ['path' => 'contact/contact-me-informations']) }}" class="nav-link {{ (request()->is('admin/contact/contact-me-informations*')) ? 'active' : '' }}">Contact Us Informations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('pagePath', ['path' => 'contact/messages']) }}" class="nav-link {{ (request()->is('admin/contact/messages*')) ? 'active' : '' }}">Messages</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ (request()->is('admin/social-media*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'social-media']) }}">
+                        <i class="ri-rocket-line"></i> <span>@lang('translation.social-media')</span>
                     </a>
                 </li>
+
+
+
 
                 <li class="menu-title"><span>@lang('translation.menu')</span></li>
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
                         <i class="ri-dashboard-2-line"></i> <span>@lang('translation.dashboards')</span>
                     </a>
-                    <div class="collapse menu-dropdown {{ (request()->is('admin/home/social-links')) ||  (request()->is('admin/home/contact-me*'))  ? 'show' : '' }}" id="sidebarDashboards">
+                    <div class="collapse menu-dropdown" id="sidebarDashboards">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="dashboard-analytics" class="nav-link">@lang('translation.analytics')</a>

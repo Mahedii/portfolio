@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('editor')->nullable();
             $table->timestamps();
         });
-        WorkHistory::create(['title' => 'Work Experience', 'title_description' => 'Architecture is the learned game', 'slug' => 'work_histories_data', 'created_at' => now(),]);
+        WorkHistory::create(['title' => 'Work Experience', 'title_description' => 'Architecture is the learned game', 'slug' => 'work_histories_data', 'created_at' => now()]);
     }
 
     /**

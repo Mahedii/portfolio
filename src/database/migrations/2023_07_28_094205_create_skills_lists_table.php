@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('editor')->nullable();
             $table->timestamps();
         });
-        SkillsList::create(['skill_name' => 'PHP', 'slug' => 'PHP', 'created_at' => now(),]);
+        SkillsList::create(['skill_name' => 'PHP', 'slug' => 'PHP', 'created_at' => now()]);
     }
 
     /**

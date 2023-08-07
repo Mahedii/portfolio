@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('editor')->nullable();
             $table->timestamps();
         });
-        WorkHistoryList::create(['company_name' => 'ADL', 'role' => 'JSE', 'duration' => '7 month', 'role_description' => 'JSA', 'slug' => 'ADL', 'created_at' => now(),]);
+        WorkHistoryList::create(['company_name' => 'ADL', 'role' => 'JSE', 'duration' => '7 month', 'role_description' => 'JSA', 'slug' => 'ADL', 'created_at' => now()]);
     }
 
     /**

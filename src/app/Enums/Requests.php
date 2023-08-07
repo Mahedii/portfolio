@@ -12,4 +12,9 @@ enum Requests: string
     public const EDUCATION_HISTORY_LISTS = "App\Http\Requests\EducationHistoryListRequest";
     public const SKILLS = "App\Http\Requests\SkillRequest";
     public const SKILLS_LISTS = "App\Http\Requests\SkillsListRequest";
+    public const ABOUT_MYSELVES = "App\Http\Requests\AboutMyselfRequest";
+    public const SOCIAL_MEDIA = "App\Http\Requests\SocialMediaRequest";
+    public const CONTACT_SECTIONS = "App\Http\Requests\Contact\ContactSectionRequest";
+    public const CONTACT_ME_INFORMATION = "App\Http\Requests\Contact\ContactMeInformationRequest";
+    public const MESSAGES = "App\Http\Requests\Contact\MessageRequest";
 }

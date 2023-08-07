@@ -1,9 +1,8 @@
 <?php
 
-use App\Models\Skills\Skills;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -14,16 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('skills', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('title_description');
+            $table->string('name');
+            $table->string('email');
+            $table->tinyText('subject');
+            $table->text('message');
             $table->string('slug')->unique();
             $table->string('creator')->nullable();
             $table->string('editor')->nullable();
             $table->timestamps();
         });
-        Skills::create(['title' => 'PHP', 'title_description' => 'PHP', 'slug' => 'my-skills', 'created_at' => now()]);
     }
 
     /**
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('skills');
+        Schema::dropIfExists('messages');
     }
 };

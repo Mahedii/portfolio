@@ -50,6 +50,7 @@
         "detached" => "Detached",
         "two-column" => "Two Column",
         "hovered" => "Hovered",
+
         "pages" => "Pages",
         "home-page" => "Home Page",
         "contact-me" => "Contact Me",
@@ -58,10 +59,11 @@
         "my-works" => "My Works",
         "about-me" => "About Me",
         "hero-section" => "Hero Section",
-        "social-links" => "Social Links",
+        "social-media" => "Social Media",
         "header" => "Header",
         "navbar" => "Navbar",
         "footer" => "Footer",
+
         "authentication" => "Authentication",
         "signin" => "Sign In",
         "basic" => "Basic",

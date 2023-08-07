@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
+use App\Models\SocialMedia\SocialMedia;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use App\Models\EducationHistory\EducationHistoryList;
 
 return new class extends Migration
 {
@@ -14,17 +14,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('education_history_lists', function (Blueprint $table) {
+        Schema::create('social_media', function (Blueprint $table) {
             $table->id();
-            $table->string('institute_name');
-            $table->string('degree');
-            $table->string('year');
+            $table->string('name');
+            $table->text('url');
+            $table->string('icon_name')->nullable();
+            $table->string('file_path')->nullable();
             $table->string('slug')->unique();
             $table->string('creator')->nullable();
             $table->string('editor')->nullable();
             $table->timestamps();
         });
-        EducationHistoryList::create(['institute_name' => 'ADL', 'degree' => 'JSE', 'year' => '7 month', 'slug' => 'ADL', 'created_at' => now()]);
+        SocialMedia::create(['name' => 'FB', 'url' => 'facebook.com', 'slug' => 'FB', 'created_at' => now()]);
     }
 
     /**
@@ -34,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('education_history_lists');
+        Schema::dropIfExists('social_media');
     }
 };

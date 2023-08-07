@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
+use App\Models\ContactMe\ContactSection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use App\Models\EducationHistory\EducationHistoryList;
 
 return new class extends Migration
 {
@@ -14,17 +14,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('education_history_lists', function (Blueprint $table) {
+        Schema::create('contact_sections', function (Blueprint $table) {
             $table->id();
-            $table->string('institute_name');
-            $table->string('degree');
-            $table->string('year');
+            $table->string('title');
+            $table->text('subtitle');
             $table->string('slug')->unique();
             $table->string('creator')->nullable();
             $table->string('editor')->nullable();
             $table->timestamps();
         });
-        EducationHistoryList::create(['institute_name' => 'ADL', 'degree' => 'JSE', 'year' => '7 month', 'slug' => 'ADL', 'created_at' => now()]);
+        ContactSection::create(['title' => 'DUIS AUTE IRURE DOLOR IN REPREHENDERIT IN VOLUPTATE VELIT ESSE CILLUM DOLORE EU FUGIAT NULLAT.', 'subtitle' => 'IF YOU HAVE QUESTIONS PLEASE
+        CONTACT US', 'slug' => 'contact-me', 'created_at' => now(),]);
     }
 
     /**
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('education_history_lists');
+        Schema::dropIfExists('contact_sections');
     }
 };
