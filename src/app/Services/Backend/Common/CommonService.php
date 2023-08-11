@@ -4,6 +4,7 @@ namespace App\Services\Backend\Common;
 
 use App\Models\User;
 use App\Models\Skills\Skills;
+use App\Models\ContactMe\Message;
 use App\Models\Skills\SkillsList;
 use App\Models\AboutMe\AboutMyself;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,9 @@ use App\Models\HeroSection\TypedTexts;
 use App\Models\HeroSection\HeroSection;
 use App\Models\SocialMedia\SocialMedia;
 use App\Models\WorkHistory\WorkHistory;
+use App\Models\ContactMe\ContactSection;
 use App\Models\WorkHistory\WorkHistoryList;
+use App\Models\ContactMe\ContactMeInformation;
 use App\Models\EducationHistory\EducationHistory;
 use App\Models\EducationHistory\EducationHistoryList;
 
@@ -80,6 +83,24 @@ class CommonService
 
             $componentArray = [
                 "socialMediaData" => $socialMediaData
+            ];
+        } elseif ($keyword == "contact-section") {
+            $contactSectionData = ContactSection::all();
+
+            $componentArray = [
+                "contactSectionData" => $contactSectionData
+            ];
+        } elseif ($keyword == "contact-me-informations") {
+            $contactMeInformationData = ContactMeInformation::all();
+
+            $componentArray = [
+                "contactMeInformationData" => $contactMeInformationData
+            ];
+        } elseif ($keyword == "messages") {
+            $messageData = Message::all();
+
+            $componentArray = [
+                "messageData" => $messageData
             ];
         } else {
             $componentArray = [];

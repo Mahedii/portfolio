@@ -20,6 +20,7 @@ class Message extends Model
         'email',
         'subject',
         'message',
+        'status',
         'slug',
         'creator',
         'editor',

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email');
             $table->tinyText('subject');
             $table->text('message');
+            $table->integer('status')->default('0');
             $table->string('slug')->unique();
             $table->string('creator')->nullable();
             $table->string('editor')->nullable();
