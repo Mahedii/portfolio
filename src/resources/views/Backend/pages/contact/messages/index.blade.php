@@ -69,11 +69,11 @@
                                 <td>
                                     <div data-slug={{ $data->slug }} class="message-status-{{ $data->slug }}">
                                         @if($data->status == 0)
-                                            <button class="btn btn-soft-secondary w-sm checkedBtn" style="display: none">Checked</button>
-                                            <button class="btn btn-soft-danger w-sm uncheckedBtn">Unchecked</button>
+                                            <button class="btn btn-soft-secondary w-sm checkedBtn" style="display: none" data-slug="{{ $data->slug }}" data-field="status" data-value="0">Checked</button>
+                                            <button class="btn btn-soft-danger w-sm uncheckedBtn" data-slug="{{ $data->slug }}" data-field="status" data-value="1">Unchecked</button>
                                         @else
-                                            <button class="btn btn-soft-secondary w-sm checkedBtn">Checked</button>
-                                            <button class="btn btn-soft-danger w-sm uncheckedBtn" style="display: none">Unchecked</button>
+                                            <button class="btn btn-soft-secondary w-sm checkedBtn" data-slug="{{ $data->slug }}" data-field="status" data-value="0">Checked</button>
+                                            <button class="btn btn-soft-danger w-sm uncheckedBtn" style="display: none" data-slug="{{ $data->slug }}" data-field="status" data-value="1">Unchecked</button>
                                         @endif
                                     </div>
                                 </td>
@@ -88,7 +88,7 @@
                                             <i class="ri-more-fill align-middle"></i>
                                         </button>
 
-                                        <ul class="dropdown-menu dropdown-menu-end">
+                                        {{-- <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
                                                 <a href="{{ route('messages.load.selectedData', $data->slug) }}" class="dropdown-item view-item-btn">
                                                     <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
@@ -103,7 +103,7 @@
                                                 </a>
                                             </li>
 
-                                        </ul>
+                                        </ul> --}}
 
                                     </div>
                                 </td>

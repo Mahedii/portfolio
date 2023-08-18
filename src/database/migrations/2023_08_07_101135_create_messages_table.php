@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\ContactMe\Message;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->string('editor')->nullable();
             $table->timestamps();
         });
+        Message::create(['name' => 'PHP', 'email' => 'PHP', 'subject' => 'PHP', 'message' => 'PHP', 'slug' => 'PHP', 'created_at' => now()]);
     }
 
     /**
