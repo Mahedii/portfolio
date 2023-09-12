@@ -64,7 +64,7 @@
 
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ (request()->is('admin/home/work-history*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/work-history']) }}">
-                        <i class="ri-rocket-line"></i> <span>@lang('translation.work-history')</span>
+                        <i class="ri-rocket-line"></i> <span>@lang('translation.employment-history')</span>
                     </a>
                 </li>
 
@@ -89,7 +89,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarContactUs" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarContactUs">
-                        <i class="ri-file-list-3-line"></i> <span>@lang('translation.contact-me')</span>
+                        <i class="ri-file-list-3-line"></i> <span>@lang('translation.contact')</span>
                     </a>
                     <div class="collapse menu-dropdown {{ (request()->is('admin/contact/contact-section*')) ||  (request()->is('admin/contact/contact-me-informations*')) ||  (request()->is('admin/contact/messages*'))  ? 'show' : '' }}" id="sidebarContactUs">
                         <ul class="nav nav-sm flex-column">
@@ -109,6 +109,12 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ (request()->is('admin/marquee-text*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'marquee-text']) }}">
                         <i class="ri-rocket-line"></i> <span>@lang('translation.marquee-text')</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ (request()->is('admin/marquee-text*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'marquee-text']) }}">
+                        <i class="ri-rocket-line"></i> <span>@lang('translation.my-blogs')</span>
                     </a>
                 </li>
 

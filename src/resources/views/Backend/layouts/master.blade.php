@@ -36,6 +36,7 @@
             </div>
             <!-- End Page-content -->
             @include('Backend.layouts.footer')
+            @include('Backend.common.modal.delete')
             @include('Backend.layouts.custom-ajax-script')
         </div>
         <!-- end main content-->
