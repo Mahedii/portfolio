@@ -13,7 +13,7 @@ use App\Models\CommonFiles\CommonFiles;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image as ResizeImage;
 
-class SingleDataUpdateService
+class UpdateSpecificFieldService
 {
     /**
      * Client form request container

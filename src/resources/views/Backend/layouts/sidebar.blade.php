@@ -87,15 +87,9 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link {{ (request()->is('admin/home/contact-me*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'home/contact-me']) }}">
-                        <i class="ri-honour-line"></i> <span>@lang('translation.contact-me')</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarContactUs" data-bs-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="sidebarContactUs">
-                        <i class="ri-file-list-3-line"></i> <span>Contact</span>
+                        <i class="ri-file-list-3-line"></i> <span>@lang('translation.contact-me')</span>
                     </a>
                     <div class="collapse menu-dropdown {{ (request()->is('admin/contact/contact-section*')) ||  (request()->is('admin/contact/contact-me-informations*')) ||  (request()->is('admin/contact/messages*'))  ? 'show' : '' }}" id="sidebarContactUs">
                         <ul class="nav nav-sm flex-column">
@@ -113,8 +107,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link {{ (request()->is('admin/social-media*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'social-media']) }}">
-                        <i class="ri-rocket-line"></i> <span>@lang('translation.social-media')</span>
+                    <a class="nav-link menu-link {{ (request()->is('admin/marquee-text*')) ? 'active' : '' }}" href="{{ route('pagePath', ['path' => 'marquee-text']) }}">
+                        <i class="ri-rocket-line"></i> <span>@lang('translation.marquee-text')</span>
                     </a>
                 </li>
 

@@ -18,4 +18,5 @@ enum Tables: string
     public const CONTACT_SECTIONS = "contact_sections";
     public const CONTACT_ME_INFORMATION = "contact_me_information";
     public const MESSAGES = "messages";
+    public const MARQUEE_TEXTS = "marquee_texts";
 }

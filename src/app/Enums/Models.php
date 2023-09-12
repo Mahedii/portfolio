@@ -18,4 +18,5 @@ enum Models: string
     public const CONTACT_SECTIONS = "App\Models\ContactMe\ContactSection";
     public const CONTACT_ME_INFORMATION = "App\Models\ContactMe\ContactMeInformation";
     public const MESSAGES = "App\Models\ContactMe\Message";
+    public const MARQUEE_TEXTS = "App\Models\MarqueeText\MarqueeText";
 }

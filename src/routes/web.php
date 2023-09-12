@@ -19,6 +19,7 @@ use App\Http\Controllers\Backend\WorkHistory\WorkHistoryController;
 use App\Http\Controllers\Backend\Common\Ajax\ValidationDataController;
 use App\Http\Controllers\Backend\Common\LoadDataAndRedirectController;
 use App\Http\Controllers\Backend\Common\UpdateDataAndRedirectController;
+use App\Http\Controllers\Backend\Common\Ajax\UpdateSpecificFieldController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/update', UpdateDataController::class)->name('ajaxUpdateData');
     Route::delete('/delete/{table}/{data}', DeleteDataController::class)->name('ajaxDeleteData');
     Route::post('/validate', ValidationDataController::class)->name('ajaxValidationData');
+
+    Route::post('/data/specificField/update', UpdateSpecificFieldController::class)->name('updateSpecificFieldData');
 
     Route::get('/load/{path}/{table}/{data}', [LoadDataAndRedirectController::class, 'index'])->name('loadDataAndRedirect');
     Route::post('/data/update', UpdateDataAndRedirectController::class)->name('updateDataAndRedirect');

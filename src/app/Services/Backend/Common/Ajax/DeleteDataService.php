@@ -39,6 +39,7 @@ class DeleteDataService
             $result = [
                 'status' => 200,
                 'message' => 'Data deleted successfully',
+                'deleted_slug' => $this->request->data,
                 'field' => $tableAllData,
             ];
         } else {

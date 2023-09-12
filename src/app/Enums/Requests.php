@@ -17,4 +17,5 @@ enum Requests: string
     public const CONTACT_SECTIONS = "App\Http\Requests\Contact\ContactSectionRequest";
     public const CONTACT_ME_INFORMATION = "App\Http\Requests\Contact\ContactMeInformationRequest";
     public const MESSAGES = "App\Http\Requests\Contact\MessageRequest";
+    public const MARQUEE_TEXTS = "App\Http\Requests\MarqueeText\MarqueeTextRequest";
 }

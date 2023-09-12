@@ -7,6 +7,8 @@
 <!--datatable responsive css-->
 <link href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endsection
 @section('content')
 @component('Backend.components.breadcrumb')
@@ -47,7 +49,7 @@
             </div>
 
             <div class="card-body">
-                <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                <table id="buttons-datatables" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -64,16 +66,16 @@
 
                         @foreach($messageData as $key => $data)
 
-                            <tr data-id="{{ $data->id }}" data-slug="{{ $data->slug }}" class="message-{{ $data->slug }}">
+                            <tr data-id="{{ $data->id }}" data-slug="{{ $data->slug }}" data-table-secret="{{ $data->encrypted_table_name }}" class="message-{{ $data->slug }}">
                                 <td>{{ ++$key }}</td>
                                 <td>
-                                    <div data-slug={{ $data->slug }} class="message-status-{{ $data->slug }}">
+                                    <div data-field="status" data-slug="{{ $data->slug }}" data-table-secret="{{ $data->encrypted_table_name }}" class="message-status-{{ $data->slug }}">
                                         @if($data->status == 0)
-                                            <button class="btn btn-soft-secondary w-sm checkedBtn" style="display: none" data-slug="{{ $data->slug }}" data-field="status" data-value="0">Checked</button>
-                                            <button class="btn btn-soft-danger w-sm uncheckedBtn" data-slug="{{ $data->slug }}" data-field="status" data-value="1">Unchecked</button>
+                                            <button class="btn btn-soft-secondary w-sm checkBtn checkedBtn" style="display: none" data-value="0">Checked</button>
+                                            <button class="btn btn-soft-danger w-sm checkBtn uncheckedBtn" data-value="1">Unchecked</button>
                                         @else
-                                            <button class="btn btn-soft-secondary w-sm checkedBtn" data-slug="{{ $data->slug }}" data-field="status" data-value="0">Checked</button>
-                                            <button class="btn btn-soft-danger w-sm uncheckedBtn" style="display: none" data-slug="{{ $data->slug }}" data-field="status" data-value="1">Unchecked</button>
+                                            <button class="btn btn-soft-secondary w-sm checkBtn checkedBtn" data-value="0">Checked</button>
+                                            <button class="btn btn-soft-danger w-sm checkBtn uncheckedBtn" style="display: none" data-value="1">Unchecked</button>
                                         @endif
                                     </div>
                                 </td>
@@ -88,22 +90,22 @@
                                             <i class="ri-more-fill align-middle"></i>
                                         </button>
 
-                                        {{-- <ul class="dropdown-menu dropdown-menu-end">
+                                        <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <a href="{{ route('messages.load.selectedData', $data->slug) }}" class="dropdown-item view-item-btn">
+                                                <a href="{{ route('loadDataAndRedirect',['path' => 'contact.messages.view.index', 'table' => $data->encrypted_table_name, 'data' => $data->slug]) }}" data-slug="{{$data->slug}}" class="dropdown-item view-item-btn">
                                                     <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                     View
                                                 </a>
                                             </li>
 
                                             <li>
-                                                <a href="{{ route('messages.deleteData', $data->slug) }}" class="dropdown-item delete-item-btn" onclick="return confirm('Are you sure you want to delete this?');">
+                                                <a href="#" data-slug="{{$data->slug}}" class="dropdown-item ajax-delete-data-btn">
                                                     <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                     Delete
                                                 </a>
                                             </li>
 
-                                        </ul> --}}
+                                        </ul>
 
                                     </div>
                                 </td>
@@ -120,6 +122,36 @@
 </div>
 <!--end row-->
 
+<!-- Delete Modal -->
+<div id="zoomInDeleteModal" class="modal fade zoomIn" tabindex="-1" role="dialog" aria-labelledby="zoomInDeleteModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <form action="javascript:void(0);" enctype="multipart/form-data" id="deleteModalForm">
+                    @csrf
+                    <input type="hidden" class="form-control delete_field_row_slug" id="delete_field_row_slug">
+                    <input type="hidden" class="form-control secret_key delete_field_table_key" id="delete_field_table_key">
+                </form>
+                <lord-icon
+                    src="https://cdn.lordicon.com/tdrtiskw.json"
+                    trigger="loop"
+                    colors="primary:#f7b84b,secondary:#405189"
+                    style="width:130px;height:130px">
+                </lord-icon>
+
+                <div class="mt-4">
+                    <h4 class="mb-3">Are you sure you want to proceed?</h4>
+                    <p class="text-muted mb-4"> If you are not sure than press the cancel button</p>
+                    <div class="hstack gap-2 justify-content-center">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <a href="javascript:void(0);" class="btn btn-danger confirm-ajax-delete-data-btn">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 @include('Backend.pages.contact.messages.ajax.index')
 
 @endsection
@@ -127,8 +159,7 @@
 
 <script src="{{ URL::asset('assets/libs/prismjs/prismjs.min.js') }}"></script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<!--datatable js-->
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>

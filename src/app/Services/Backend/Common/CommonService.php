@@ -10,6 +10,7 @@ use App\Models\AboutMe\AboutMyself;
 use Illuminate\Support\Facades\Auth;
 use App\Models\HeroSection\TypedTexts;
 use App\Models\HeroSection\HeroSection;
+use App\Models\MarqueeText\MarqueeText;
 use App\Models\SocialMedia\SocialMedia;
 use App\Models\WorkHistory\WorkHistory;
 use App\Models\ContactMe\ContactSection;
@@ -101,6 +102,12 @@ class CommonService
 
             $componentArray = [
                 "messageData" => $messageData
+            ];
+        } elseif ($keyword == "marquee-text") {
+            $marqueeTextData = MarqueeText::all();
+
+            $componentArray = [
+                "marqueeTextData" => $marqueeTextData
             ];
         } else {
             $componentArray = [];
