@@ -179,6 +179,19 @@ class AddDataService
     }
 
     /**
+     * Create directory if not exist
+     *
+     * @param string $path
+     * @return void
+     */
+    private function createDirectory(string $path): void
+    {
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0777, true, true);
+        }
+    }
+
+    /**
      * Insert common_files table
      *
      * @param string $table_name
