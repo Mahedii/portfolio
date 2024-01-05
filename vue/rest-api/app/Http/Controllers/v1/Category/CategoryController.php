@@ -9,7 +9,7 @@ use App\Services\v1\Category\CategoryService;
 
 class CategoryController extends Controller
 {
-    private $addDataService;
+    private $categoryService;
 
     /**
      * Add form data
@@ -20,8 +20,8 @@ class CategoryController extends Controller
     public function __invoke(Request $request)
     {
         try {
-            $this->addDataService = new CategoryService($request);
-            $response = $this->addDataService->getResponse();
+            $this->categoryService = new CategoryService($request);
+            $response = $this->categoryService->getResponse();
 
             return response()->json($response);
         } catch (Exception $e) {

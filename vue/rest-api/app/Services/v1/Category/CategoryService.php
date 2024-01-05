@@ -79,7 +79,7 @@ class CategoryService
     {
         return [
             'status' => 200,
-            'categories' => Category::select("*")->orderBy('id', 'desc')->get()
+            'categories' => Category::select("*")->where('parent_id', null)->orderBy('id', 'desc')->get()
         ];
     }
 
@@ -92,7 +92,7 @@ class CategoryService
     {
         $slug = $this->generateSlug($this->request->category);
         $response = Category::create([
-            'name' => $this->request->category,
+            'category_name' => $this->request->category,
             'slug' => $slug
         ]);
 

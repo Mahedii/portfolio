@@ -31,7 +31,9 @@
 }
 
 .vs__selected{
-
+    font-size: 16px!important;
+    /* font-weight: 500!important; */
+    margin-left: 5px!important;
 }
 
 @media (min-width: 768px) {

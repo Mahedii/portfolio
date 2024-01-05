@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\v1\Category\CategoryController;
+use App\Http\Controllers\v1\SubCategory\SubCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,5 +32,10 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('category')->group(function () {
         Route::post('/data', CategoryController::class)->name('category.data');
         Route::post('/create', CategoryController::class)->name('category.create');
+    });
+
+    Route::prefix('sub-category')->group(function () {
+        Route::post('/data', SubCategoryController::class)->name('subcategory.data');
+        Route::post('/create', SubCategoryController::class)->name('subcategory.create');
     });
 });

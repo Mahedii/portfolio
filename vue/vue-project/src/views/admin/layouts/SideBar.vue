@@ -58,8 +58,7 @@
                                     <router-link to="/category" class="nav-link" data-key="t-ecommerce"> Category </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="dashboard-crypto.html" class="nav-link" data-key="t-crypto"> Crypto
-                                    </a>
+                                    <router-link to="/sub-category" class="nav-link" data-key="t-crypto"> Sub-Category </router-link>
                                 </li>
                                 <li class="nav-item">
                                     <a href="dashboard-projects.html" class="nav-link" data-key="t-projects">

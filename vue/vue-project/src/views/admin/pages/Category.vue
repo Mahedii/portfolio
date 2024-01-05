@@ -6,12 +6,6 @@
     export default {
         data() {
             return {
-                selectedOption: null,
-                options: [
-                    { label: 'Option 1', value: 'option1' },
-                    { label: 'Option 2', value: 'option2' },
-                    { label: 'Option 3', value: 'option3' },
-                ],
                 category: "",
                 allCategory: []
             };
@@ -32,7 +26,7 @@
 
                     this.axios.post('/category/create', payload)
                     .then(response => {
-                        console.log(response);
+                        // console.log(response);
                         if (response.data.status == 200) {
                             toast(response.data.message, {
                                 autoClose: 3000,
@@ -63,7 +57,6 @@
 
             async getAllCategory(){
                 let payload = {
-                    category: this.category,
                     type: 'read',
                 }
                 this.axios.post('/category/data', payload).then(res=>{
@@ -114,14 +107,10 @@
                         <div class="card-body">
                             <div class="live-preview">
                                 <form @submit.prevent="addCategory" class="row g-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <label for="category" class="form-label">Name</label>
                                         <input v-model="category" type="text" class="form-control" id="category"
                                             placeholder="Enter category name">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="inputEmail4" class="form-label">Select2</label>
-                                        <v-select class="new-styles" placeholder="Choose some countries" multiple :options="options"/>
                                     </div>
                                     <div class="col-12">
                                         <div class="text-end">
@@ -154,7 +143,7 @@
                                 <tbody>
                                     <tr v-for="(category, index) in allCategory" :key="index">
                                         <td>{{ ++index }}</td>
-                                        <td>{{ category.name }}</td>
+                                        <td>{{ category.category_name }}</td>
                                         <td>{{ formatRelativeDate(category.created_at) }}</td>
                                         <td>
                                             <div class="dropdown d-inline-block">

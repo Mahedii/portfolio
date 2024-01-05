@@ -42,6 +42,11 @@ const routes = [
           name: 'Category',
           component: () => import('../views/admin/pages/Category.vue').then(module => module.default),
         },
+        {
+          path: '/sub-category',
+          name: 'SubCategory',
+          component: () => import('../views/admin/pages/SubCategory.vue').then(module => module.default),
+        },
       ],
     },
     {

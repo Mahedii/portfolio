@@ -23,12 +23,12 @@
 
             // this.$toast.success("Order placed.")
 
-            toast("Wow so easy !", {
-                autoClose: 3000,
-                "theme": "colored", // light dark auto colored
-                "type": "success",
-                "transition": "zoom", // bounce flip slide zoom
-            }); 
+            // toast("Wow so easy !", {
+            //     autoClose: 3000,
+            //     "theme": "colored", // light dark auto colored
+            //     "type": "success",
+            //     "transition": "zoom", // bounce flip slide zoom
+            // }); 
 
             // this.getUser()
             if (vuesxStoreToken && expirationTime && new Date().getTime() < expirationTime) {
@@ -39,7 +39,7 @@
             async getUser() {
                 this.axios.get('/user/details')
                 .then((r) => {
-                    console.log(r);
+                    // console.log(r);
                     this.user = r.data;
                     return r
                 })
@@ -53,7 +53,7 @@
 
 <template>
     <div id="layout-wrapper">
-        <TopBar></TopBar>
+        <TopBar :user="user"></TopBar>
         <!-- ========== App Menu ========== -->
         <SideBar></SideBar>
         <!-- Left Sidebar End -->

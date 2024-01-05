@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
-            $table->string('name')->unique();
+            $table->string('subcategory_name')->unique();
             $table->string('slug')->unique();
             $table->timestamps();
         });

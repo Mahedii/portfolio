@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Models\SubCategory;
+namespace App\Models\Category;
 
 use App\Models\Category\Category;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class SubCategory extends Model
+class CategoryParentTree extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'subcategory_name', 'slug'];
+    protected $fillable = ['category_id', 'parents'];
 
     public function category(): BelongsTo
     {
