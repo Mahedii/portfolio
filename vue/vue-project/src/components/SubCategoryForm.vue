@@ -8,7 +8,7 @@
         <!-- Loop to dynamically create v-select components -->
         <div v-for="(selectedSubcategory, index) in selectedSubcategories" :key="index" class="col-md-6">
             <label :for="'subcategory' + (index + 1)" class="form-label">Select Subcategory</label>
-            <v-select :v-model="selectedSubcategories[index]" :data-index="index" @option:selected="value => getSelectedSubCategories(value, index)" class="new-styles" :placeholder="'Choose one'" :options="subcategoriesOptions[index]"/>
+            <v-select v-model="selectedSubcategories[index]" :data-index="index" @option:selected="value => getSelectedSubCategories(value, index)" class="new-styles" :placeholder="'Choose one'" :options="subcategoriesOptions[index]"/>
         </div>
     
         <div class="col-md-6">
@@ -27,27 +27,51 @@
 <script>
     export default {
         props: {
+            formData: Object,
             options: Array, // Pass options for the category select
-            selectedSubcategories: Array,
             subcategoriesOptions: Array,
+            // selectedSubcategories: Array,
         },
         data() {
             return {
-                selectedCategory: null,
-                subcategory: "",
+                // selectedCategory: null,
+                // subcategory: "",
+                selectedCategory: this.formData.selectedCategory,
+                selectedSubcategories: this.formData.selectedSubcategories,
+                numberOfSubcategories: this.formData.numberOfSubcategories,
+                subcategory: this.formData.subcategory,
             };
         },
+        // watch: {
+        //     // Watch for changes in the parent component's formData prop
+        //     formData: {
+        //         handler(newFormData) {
+        //             // Update local data properties when formData changes
+        //             this.selectedCategory = newFormData.selectedCategory;
+        //             this.selectedSubcategories = newFormData.selectedSubcategories;
+        //             this.numberOfSubcategories = newFormData.numberOfSubcategories;
+        //             this.subcategory = newFormData.subcategory;
+        //         },
+        //         deep: true,
+        //     },
+        // },
         methods: {
             getSelectedSubCategories(value, index) {
                 // Emit event to parent component (SubCategoryPage.vue) with selected value and index
-                this.$emit('getSelectedSubCategories', value, index);
+                this.$emit('get-selected-subcategories', value, index);
             },
             submitForm() {
                 // Emit event to parent component (SubCategoryPage.vue) with form data
-                this.$emit('submitForm', {
+                this.$emit('submit-form', this.getFormData());
+            },
+            // Get the updated formData
+            getFormData() {
+                return {
                     selectedCategory: this.selectedCategory,
+                    selectedSubcategories: this.selectedSubcategories,
+                    numberOfSubcategories: this.numberOfSubcategories,
                     subcategory: this.subcategory,
-                });
+                };
             },
         },
     };

@@ -28,8 +28,8 @@
                                     :formData="formData"
                                     :options="options"
                                     :subcategoriesOptions="subcategoriesOptions"
-                                    :getSelectedSubCategories="getSelectedSubCategories"
-                                    :addSubCategory="addSubCategory"
+                                    @get-selected-subcategories="getSelectedSubCategories"
+                                    @submit-form="addSubCategory"
                                 />
                             </div>
                         </div>
@@ -95,6 +95,10 @@
                 if (index == null) {
                     // this.categoryTree = this.lastSelectedCategoryId
                     this.categoryTreeArray = [this.lastSelectedCategoryId]
+                    if (this.formData.numberOfSubcategories > 0) {
+                        this.formData.selectedSubcategories = []
+                        this.formData.numberOfSubcategories = 0
+                    }
                 } else {
                     var arrayTreeKey = index + 1
                     // if (this.categoryTreeArray.includes(some value)) // for checking array value
@@ -137,9 +141,10 @@
                 // console.log("numberOfSubcategories", this.formData.numberOfSubcategories)
             },
 
-            async addSubCategory() {
+            async addSubCategory(updatedFromData = null) {
                 try {
                     this.isSubmitting = true
+                    this.formData = updatedFromData
                     this.categoryTreeArray.filter((value, index) => {
                         if (index == 0) {
                             this.categoryTree = value
@@ -147,7 +152,8 @@
                             this.categoryTree = this.categoryTree + "," + value
                         }
                     })
-                    // console.log(this.categoryTree)
+                    // console.log(formData)
+                    // this.formData.subcategory = 'by road'
                     let payload = {
                         category_id: this.lastSelectedCategoryId, // Use last selected category id
                         parents: this.categoryTree,
@@ -157,7 +163,7 @@
 
                     this.axios.post('/sub-category/create', payload)
                     .then(response => {
-                        // console.log(response);
+                        console.log(response);
                         if (response.data.status == 200) {
                             toast(response.data.message, {
                                 autoClose: 3000,

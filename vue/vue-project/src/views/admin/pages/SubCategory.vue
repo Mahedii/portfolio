@@ -1,195 +1,64 @@
 <script>
-import { toast } from 'vue3-toastify';
-import 'vue3-toastify/dist/index.css';
-import axios from 'axios';
-import moment from 'moment';
+    import { subCategoryMethods } from '@/components/SubCategoryMethods'; // Adjust the path accordingly
+    
+    export default {
+        data() {
+            return {
+                formData: {
+                    selectedCategory: null,
+                    selectedSubcategories: [],
+                    numberOfSubcategories: 0,
+                    subcategory: "",
+                },
+                fetchedFormData: {
+                    id: null,
+                    selectedCategory: null,
+                    selectedSubcategories: [],
+                    numberOfSubcategories: 0,
+                    subcategory: "",
+                    parentCategories: "",
+                    categoryName: ""
+                },
+                lastSelectedCategoryId: null,
+                categoryTree: null,
+                categoryTreeArray: [],
+                subcategoriesOptions: [],
+                options: [],
+                categories: [], // Store the fetched categories here
+                allSubCategory: [],
+                isEditModalOpen: false,
+            };
+        },
+        created() {
+            this.fetchCategories();
+            this.getSubCategories();
+        },
+        methods: {
+            ...subCategoryMethods,
+        
+            // Your component-specific methods, if any
+        
+            // For example:
+            openEditMOdal(subcategory) {
+                // Assign the selected subcategory to the data property
+                // this.editedSubcategory = { ...subcategory };
+                this.isEditModalOpen = true;
+                this.fetchedFormData.id = subcategory.id
+                this.fetchedFormData.subcategory = subcategory.category_name
+                this.fetchedFormData.parentCategories = subcategory.parent_category_names
 
-export default {
-    data() {
-        return {
-            formData: {
-                selectedCategory: null,
-                selectedSubcategories: [],
-                numberOfSubcategories: 0,
-                subcategory: "",
+                // Open the modal
+                jQuery('#editModal').modal('show');
             },
-            lastSelectedCategoryId: null,
-            categoryTree: null,
-            categoryTreeArray: [],
-            subcategoriesOptions: [],
-            options: [],
-            categories: [], // Store the fetched categories here
-            allSubCategory: []
-        };
-    },
-    created() {
-        // Fetch categories when the component is created
-        this.fetchCategories();
-        this.getSubCategories();
-    },
-    methods: {
-        async getSelectedSubCategories(value, index) {
-            var id = value.value
-            this.lastSelectedCategoryId = id
 
-            if (index == null) {
-                // this.categoryTree = this.lastSelectedCategoryId
-                this.categoryTreeArray = [this.lastSelectedCategoryId]
-            } else {
-                var arrayTreeKey = index + 1
-                // if (this.categoryTreeArray.includes(some value)) // for checking array value
-                // if (arrayTreeKey in this.categoryTreeArray) // for checking array key
-                if (this.categoryTreeArray.hasOwnProperty(arrayTreeKey)) {
-                    this.categoryTreeArray[arrayTreeKey] = this.lastSelectedCategoryId
-                    this.categoryTreeArray.splice(arrayTreeKey + 1)
-                } else {
-                    this.categoryTreeArray.push(this.lastSelectedCategoryId)
-                }
-            }
-
-            const subcategories = await this.getSubCategories(id);
-            // console.log("length", subcategories.length)
-
-            if (subcategories.length == 0) {
-                if (index == null) {
-                    this.formData.numberOfSubcategories = 0
-                    this.formData.selectedSubcategories = []
-                } else {
-                    if (this.formData.selectedSubcategories.length > index) {
-                        // Keep only the first 10 elements, remove the rest
-                        this.formData.selectedSubcategories.splice(index + 1);
-                    }
-                }
-            } else {
-                var newCategoryoptions = subcategories.map(subcategory => ({
-                    label: subcategory.category_name,
-                    value: subcategory.id.toString(), // Convert id to string for compatibility with v-select
-                }));
-
-                this.subcategoriesOptions.push(newCategoryoptions)
-
-                // Increment the number of subcategories and push a new selected subcategory
-                this.formData.numberOfSubcategories++;
-                this.formData.selectedSubcategories.push(null)
-            }
-            // console.log("categoryTree", this.categoryTree)
-            // console.log("categoryTreeArray", this.categoryTreeArray)
-            // console.log("numberOfSubcategories", this.formData.numberOfSubcategories)
+            openDeleteMOdal(subcategory) {
+                this.fetchedFormData.id = subcategory.id
+                this.fetchedFormData.categoryName = subcategory.category_name
+                // Open the modal
+                jQuery('#deleteModal').modal('show');
+            },
         },
-
-        async addSubCategory() {
-            try {
-                this.isSubmitting = true
-                this.categoryTreeArray.filter((value, index) => {
-                    if (index == 0) {
-                        this.categoryTree = value
-                    } else {
-                        this.categoryTree = this.categoryTree + "," + value
-                    }
-                })
-                // console.log(this.categoryTree)
-                let payload = {
-                    category_id: this.lastSelectedCategoryId, // Use last selected category id
-                    parents: this.categoryTree,
-                    subcategory: this.formData.subcategory,
-                    type: 'create',
-                };
-
-                this.axios.post('/sub-category/create', payload)
-                .then(response => {
-                    // console.log(response);
-                    if (response.data.status == 200) {
-                        toast(response.data.message, {
-                            autoClose: 3000,
-                            "theme": "colored", // light dark auto colored
-                            "type": "success",
-                            "transition": "zoom", // bounce flip slide zoom
-                        });
-
-                        // Clear the input fields after successful addition
-                        this.resetForm()
-
-                        // Refresh sub-category list after adding a new category
-                        this.getSubCategories();
-                    } else {
-                        alert("Authentication failed. Please check your credentials.");
-                    }
-                })
-                .catch(error => {
-                    this.isSubmitting = false
-                    console.log(error)
-                    // if (error.response.data.errors != undefined) {
-                    //     this.validationErrors = error.response.data.errors
-                    // }
-                    return error
-                });
-            } catch (error) {
-                    this.isSubmitting = false;
-                    console.log(error);
-                    return error;
-            }
-        },
-
-        async resetForm() {
-            // Reset form fields and selected values
-            this.formData.selectedCategory = null
-            this.formData.subcategory = ""
-            this.formData.selectedSubcategories = []
-            this.formData.numberOfSubcategories = 0
-
-            this.lastSelectedCategoryId = null
-            this.categoryTree = null
-            this.categoryTreeArray = []
-
-            // Use the form element's reset method to clear input values
-            // document.getElementById('subcategoryForm').reset()
-        },
-
-        async fetchCategories() {
-            try {
-                let payload = {
-                    type: 'read',
-                }
-                this.axios.post('/category/data', payload).then(res=>{
-                    this.categories = res.data.categories;
-                    // console.log(res.data.categories);
-
-                    this.options = this.categories.map(category => ({
-                        label: category.category_name,
-                        value: category.id.toString(), // Convert id to string for compatibility with v-select
-                    }));
-                })
-            } catch (error) {
-                console.error("Error fetching categories:", error);
-            }
-        },
-
-        async getSubCategories(id = null){
-            try {
-                let payload = {
-                    id: id,
-                    type: 'read',
-                }
-                return this.axios.post('/sub-category/data', payload).then(res=>{
-                    // console.log(res.data);
-                    if (res.data.status == 200) {
-                        if (id != null) {
-                            return res.data.subcategories
-                        } else {
-                            this.allSubCategory = res.data.subcategories
-                        }
-                    }
-                })
-            } catch (error) {
-                console.log(error)
-            }
-        },
-
-        formatRelativeDate(date) {
-            return moment(date).fromNow();
-        },
-    },
-};
+    };
 </script>
 
 <template>
@@ -223,13 +92,13 @@ export default {
                                 <form @submit.prevent="addSubCategory" id="subcategoryForm" class="row g-3">
                                     <div class="col-md-6">
                                         <label for="" class="form-label">Select Category</label>
-                                        <v-select v-model="formData.selectedCategory" @option:selected="value => getSelectedSubCategories(value, null)" class="new-styles" placeholder="Choose one" :options="options"/>
+                                        <v-select v-model="formData.selectedCategory" @option:selected="value => getSelectedSubCategories(value, null, null)" class="new-styles" placeholder="Choose one" :options="options"/>
                                     </div>
 
                                     <!-- Loop to dynamically create v-select components -->
                                     <div v-for="(selectedSubcategory, index) in formData.selectedSubcategories" :key="index" class="col-md-6">
                                         <label :for="'subcategory' + (index + 1)" class="form-label">Select Subcategory</label>
-                                        <v-select :v-model="formData.selectedSubcategories[index]" :data-index="index" @option:selected="value => getSelectedSubCategories(value, index)" class="new-styles" :placeholder="'Choose one'" :options="subcategoriesOptions[index]"/>
+                                        <v-select v-model="formData.selectedSubcategories[index]" :data-index="index" @option:selected="value => getSelectedSubCategories(value, index, null)" class="new-styles" :placeholder="'Choose one'" :options="subcategoriesOptions[index]"/>
                                     </div>
 
                                     <div class="col-md-6">
@@ -247,6 +116,72 @@ export default {
                         </div>
                     </div>
                 </div> <!-- end col -->
+            </div>
+
+            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Click me</button> -->
+
+            <!-- Edit Modal content -->
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form @submit.prevent="updateSubcategory">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="varyingcontentModalLabel">New message</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Bind form fields to data properties -->
+                                <div class="mb-3">
+                                    <label for="subcategory" class="form-label">Parent Category</label>
+                                    <input v-model="fetchedFormData.parentCategories" type="text" class="form-control" disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Change Category</label>
+                                    <v-select v-model="fetchedFormData.selectedCategory" @option:selected="value => getSelectedSubCategories(value, null, 'update')" class="new-styles" placeholder="Choose one" :options="options"/>
+                                </div>
+                                <div v-for="(selectedSubcategory, index) in fetchedFormData.selectedSubcategories" :key="index" class="mb-3">
+                                    <label :for="'subcategory' + (index + 1)" class="form-label">Select Subcategory</label>
+                                    <v-select v-model="fetchedFormData.selectedSubcategories[index]" :data-index="index" @option:selected="value => getSelectedSubCategories(value, index, 'update')" class="new-styles" :placeholder="'Choose one'" :options="subcategoriesOptions[index]"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="subcategory" class="form-label">Subcategory Name</label>
+                                    <input v-model="fetchedFormData.subcategory" type="text" class="form-control" id="subcategory"
+                                            placeholder="Enter Sub-Category name">
+                                </div>
+
+                                <!-- Add other form fields as needed -->
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Modal content -->
+            <div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center p-5">
+                            <div class="text-end">
+                                <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="mt-2">
+                                <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
+                                <!-- <lord-icon src="https://cdn.lordicon.com/tqywkdcz.json" trigger="hover" style="width:150px;height:150px"></lord-icon> -->
+                                <h4 class="mb-3 mt-4">Are you sure?</h4>
+                                <p class="text-muted fs-15 mb-4">You won't be able to revert this!?</p>
+                                <div class="hstack gap-2 justify-content-center">
+                                    <button class="btn btn-soft-danger" data-bs-dismiss="modal" aria-label="close" style="display: inline-block;">Cancel</button>
+                                    <button class="btn btn-soft-success" @click="deleteSubcategory">Yes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="row">
@@ -280,13 +215,13 @@ export default {
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a href="#" class="dropdown-item edit-item-btn">
+                                                        <a href="#" class="dropdown-item edit-item-btn" @click="openEditMOdal(subcategory)">
                                                             <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                             Edit
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="#" class="dropdown-item delete-item-btn" onclick="return confirm('Are you sure you want to delete this?');">
+                                                        <a href="#" class="dropdown-item delete-item-btn" @click="openDeleteMOdal(subcategory)">
                                                             <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                             Delete
                                                         </a>

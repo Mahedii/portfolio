@@ -37,5 +37,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('sub-category')->group(function () {
         Route::post('/data', SubCategoryController::class)->name('subcategory.data');
         Route::post('/create', SubCategoryController::class)->name('subcategory.create');
+        Route::post('/update', SubCategoryController::class)->name('subcategory.update');
+        Route::post('/delete', SubCategoryController::class)->name('subcategory.delete');
     });
 });

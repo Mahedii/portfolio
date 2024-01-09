@@ -4,11 +4,14 @@ namespace App\Services\v1\SubCategory;
 
 use Auth;
 // use Validator;
+use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Category\Category;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\SubCategory\SubCategory;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Category\CategoryParentTree;
@@ -22,12 +25,15 @@ class SubCategoryService
      */
     private Request $request;
 
+    private $category;
+
     /**
      * Set the request container
      */
     public function __construct(Request $request)
     {
         $this->request = $request;
+        // $this->category = new Category();
     }
 
     /**
@@ -64,8 +70,10 @@ class SubCategoryService
                 $response = $this->createMethod();
                 break;
             case 'update':
+                $response = $this->updateMethod();
                 break;
             case 'delete':
+                $response = $this->deleteMethod();
                 break;
         }
 
@@ -73,7 +81,7 @@ class SubCategoryService
     }
 
     /**
-     * read
+     * read Method
      *
      * @return array
      */
@@ -95,50 +103,156 @@ class SubCategoryService
     }
 
     /**
-     * create
+     * create Method
      *
      * @return array
      */
     private function createMethod()
     {
-        $slug = $this->generateSlug($this->request->subcategory);
-        $createCategory = Category::create([
-            'parent_id' => $this->request->category_id,
-            'category_name' => $this->request->subcategory,
-            'slug' => $slug
-        ]);
+        try {
+            DB::transaction(function () {
+                // Your existing code within the transaction
+                $slug = $this->generateSlug($this->request->subcategory);
 
-        if ($createCategory) {
-            $this->updateCategoryParentTree($createCategory->id, $this->request->parents);
+                $createCategory = Category::create([
+                    'parent_id' => $this->request->category_id,
+                    'category_name' => $this->request->subcategory,
+                    'slug' => $slug
+                ]);
+
+                if ($createCategory) {
+                    $this->updateCategoryParentTree($createCategory->id, $this->request->parents);
+                } else {
+                    // If there's an issue with creating the category, throw an exception to roll back the transaction
+                    throw new Exception("Category creation failed");
+                }
+            });
+
             $result = [
                 'status' => 200,
                 'message' => "SubCategory " . $this->request->subcategory . " added successfully",
             ];
-        } else {
+        } catch (\Exception $e) {
             $result = [
                 'status' => 500,
-                'message' => "Category " . $this->request->category . " could not be added",
+                'message' => "SubCategory " . $this->request->subcategory . " could not be added",
             ];
         }
 
         return $result;
     }
 
-    private function updateCategoryParentTree($categoryId, $newParentIds)
+    /**
+     * update Method
+     *
+     * @return array
+     */
+    private function updateMethod()
+    {
+        // try {
+            DB::transaction(function () {
+                $category = Category::find($this->request->id);
+                $category->parent_id = $this->request->category_id;
+                $category->category_name = $this->request->subcategory;
+
+                // Check if any values have changed and are not null
+                $changesToSave = $this->checkForDirtyData($category);
+                // Log::info(json_encode($changesToSave));
+
+                // Update the category only if there are changes to save
+                if (!empty($changesToSave)) {
+                    if (array_key_exists('category_name', $changesToSave)) {
+                        $changesToSave["slug"] = $this->generateSlug($this->request->subcategory);
+                    }
+
+                    $updateCategory = Category::where('id', $this->request->id)->update($changesToSave);
+                    if ($updateCategory) {
+                        $this->updateCategoryParentTree($this->request->id, $this->request->parents);
+                    } else {
+                        // If there's an issue with updating the category, throw an exception to roll back the transaction
+                        throw new Exception("Subcategory update failed");
+                    }
+                }
+            });
+
+            $result = [
+                'status' => 200,
+                'message' => "SubCategory " . $this->request->subcategory . " updated successfully",
+            ];
+        // } catch (\Exception $e) {
+        //     $result = [
+        //         'status' => 500,
+        //         'message' => "SubCategory " . $this->request->subcategory . " could not be updated",
+        //     ];
+        // }
+
+        return $result;
+    }
+
+    /**
+     * delete Method
+     *
+     * @return array
+     */
+    private function deleteMethod()
+    {
+        try {
+            DB::transaction(function () {
+                $category = Category::find($this->request->id);
+                $deleteCategory = $category->delete();
+                if (!$deleteCategory) {
+                    // If there's an issue with deleting the category, throw an exception to roll back the transaction
+                    throw new Exception("Subcategory " . $this->request->category_name . " delete failed");
+                }
+            });
+
+            $result = [
+                'status' => 200,
+                'message' => "SubCategory " . $this->request->category_name . " deleted successfully",
+            ];
+        } catch (\Exception $e) {
+            $result = [
+                'status' => 500,
+                'message' => "SubCategory " . $this->request->id . " could not be deleted",
+            ];
+        }
+
+        return $result;
+    }
+
+    private function checkForDirtyData($model)
+    {
+        $changes = $model->getDirty();
+        $changesToSave = [];
+
+        foreach ($changes as $attribute => $value) {
+            if ($value !== null && !empty($value)) {
+                $changesToSave[$attribute] = $value;
+            }
+        }
+
+        return $changesToSave;
+    }
+
+    private function updateCategoryParentTree($categoryId, $parentIds)
     {
         // Check if there are existing records for the given $categoryId
         $categoryParentTree = CategoryParentTree::where('category_id', $categoryId)->first();
 
         if ($categoryParentTree) {
-            // // If records exist, concatenate existing parents with the new $newParentId
-            // $parents = $categoryParentTree->parents . ',' . $newParentIds;
+            $categoryParentTree->parents = $parentIds;
+            $categoryParentTree->category_id = $categoryId;
 
-            // // Update the existing record
-            // $categoryParentTree->update(['parents' => $parents]);
+            // Check if any values have changed and are not null
+            $changesToSave = $this->checkForDirtyData($categoryParentTree);
+            if (!empty($changesToSave)) {
+                // Update the existing record
+                $categoryParentTree->update($changesToSave);
+            }
         } else {
-            // If no records exist, create a new record with $newParentId
+            // If no records exist, create a new record with $parentIds
             CategoryParentTree::create([
-                'parents' => $newParentIds,
+                'parents' => $parentIds,
                 'category_id' => $categoryId,
             ]);
         }

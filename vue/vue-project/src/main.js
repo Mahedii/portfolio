@@ -8,6 +8,7 @@ import jwtToken from './vuex/jwtToken';
 import axios from 'axios'
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+import { subCategoryMethods } from '@/components/SubCategoryMethods';
 
 const axiosInstance = axios.create({
     baseURL: 'http://127.0.0.1:8000/api'
@@ -47,7 +48,11 @@ axiosInstance.interceptors.response.use(
 const app = createApp(App)
 app.config.globalProperties.axios = { ...axiosInstance }
 app.component("v-select", vSelect);
+// app.mixin(subCategoryMethods)
 
 app.use(router)
+
+// Exclude lord-icon from component resolution
+app.config.isCustomElement = (tag) => tag.startsWith('lord-icon');
 
 app.mount('#app')
