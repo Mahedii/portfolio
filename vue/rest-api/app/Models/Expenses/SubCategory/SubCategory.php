@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Models\Category;
+namespace App\Models\Expenses\SubCategory;
 
-use App\Models\Category\Category;
+use App\Models\Expenses\Category\Category;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class CategoryParentTree extends Model
+class SubCategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'parents'];
+    protected $fillable = ['category_id', 'subcategory_name', 'slug'];
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public static function getSubcategoriesWithCategory()

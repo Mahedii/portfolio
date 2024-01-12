@@ -1,0 +1,76 @@
+version: "3.9"
+
+volumes:
+  php-fpm-socket:
+
+services:
+  # hishab_laravel_admin_api_php_fpm:
+  #   image: hishab_laravel_admin_api/php-fpm
+  #   build:
+  #     args:
+  #       user: mahadi
+  #       uid: 1000
+  #     context: ./docker
+  #     dockerfile: php-fpm/Dockerfile
+  #   container_name: hishab_laravel_admin_api_php_fpm
+  #   restart: unless-stopped
+  #   working_dir: /var/www
+  #   volumes:
+  #     - './rest-api:/var/www'
+        
+  # hishab_laravel_admin_api_nginx:
+  #   image: hishab_laravel_admin_api/nginx
+  #   build:
+  #     context: ./docker
+  #     dockerfile: nginx/Dockerfile
+  #   container_name: hishab_laravel_admin_api_nginx
+  #   ports:
+  #     - 8000:80
+  #   working_dir: /var/www
+  #   volumes:
+  #     - './rest-api:/var/www'
+  #     - './docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf'
+  #   restart: always
+
+  hishab_laravel_admin_api_php_fpm:
+    build:
+      args:
+        user: adventure
+        uid: 1000
+      context: ./docker
+      dockerfile: php-fpm/Dockerfile
+    container_name: hishab_laravel_admin_api_php_fpm
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: php-fpm-socket
+        target: /var/run/php-fpm
+        volume:
+          nocopy: true
+      - type: bind
+        source: ./rest-api
+        target: /var/www/
+        
+  hishab_laravel_admin_api_nginx:
+    build:
+      context: ./docker
+      dockerfile: nginx/Dockerfile
+    container_name: hishab_laravel_admin_api_nginx
+    ports:
+      - 8000:80
+    volumes:
+      - type: bind
+        source: ./rest-api
+        target: /var/www/
+    restart: always
+
+  hishab_vue_app:
+    build:
+      context: .
+      dockerfile: Docker/vue/Dockerfile
+    container_name: hishab_vue_app
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./vue-project:/usr/src/app
+ 

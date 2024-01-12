@@ -61,8 +61,8 @@
                                     <router-link to="/sub-category" class="nav-link" data-key="t-crypto"> Sub-Category </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="dashboard-projects.html" class="nav-link" data-key="t-projects">
-                                        Projects </a>
+                                    <router-link to="/expenses" class="nav-link" data-key="t-projects">
+                                        Expenses </router-link>
                                 </li>
                                 <li class="nav-item">
                                     <a href="dashboard-nft.html" class="nav-link" data-key="t-nft"> NFT</a>

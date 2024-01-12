@@ -11,7 +11,7 @@ import "vue-select/dist/vue-select.css";
 import { subCategoryMethods } from '@/components/SubCategoryMethods';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api'
+    baseURL: 'http://localhost:8000/api'
 })
 
 // Add a request interceptor to include the Bearer token in every request
@@ -53,6 +53,6 @@ app.component("v-select", vSelect);
 app.use(router)
 
 // Exclude lord-icon from component resolution
-app.config.isCustomElement = (tag) => tag.startsWith('lord-icon');
+// app.config.isCustomElement = (tag) => tag.startsWith('lord-icon');
 
 app.mount('#app')

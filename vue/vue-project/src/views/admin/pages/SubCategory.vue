@@ -170,7 +170,7 @@
                                 <button type="button" class="btn-close text-end" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="mt-2">
-                                <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon>
+                                <!-- <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#f7b84b,secondary:#f06548" style="width:100px;height:100px"></lord-icon> -->
                                 <!-- <lord-icon src="https://cdn.lordicon.com/tqywkdcz.json" trigger="hover" style="width:150px;height:150px"></lord-icon> -->
                                 <h4 class="mb-3 mt-4">Are you sure?</h4>
                                 <p class="text-muted fs-15 mb-4">You won't be able to revert this!?</p>

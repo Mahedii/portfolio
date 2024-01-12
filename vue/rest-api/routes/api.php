@@ -3,8 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\v1\Category\CategoryController;
-use App\Http\Controllers\v1\SubCategory\SubCategoryController;
+use App\Http\Controllers\v1\Expenses\Category\CategoryController;
+use App\Http\Controllers\v1\Expenses\SubCategory\SubCategoryController;
 
 /*
 |--------------------------------------------------------------------------

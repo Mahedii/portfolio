@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\v1\SubCategory;
+namespace App\Services\v1\Expenses\SubCategory;
 
 use Auth;
 // use Validator;
@@ -9,12 +9,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\Category\Category;
+use App\Models\Expenses\Category\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\SubCategory\SubCategory;
+use App\Models\Expenses\SubCategory\SubCategory;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Category\CategoryParentTree;
+use App\Models\Expenses\Category\CategoryParentTree;
 
 class SubCategoryService
 {
@@ -149,7 +149,7 @@ class SubCategoryService
      */
     private function updateMethod()
     {
-        // try {
+        try {
             DB::transaction(function () {
                 $category = Category::find($this->request->id);
                 $category->parent_id = $this->request->category_id;
@@ -179,12 +179,12 @@ class SubCategoryService
                 'status' => 200,
                 'message' => "SubCategory " . $this->request->subcategory . " updated successfully",
             ];
-        // } catch (\Exception $e) {
-        //     $result = [
-        //         'status' => 500,
-        //         'message' => "SubCategory " . $this->request->subcategory . " could not be updated",
-        //     ];
-        // }
+        } catch (\Exception $e) {
+            $result = [
+                'status' => 500,
+                'message' => "SubCategory " . $this->request->subcategory . " could not be updated",
+            ];
+        }
 
         return $result;
     }

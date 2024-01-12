@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\v1\Category;
+namespace App\Services\v1\Expenses\Category;
 
 use Auth;
 // use Validator;
@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\Category\Category;
+use App\Models\Expenses\Category\Category;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryService

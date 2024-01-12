@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Category;
+namespace App\Models\Expenses\Category;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;

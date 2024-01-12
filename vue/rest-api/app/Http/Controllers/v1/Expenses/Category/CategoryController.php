@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\v1\SubCategory;
+namespace App\Http\Controllers\v1\Expenses\Category;
 
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\v1\SubCategory\SubCategoryService;
+use App\Services\v1\Expenses\Category\CategoryService;
 
-class SubCategoryController extends Controller
+class CategoryController extends Controller
 {
-    private $subCategoryService;
+    private $categoryService;
 
     /**
      * Add form data
@@ -20,8 +20,8 @@ class SubCategoryController extends Controller
     public function __invoke(Request $request)
     {
         try {
-            $this->subCategoryService = new SubCategoryService($request);
-            $response = $this->subCategoryService->getResponse();
+            $this->categoryService = new CategoryService($request);
+            $response = $this->categoryService->getResponse();
 
             return response()->json($response);
         } catch (Exception $e) {
