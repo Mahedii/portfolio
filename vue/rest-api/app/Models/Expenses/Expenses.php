@@ -11,7 +11,7 @@ class Expenses extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['category_id', 'amount', 'expense_date', 'remarks', 'payment_method', 'lender_id'];
+    protected $fillable = ['category_id', 'amount', 'expense_date', 'remarks', 'payment_method'];
 
     public function category(): BelongsTo
     {

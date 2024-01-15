@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\v1\Payment\PaymentMethodsController;
 use App\Http\Controllers\v1\Expenses\Category\CategoryController;
 use App\Http\Controllers\v1\Expenses\SubCategory\SubCategoryController;
 
@@ -39,5 +40,12 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/create', SubCategoryController::class)->name('subcategory.create');
         Route::post('/update', SubCategoryController::class)->name('subcategory.update');
         Route::post('/delete', SubCategoryController::class)->name('subcategory.delete');
+    });
+
+    Route::prefix('payment-methods')->group(function () {
+        Route::post('/data', PaymentMethodsController::class)->name('subcategory.data');
+        Route::post('/create', PaymentMethodsController::class)->name('subcategory.create');
+        Route::post('/update', PaymentMethodsController::class)->name('subcategory.update');
+        Route::post('/delete', PaymentMethodsController::class)->name('subcategory.delete');
     });
 });

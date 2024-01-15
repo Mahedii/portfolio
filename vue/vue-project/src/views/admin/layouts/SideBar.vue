@@ -65,7 +65,7 @@
                                         Expenses </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="dashboard-nft.html" class="nav-link" data-key="t-nft"> NFT</a>
+                                    <router-link to="/payment-methods" class="nav-link" data-key="t-nft"> Payment Methods</router-link>
                                 </li>
                             </ul>
                         </div>

@@ -52,6 +52,11 @@ const routes = [
           name: 'Expenses',
           component: () => import('../views/admin/pages/Expenses.vue').then(module => module.default),
         },
+        {
+          path: '/payment-methods',
+          name: 'Payment Methods',
+          component: () => import('../views/admin/pages/Payment/PaymentMethods.vue').then(module => module.default),
+        },
       ],
     },
     {

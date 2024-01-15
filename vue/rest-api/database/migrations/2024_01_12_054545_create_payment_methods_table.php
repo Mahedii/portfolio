@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('incomes', function (Blueprint $table) {
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
-            $table->integer('income_source_id');
-            $table->string('amount')->nullable();
-            $table->string('work_duration_in_days')->default(0);
-            $table->string('income_date')->nullable();
-            $table->tinyText('remarks')->nullable();
+            $table->string('method');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('incomes');
+        Schema::dropIfExists('payment_methods');
     }
 };

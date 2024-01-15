@@ -1,5 +1,6 @@
 <script>
-    import { subCategoryMethods } from '@/components/SubCategoryMethods'; // Adjust the path accordingly
+    import { subCategoryMethods } from '@/components/SubCategoryMethods';
+    import { customToastr } from '@/components/Toastr.vue';
     
     export default {
         data() {
@@ -8,16 +9,61 @@
                     id: null,
                     selectedExpense: null,
                     selectedExpenseParent: null,
-                    expenseAmount: 0
+                    expenseAmount: 0,
+                    expenseDate: null,
+                    remarks: null,
+                    selectedPaymentMethod: null,
                 },
+                expenseList: null,
                 expenseListOptions: [],
+                paymentMethodsList: null,
+                paymentMethodOptions: [],
             };
         },
         created() {
             this.fetchExpenseSubCategories();
+            this.fetchPaymentMethods();
         },
         methods: {
             ...subCategoryMethods,
+            
+            async fetchPaymentMethods() {
+                try {
+                    let payload = {
+                        type: 'read',
+                    }
+                    this.axios.post('/payment-methods/data', payload).then(res=>{
+                        this.paymentMethodsList = res.data.paymentMethods;
+
+                        this.paymentMethodOptions = this.paymentMethodsList.map(paymentMethods => ({
+                            label: paymentMethods.method,
+                            value: paymentMethods.id.toString(),
+                        }));
+                    })
+                } catch (error) {
+                    console.error("Error fetching payment methods:", error);
+                }
+            },
+
+            async fetchExpenseSubCategories() {
+                try {
+                    let payload = {
+                        type: 'read',
+                    }
+                    this.axios.post('/sub-category/data', payload).then(res=>{
+                        this.expensesList = res.data.subcategories;
+                        // console.log(res.data.subcategories);
+
+                        this.expenseListOptions = this.expensesList.map(subcategory => ({
+                            label: subcategory.category_name,
+                            value: subcategory.id.toString(), // Convert id to string for compatibility with v-select
+                            parents: subcategory.parent_category_names,
+                        }));
+                    })
+                } catch (error) {
+                    console.error("Error fetching sub-categories:", error);
+                }
+            },
         
             async addExpense() {
                 try {
@@ -25,6 +71,9 @@
                     let payload = {
                         category_id: this.formData.id,
                         expense_amount: this.formData.expenseAmount,
+                        expense_date: this.formData.expenseAmount,
+                        payment_method: this.formData.expenseAmount,
+                        remarks: this.formData.expenseAmount,
                         type: 'create',
                     };
 
@@ -55,26 +104,6 @@
                         this.isSubmitting = false;
                         console.log(error);
                         return error;
-                }
-            },
-
-            async fetchExpenseSubCategories() {
-                try {
-                    let payload = {
-                        type: 'read',
-                    }
-                    this.axios.post('/sub-category/data', payload).then(res=>{
-                        this.expensesList = res.data.subcategories;
-                        // console.log(res.data.subcategories);
-
-                        this.expenseListOptions = this.expensesList.map(subcategory => ({
-                            label: subcategory.category_name,
-                            value: subcategory.id.toString(), // Convert id to string for compatibility with v-select
-                            parents: subcategory.parent_category_names,
-                        }));
-                    })
-                } catch (error) {
-                    console.error("Error fetching sub-categories:", error);
                 }
             },
 
@@ -119,14 +148,14 @@
                         <div class="card-body">
                             <div class="live-preview">
                                 <form @submit.prevent="addExpense" class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="" class="form-label">Select Source of Expense</label>
+                                        <v-select v-model="formData.selectedExpense" @option:selected="value => getSelectedExpenseParent(value)" class="new-styles" placeholder="Choose one" :options="expenseListOptions"/>
+                                    </div>
+                                    
                                     <div class="col-md-6" v-if="formData.selectedExpenseParent != null">
                                         <label for="subcategory" class="form-label">Expense Parent</label>
                                         <input v-model="formData.selectedExpenseParent" type="text" class="form-control" disabled>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="" class="form-label">Select Expense</label>
-                                        <v-select v-model="formData.selectedExpense" @option:selected="value => getSelectedExpenseParent(value)" class="new-styles" placeholder="Choose one" :options="expenseListOptions"/>
                                     </div>
 
                                     <!-- <div class="col-md-6">
@@ -138,6 +167,22 @@
                                         <label for="subcategory" class="form-label">Expense Amount</label>
                                         <input v-model="formData.expenseAmount" type="text" class="form-control" placeholder="Enter expense name">
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <label for="subcategory" class="form-label">Expense Date</label>
+                                        <input v-model="formData.expenseDate" type="date" class="form-control" placeholder="Enter expense date">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="" class="form-label">Select Payment Method</label>
+                                        <v-select v-model="formData.selectedPaymentMethod" @option:selected="value => getSelectedExpenseParent(value)" class="new-styles" placeholder="Choose one" :options="paymentMethodOptions"/>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="subcategory" class="form-label">Remarks</label>
+                                        <textarea v-model="formData.remarks" class="form-control" placeholder="Remarks if any.."></textarea>
+                                    </div>
+
                                     <div class="col-12">
                                         <div class="text-end">
                                             <button type="submit" class="btn btn-primary">Add</button>

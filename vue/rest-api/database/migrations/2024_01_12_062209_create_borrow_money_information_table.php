@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('borrow_date');
             $table->string('possible_return_date')->nullable();
             $table->string('actual_return_date')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }
