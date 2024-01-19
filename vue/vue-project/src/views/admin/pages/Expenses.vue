@@ -6,7 +6,7 @@
         data() {
             return {
                 formData: {
-                    id: null,
+                    category_id: null,
                     selectedExpense: null,
                     selectedExpenseParent: null,
                     expenseAmount: 0,
@@ -14,13 +14,16 @@
                     remarks: null,
                     selectedPaymentMethod: null,
                 },
-                expenseList: null,
+                expensesCategories: null,
+                expensesCategoriesOptions: [],
+                expensesList: [],
                 expenseListOptions: [],
                 paymentMethodsList: null,
                 paymentMethodOptions: [],
             };
         },
         created() {
+            this.fetchExpenses();
             this.fetchExpenseSubCategories();
             this.fetchPaymentMethods();
         },
@@ -51,10 +54,10 @@
                         type: 'read',
                     }
                     this.axios.post('/sub-category/data', payload).then(res=>{
-                        this.expensesList = res.data.subcategories;
-                        // console.log(res.data.subcategories);
+                        this.expensesCategories = res.data.subcategories;
+                        // console.log(this.expensesCategories)
 
-                        this.expenseListOptions = this.expensesList.map(subcategory => ({
+                        this.expensesCategoriesOptions = this.expensesCategories.map(subcategory => ({
                             label: subcategory.category_name,
                             value: subcategory.id.toString(), // Convert id to string for compatibility with v-select
                             parents: subcategory.parent_category_names,
@@ -64,20 +67,53 @@
                     console.error("Error fetching sub-categories:", error);
                 }
             },
+
+            async fetchExpenses() {
+                try {
+                    let payload = {
+                        type: 'read',
+                    }
+                    // this.axios.post('/expenses/data', payload).then(res=>{
+                    //     this.expensesList = res.data.expenses
+                    //     // console.log(this.expensesList);
+
+                    //     this.expenseListOptions = this.expensesList.map(subcategory => ({
+                    //         label: subcategory.category_name,
+                    //         value: subcategory.id.toString(),
+                    //         parents: subcategory.parent_category_names,
+                    //     }))
+                    // })
+
+                    const response = await this.axios.post('/expenses/data', payload);
+                    this.expensesList = response.data.expenses;
+                    // console.log(this.expensesList);
+
+                    this.expenseListOptions = this.expensesList.map(subcategory => ({
+                        label: subcategory.category_name,
+                        value: subcategory.id.toString(),
+                        parents: subcategory.parent_category_names,
+                    }))
+                } catch (error) {
+                    console.error("Error fetching sub-categories:", error);
+                }
+            },
         
             async addExpense() {
                 try {
                     this.isSubmitting = true
+                    console.log(this.formData.category_id)
                     let payload = {
-                        category_id: this.formData.id,
+                        category_id: this.formData.selectedExpense.value,
                         expense_amount: this.formData.expenseAmount,
-                        expense_date: this.formData.expenseAmount,
-                        payment_method: this.formData.expenseAmount,
-                        remarks: this.formData.expenseAmount,
+                        expense_date: this.formData.expenseDate,
+                        payment_method_id: this.formData.selectedPaymentMethod.value,
+                        remarks: this.formData.remarks,
                         type: 'create',
                     };
 
-                    this.axios.post('/sub-category/create', payload)
+                    console.log(payload)
+
+                    this.axios.post('/expenses/create', payload)
                     .then(response => {
                         // console.log(response)
                         if (response.data.status == 200) {
@@ -86,8 +122,8 @@
                             // Clear the input fields after successful addition
                             this.resetForm()
 
-                            // Refresh sub-category list after adding a new category
-                            this.getSubCategories();
+                            // Refresh expense list after adding a new expense
+                            this.fetchExpenses();
                         } else {
                             customToastr.toastrMessage(response.data.message, "error")
                         }
@@ -108,12 +144,8 @@
             },
 
             async getSelectedExpenseParent(id) {
-                this.expensesList.filter((value, index) => {
-                    if (value.id == id.value) {
-                        this.formData.id = id.value
-                        this.formData.selectedExpenseParent = value.parent_category_names
-                    }
-                })
+                this.formData.category_id = id.value
+                console.log(this.formData.category_id)
             },
         },
     };
@@ -150,10 +182,11 @@
                                 <form @submit.prevent="addExpense" class="row g-3">
                                     <div class="col-md-6">
                                         <label for="" class="form-label">Select Source of Expense</label>
-                                        <v-select v-model="formData.selectedExpense" @option:selected="value => getSelectedExpenseParent(value)" class="new-styles" placeholder="Choose one" :options="expenseListOptions"/>
+                                        <v-select v-model="formData.selectedExpense" @option:selected="value => getSelectedExpenseParent(value)" class="new-styles" placeholder="Choose one" :options="expensesCategoriesOptions"/>
                                     </div>
                                     
-                                    <div class="col-md-6" v-if="formData.selectedExpenseParent != null">
+                                    <!-- <div class="col-md-6" v-if="formData.selectedExpenseParent != null"></div> -->
+                                    <div class="col-md-6">
                                         <label for="subcategory" class="form-label">Expense Parent</label>
                                         <input v-model="formData.selectedExpenseParent" type="text" class="form-control" disabled>
                                     </div>
@@ -163,9 +196,19 @@
                                         <input v-model="formData.subcategory" type="text" class="form-control" placeholder="Enter expense name">
                                     </div> -->
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="subcategory" class="form-label">Expense Amount</label>
                                         <input v-model="formData.expenseAmount" type="text" class="form-control" placeholder="Enter expense name">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label for="subcategory" class="form-label">Quantity</label>
+                                        <input v-model="formData.expenseAmount" type="text" class="form-control" placeholder="Enter quantity">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label for="subcategory" class="form-label">Unit</label>
+                                        <input v-model="formData.expenseAmount" type="text" class="form-control" placeholder="Enter unit">
                                     </div>
 
                                     <div class="col-md-6">
@@ -178,7 +221,7 @@
                                         <v-select v-model="formData.selectedPaymentMethod" @option:selected="value => getSelectedExpenseParent(value)" class="new-styles" placeholder="Choose one" :options="paymentMethodOptions"/>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <label for="subcategory" class="form-label">Remarks</label>
                                         <textarea v-model="formData.remarks" class="form-control" placeholder="Remarks if any.."></textarea>
                                     </div>
@@ -206,19 +249,22 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Parent</th>
-                                        <th>Name</th>
+                                        <th>Category</th>
                                         <th>Amount</th>
-                                        <th>Created</th>
+                                        <th>Expense Date</th>
+                                        <th>Payment Method</th>
+                                        <th>Remarks</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- <tr v-for="(subcategory, index) in allSubCategory" :key="index">
+                                    <tr v-for="(expense, index) in this.expensesList" :key="index">
                                         <td>{{ ++index }}</td>
-                                        <td>{{ subcategory.parent_category_names }}</td>
-                                        <td>{{ subcategory.category_name }}</td>
-                                        <td>{{ formatRelativeDate(subcategory.created_at) }}</td>
+                                        <td>{{ expense.parent_category_names }}</td>
+                                        <td>{{ expense.amount }}</td>
+                                        <td>{{ formatRelativeDate(expense.expense_date) }}</td>
+                                        <td>{{ expense.payment_method.method }}</td>
+                                        <td>{{ expense.remarks }}</td>
                                         <td>
                                             <div class="dropdown d-inline-block">
                                                 <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
@@ -227,13 +273,13 @@
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a href="#" class="dropdown-item edit-item-btn" @click="openEditMOdal(subcategory)">
+                                                        <a href="#" class="dropdown-item edit-item-btn" @click="openEditModal(expense)">
                                                             <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                             Edit
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="#" class="dropdown-item delete-item-btn" @click="openDeleteMOdal(subcategory)">
+                                                        <a href="#" class="dropdown-item delete-item-btn" @click="openDeleteModal(expense)">
                                                             <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                             Delete
                                                         </a>
@@ -241,7 +287,7 @@
                                                 </ul>
                                             </div>
                                         </td>
-                                    </tr> -->
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

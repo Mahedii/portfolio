@@ -9,7 +9,7 @@ class PaymentMethods extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['method', 'slug'];
+    protected $fillable = ['method', 'status', 'slug'];
 
     public static function getPaymentMethods()
     {

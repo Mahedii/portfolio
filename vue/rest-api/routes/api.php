@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\v1\Expenses\ExpenseController;
+use App\Http\Controllers\v1\Measurement\UnitsController;
 use App\Http\Controllers\v1\Payment\PaymentMethodsController;
 use App\Http\Controllers\v1\Expenses\Category\CategoryController;
 use App\Http\Controllers\v1\Expenses\SubCategory\SubCategoryController;
@@ -42,10 +44,28 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/delete', SubCategoryController::class)->name('subcategory.delete');
     });
 
-    Route::prefix('payment-methods')->group(function () {
-        Route::post('/data', PaymentMethodsController::class)->name('subcategory.data');
-        Route::post('/create', PaymentMethodsController::class)->name('subcategory.create');
-        Route::post('/update', PaymentMethodsController::class)->name('subcategory.update');
-        Route::post('/delete', PaymentMethodsController::class)->name('subcategory.delete');
+    Route::controller(PaymentMethodsController::class)->group(function () {
+        Route::prefix('payment-methods')->group(function () {
+            Route::post('/data', '__invoke')->name('paymentMethods.data');
+            Route::post('/create', '__invoke')->name('paymentMethods.create');
+            Route::post('/update', '__invoke')->name('paymentMethods.update');
+            Route::post('/delete', '__invoke')->name('paymentMethods.delete');
+
+            // Route::prefix('/info')->group(function () {});
+        });
+    });
+
+    Route::prefix('measurement-units')->group(function () {
+        Route::post('/data', UnitsController::class)->name('units.data');
+        Route::post('/create', UnitsController::class)->name('units.create');
+        Route::post('/update', UnitsController::class)->name('units.update');
+        Route::post('/delete', UnitsController::class)->name('units.delete');
+    });
+
+    Route::prefix('expenses')->group(function () {
+        Route::post('/data', ExpenseController::class)->name('expenses.data');
+        Route::post('/create', ExpenseController::class)->name('expenses.create');
+        Route::post('/update', ExpenseController::class)->name('expenses.update');
+        Route::post('/delete', ExpenseController::class)->name('expenses.delete');
     });
 });

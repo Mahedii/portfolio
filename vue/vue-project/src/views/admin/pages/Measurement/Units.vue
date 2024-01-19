@@ -5,46 +5,41 @@
         data() {
             return {
                 formData: {
-                    methodName: null,
+                    unitName: null,
                 },
                 fetchedFormData: {
-                    selectedPaymentMethodId: null,
-                    methodName: null,
-                    accountName: null,
-                    accountNumber: null,
-                    bankName: null,
-                    expireDate: null,
-                    cvc: null,
+                    selectedMeasurementUnitId: null,
+                    unitName: null,
                 },
-                paymentMethodsList: [],
+                unitsList: [],
             };
         },
         created() {
-            this.fetchPaymentMethods();
+            this.fetchMeasurementUnits();
         },
         methods: {
-            async fetchPaymentMethods() {
+            async fetchMeasurementUnits() {
                 try {
                     let payload = {
                         type: 'read',
                     }
-                    this.axios.post('/payment-methods/data', payload).then(res=>{
-                        this.paymentMethodsList = res.data.paymentMethods;
+                    this.axios.post('/measurement-units/data', payload).then(res=>{
+                        this.unitsList = res.data.measurementUnits;
                     })
                 } catch (error) {
-                    console.error("Error fetching payment methods:", error);
+                    console.error("Error fetching measurement units:", error);
                 }
             },
         
-            async addPaymentMethods() {
+            async addUnits() {
                 try {
                     this.isSubmitting = true
                     let payload = {
-                        method: this.formData.methodName,
+                        unit: this.formData.unitName,
                         type: 'create',
                     };
 
-                    this.axios.post('/payment-methods/create', payload)
+                    this.axios.post('/measurement-units/create', payload)
                     .then(response => {
                         // console.log(response)
                         if (response.data.status == 200) {
@@ -54,7 +49,7 @@
                             this.resetForm()
 
                             // Refresh sub-category list after adding a new category
-                            this.fetchPaymentMethods();
+                            this.fetchMeasurementUnits();
                         } else {
                             customToastr.toastrMessage(response.data.message, "error")
                         }
@@ -81,30 +76,24 @@
                     var dataObject = this.formData
                 }
 
-                dataObject.methodName = null
+                dataObject.unitName = null
             },
 
             formatRelativeDate(date) {
                 return moment(date).fromNow();
             },
 
-            async updatePaymentMethodInfos() {
+            async updateMeasurementUnit() {
                 try {
                     this.isSubmitting = true
                     let payload = {
-                        id: this.fetchedFormData.selectedPaymentMethodId,
-                        methodName: this.fetchedFormData.methodName,
-                        accountName: this.fetchedFormData.accountName,
-                        accountNumber: this.fetchedFormData.accountNumber,
-                        bankName: this.fetchedFormData.bankName,
-                        expireDate: this.fetchedFormData.expireDate,
-                        cvc: this.fetchedFormData.cvc,
-                        type: 'update',
+                        id: this.fetchedFormData.selectedMeasurementUnitId,
+                        unitName: this.fetchedFormData.unitName,
                     };
 
                     console.log(payload)
 
-                    this.axios.post('/payment-methods/update', payload)
+                    this.axios.post('/measurement-units/update', payload)
                     .then(response => {
                         // console.log(response)
                         if (response.data.status == 200) {
@@ -116,7 +105,7 @@
                             this.resetForm()
 
                             // Refresh sub-category list after adding a new category
-                            this.fetchPaymentMethods();
+                            this.fetchMeasurementUnits();
                         } else {
                             customToastr.toastrMessage(response.data.message, "error")
                         }
@@ -136,24 +125,15 @@
                 }
             },
 
-            async openEditModal(paymentMethods) {
+            async openEditModal(measurementUnits) {
                 let payload = {
                     type: 'read',
-                    subType: 'payment-method-info',
-                    id: paymentMethods.id,
+                    id: measurementUnits.id,
                 }
-                const response = await this.axios.post('/payment-methods/data', payload)
+                const response = await this.axios.post('/measurement-units/data', payload)
 
-                this.fetchedFormData.selectedPaymentMethodId = paymentMethods.id
-                this.fetchedFormData.methodName = paymentMethods.method
-
-                if (response.data.paymentMethodWithInfos.length > 0) {
-                    this.fetchedFormData.accountName = response.data.paymentMethodWithInfos[0].account_name
-                    this.fetchedFormData.accountNumber = response.data.paymentMethodWithInfos[0].account_number
-                    this.fetchedFormData.bankName = response.data.paymentMethodWithInfos[0].bank_name
-                    this.fetchedFormData.expireDate = response.data.paymentMethodWithInfos[0].expire_date
-                    this.fetchedFormData.cvc = response.data.paymentMethodWithInfos[0].cvc
-                }
+                this.fetchedFormData.selectedMeasurementUnitId = measurementUnits.id
+                this.fetchedFormData.unitName = measurementUnits.unit_name
 
                 // Open the modal
                 jQuery('#editModal').modal('show');
@@ -165,9 +145,9 @@
                     id: id,
                 }
 
-                const response = await this.axios.post('/payment-methods/update', payload)
+                const response = await this.axios.post('/units/update', payload)
                 if (response.data.status == 200) {
-                    this.fetchPaymentMethods();
+                    this.fetchMeasurementUnits();
                     customToastr.toastrMessage(response.data.message, "success")
                 } else {
                     customToastr.toastrMessage(response.data.message, "error")
@@ -183,11 +163,11 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Payment Methods</h4>
+                        <h4 class="mb-sm-0">Units</h4>
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a href="javascript: void(0);">Payment Methods</a></li>
+                                <li class="breadcrumb-item"><a href="javascript: void(0);">Units</a></li>
                                 <li class="breadcrumb-item active">Create</li>
                             </ol>
                         </div>
@@ -200,15 +180,15 @@
                 <div class="col-xxl-12">
                     <div class="card">
                         <div class="card-header align-items-center d-flex">
-                            <h4 class="card-title mb-0 flex-grow-1">Payment Methods</h4>
+                            <h4 class="card-title mb-0 flex-grow-1">Units</h4>
                         </div>
 
                         <div class="card-body">
                             <div class="live-preview">
-                                <form @submit.prevent="addPaymentMethods" class="row g-3">
+                                <form @submit.prevent="addUnits" class="row g-3">
                                     <div class="col-md-12">
-                                        <label for="subcategory" class="form-label">Method Name</label>
-                                        <input v-model="formData.methodName" type="text" class="form-control" placeholder="Enter method name">
+                                        <label for="subcategory" class="form-label">Unit Name</label>
+                                        <input v-model="formData.unitName" type="text" class="form-control" placeholder="Enter unit name">
                                     </div>
                                     <div class="col-12">
                                         <div class="text-end">
@@ -226,7 +206,7 @@
             <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <form @submit.prevent="updatePaymentMethodInfos">
+                        <form @submit.prevent="updateMeasurementUnit">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="varyingcontentModalLabel">Update form</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -234,37 +214,9 @@
                             <div class="modal-body">
                                 <!-- Bind form fields to data properties -->
                                 <div class="mb-3">
-                                    <label for="" class="form-label">Payment Method</label>
-                                    <input v-model="fetchedFormData.methodName" type="text" class="form-control" placeholder="Enter method name">
+                                    <label for="" class="form-label">Unit</label>
+                                    <input v-model="fetchedFormData.unitName" type="text" class="form-control" placeholder="Enter unit name">
                                 </div>
-                                
-                                <div class="mb-3">
-                                    <label for="" class="form-label">Account Name</label>
-                                    <input v-model="fetchedFormData.accountName" type="text" class="form-control" placeholder="Enter account name">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="" class="form-label">Account Number</label>
-                                    <input v-model="fetchedFormData.accountNumber" type="text" class="form-control" placeholder="Enter account number">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="" class="form-label">Bank Name</label>
-                                    <input v-model="fetchedFormData.bankName" type="text" class="form-control" placeholder="Enter bank name">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="" class="form-label">Expire Date</label>
-                                    <input v-model="fetchedFormData.expireDate" type="date" class="form-control" placeholder="Enter account expire date">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="" class="form-label">CVC</label>
-                                    <input v-model="fetchedFormData.cvc" type="text" class="form-control" placeholder="Enter cvc no">
-                                </div>
-
-                                <!-- Add other form fields as needed -->
-                                
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -279,28 +231,28 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Payment Methods List</h5>
+                            <h5 class="card-title mb-0">Units List</h5>
                         </div>
                         <div class="card-body">
                             <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Method</th>
+                                        <th>Unit</th>
                                         <th>Status</th>
                                         <th>Created</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(paymentMethods, index) in paymentMethodsList" :key="index">
+                                    <tr v-for="(measurementUnits, index) in unitsList" :key="index">
                                         <td>{{ ++index }}</td>
-                                        <td>{{ paymentMethods.method }}</td>
+                                        <td>{{ measurementUnits.unit_name }}</td>
                                         <td>
-                                            <button v-if="paymentMethods.status == '1'" class="btn btn-soft-danger mx-2" @click="changeStatus(paymentMethods.id)">Disable</button>
-                                            <button v-else class="btn btn-soft-success mx-2" @click="changeStatus(paymentMethods.id)">Enable</button>
+                                            <button v-if="measurementUnits.status == '1'" class="btn btn-soft-danger mx-2" @click="changeStatus(measurementUnits.id)">Disable</button>
+                                            <button v-else class="btn btn-soft-success mx-2" @click="changeStatus(measurementUnits.id)">Enable</button>
                                         </td>
-                                        <td>{{ formatRelativeDate(paymentMethods.created_at) }}</td>
+                                        <td>{{ formatRelativeDate(measurementUnits.created_at) }}</td>
                                         <td>
                                             <div class="dropdown d-inline-block">
                                                 <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
@@ -309,7 +261,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a href="#" class="dropdown-item edit-item-btn" @click="openEditModal(paymentMethods)">
+                                                        <a href="#" class="dropdown-item edit-item-btn" @click="openEditModal(measurementUnits)">
                                                             <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                             Edit
                                                         </a>

@@ -57,6 +57,11 @@ const routes = [
           name: 'Payment Methods',
           component: () => import('../views/admin/pages/Payment/PaymentMethods.vue').then(module => module.default),
         },
+        {
+          path: '/units',
+          name: 'Measurement Units',
+          component: () => import('../views/admin/pages/Measurement/Units.vue').then(module => module.default),
+        },
       ],
     },
     {

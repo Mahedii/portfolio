@@ -16,9 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->string('amount')->default('0');
+            $table->string('quantity')->nullable();
+            $table->string('unit_id')->nullable();
             $table->string('expense_date');
             $table->tinyText('remarks')->nullable();
-            $table->string('payment_method');
+            $table->string('payment_method_id');
             $table->timestamps();
         });
     }

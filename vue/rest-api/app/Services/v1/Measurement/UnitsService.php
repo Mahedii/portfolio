@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Services\v1\Payment;
+namespace App\Services\v1\Measurement;
 
 use Exception;
+use App\Models\Unit\Unit;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\Payment\PaymentMethods;
-use App\Models\Payment\PaymentMethodsInfo;
 
-class PaymentMethodsService
+class UnitsService
 {
     /**
      * Client form request container
@@ -19,7 +19,7 @@ class PaymentMethodsService
      */
     private Request $request;
 
-    private $paymentMethods;
+    private $measurementUnits;
 
     /**
      * Set the request container
@@ -84,25 +84,16 @@ class PaymentMethodsService
     private function readMethod()
     {
         try {
-            if (isset($this->request->subType) && $this->request->subType == 'payment-method-info') {
+            if (isset($this->request->id) && $this->request->id !== null) {
                 $result = [
                     'status' => 200,
-                    'paymentMethodWithInfos' => PaymentMethodsInfo::getPaymentMethodsWithInfo($this->request->id)
                 ];
             } else {
-                if (isset($this->request->id) && $this->request->id !== null) {
-                    $result = [
-                        'status' => 200,
-                        // 'paymentMethods' => PaymentMethods::getSelectedSubcategoriesWithCategory($this->request->id)
-                    ];
-                } else {
-                    $result = [
-                        'status' => 200,
-                        'paymentMethods' => PaymentMethods::getPaymentMethods()
-                    ];
-                }
+                $result = [
+                    'status' => 200,
+                    'measurementUnits' => Unit::get()
+                ];
             }
-
             return $result;
         } catch (\Exception $e) {
             Log::error($e);
@@ -119,22 +110,22 @@ class PaymentMethodsService
         try {
             DB::transaction(function () {
                 // Your existing code within the transaction
-                $slug = $this->generateSlug($this->request->method);
+                $slug = $this->generateSlug($this->request->unit);
 
-                $createCategory = PaymentMethods::create([
-                    'method' => $this->request->method,
+                Unit::create([
+                    'unit_name' => $this->request->unit,
                     'slug' => $slug
                 ]);
             });
 
             $result = [
                 'status' => 200,
-                'message' => "Payment Method " . $this->request->method . " added successfully",
+                'message' => "Measurement Unit " . $this->request->unit . " added successfully",
             ];
         } catch (\Exception $e) {
             $result = [
                 'status' => 500,
-                'message' => "Payment Method " . $this->request->method . " could not be added",
+                'message' => "Measurement Unit " . $this->request->unit . " could not be added",
             ];
         }
 
@@ -150,55 +141,29 @@ class PaymentMethodsService
     {
         try {
             DB::transaction(function () {
-                $paymentMethods = PaymentMethods::find($this->request->id);
-                $paymentMethods->method = $this->request->methodName;
+                $measurementUnits = Unit::find($this->request->id);
+                $measurementUnits->unit_name = $this->request->unit;
+                $measurementUnits->slug = $this->generateSlug($this->request->unit);
 
                 // Check if any values have changed and are not null
-                $changesToSave = $this->checkForDirtyData($paymentMethods);
+                $changesToSave = $this->checkForDirtyData($measurementUnits);
                 // Log::info(json_encode($changesToSave));
 
                 // Update the changed values only if there are changes to save
                 if (!empty($changesToSave)) {
-                    $paymentMethods->update($changesToSave);
-                }
-
-                $paymentMethodsInfo = PaymentMethodsInfo::where('payment_method_id', $this->request->id)->first();
-
-                // Log::info($this->request->id);
-
-                if (!$paymentMethodsInfo) {
-                    PaymentMethodsInfo::create([
-                        'payment_method_id' => $this->request->id,
-                        'account_name' => $this->request->accountName,
-                        'account_number' => $this->request->accountNumber,
-                        'bank_name' => $this->request->bankName,
-                        'expire_date' => $this->request->expireDate,
-                        'cvc' => $this->request->cvc
-                    ]);
-                } else {
-                    $paymentMethodsInfo->payment_method_id = $this->request->id;
-                    $paymentMethodsInfo->account_name = $this->request->accountName;
-                    $paymentMethodsInfo->account_number = $this->request->accountNumber;
-                    $paymentMethodsInfo->bank_name = $this->request->bankName;
-                    $paymentMethodsInfo->expire_date = $this->request->expireDate;
-                    $paymentMethodsInfo->cvc = $this->request->cvc;
-
-                    $changesToSave = $this->checkForDirtyData($paymentMethodsInfo);
-                    if (!empty($changesToSave)) {
-                        $paymentMethodsInfo->update($changesToSave);
-                    }
+                    $measurementUnits->update($changesToSave);
                 }
             });
 
             $result = [
                 'status' => 200,
-                'message' => "Payment Method " . $this->request->method . " updated successfully",
+                'message' => "Measurement Unit " . $this->request->unit . " updated successfully",
             ];
         } catch (\Exception $e) {
             Log::error($e);
             $result = [
                 'status' => 500,
-                'message' => "Payment Method " . $this->request->method . " could not be updated",
+                'message' => "Measurement Unit " . $this->request->unit . " could not be updated",
             ];
         }
 
@@ -224,10 +189,10 @@ class PaymentMethodsService
     {
         try {
             DB::transaction(function () {
-                $paymentMethods = PaymentMethods::find($this->request->id);
-                if ($paymentMethods) {
-                    $status = ($paymentMethods->status == "1") ? "0" : "1";
-                    $paymentMethods->update(["status" => $status]);
+                $measurementUnits = Unit::find($this->request->id);
+                if ($measurementUnits) {
+                    $status = ($measurementUnits->status == "1") ? "0" : "1";
+                    $measurementUnits->update(["status" => $status]);
                 }
             });
 
@@ -269,12 +234,12 @@ class PaymentMethodsService
     {
         $slug = Str::slug($name);
 
-        if (PaymentMethods::where('slug', Str::slug($name))->exists()) {
+        if (Unit::where('slug', Str::slug($name))->exists()) {
             $original = $slug;
 
             $count = 1;
 
-            while (PaymentMethods::where('slug', $slug)->exists()) {
+            while (Unit::where('slug', $slug)->exists()) {
                 $slug = "{$original}-" . $count++;
             }
 

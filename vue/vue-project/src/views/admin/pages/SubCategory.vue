@@ -39,7 +39,7 @@
             // Your component-specific methods, if any
         
             // For example:
-            openEditMOdal(subcategory) {
+            openEditModal(subcategory) {
                 // Assign the selected subcategory to the data property
                 // this.editedSubcategory = { ...subcategory };
                 this.isEditModalOpen = true;
@@ -51,7 +51,7 @@
                 jQuery('#editModal').modal('show');
             },
 
-            openDeleteMOdal(subcategory) {
+            openDeleteModal(subcategory) {
                 this.fetchedFormData.id = subcategory.id
                 this.fetchedFormData.categoryName = subcategory.category_name
                 // Open the modal
@@ -215,13 +215,13 @@
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a href="#" class="dropdown-item edit-item-btn" @click="openEditMOdal(subcategory)">
+                                                        <a href="#" class="dropdown-item edit-item-btn" @click="openEditModal(subcategory)">
                                                             <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                                                             Edit
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="#" class="dropdown-item delete-item-btn" @click="openDeleteMOdal(subcategory)">
+                                                        <a href="#" class="dropdown-item delete-item-btn" @click="openDeleteModal(subcategory)">
                                                             <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
                                                             Delete
                                                         </a>

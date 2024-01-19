@@ -52,20 +52,23 @@
                                         About </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/login" class="nav-link" data-key="t-crm"> Login </router-link>
+                                    <router-link to="/login" class="nav-link" data-key="t-crm">Login </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/category" class="nav-link" data-key="t-ecommerce"> Category </router-link>
+                                    <router-link to="/category" class="nav-link" data-key="t-ecommerce">Category </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/sub-category" class="nav-link" data-key="t-crypto"> Sub-Category </router-link>
+                                    <router-link to="/sub-category" class="nav-link" data-key="t-crypto">Sub-Category </router-link>
                                 </li>
                                 <li class="nav-item">
                                     <router-link to="/expenses" class="nav-link" data-key="t-projects">
                                         Expenses </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/payment-methods" class="nav-link" data-key="t-nft"> Payment Methods</router-link>
+                                    <router-link to="/payment-methods" class="nav-link" data-key="t-nft">Payment Methods</router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/units" class="nav-link" data-key="t-nft">Units</router-link>
                                 </li>
                             </ul>
                         </div>
