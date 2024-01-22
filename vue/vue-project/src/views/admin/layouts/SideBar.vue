@@ -11,19 +11,19 @@
             <!-- Dark Logo-->
             <router-link to="/" class="logo logo-dark">
                 <span class="logo-sm">
-                    <img src="../../../../assets/images/logo-sm.png" alt="" height="22">
+                    <img src="../../../../public/assets/images/logo-sm.png" alt="" height="22">
                 </span>
                 <span class="logo-lg">
-                    <img src="../../../../assets/images/logo-dark.png" alt="" height="17">
+                    <img src="../../../../public/assets/images/logo-dark.png" alt="" height="17">
                 </span>
             </router-link>
             <!-- Light Logo-->
             <RouterLink to="/" class="logo logo-light">
                 <span class="logo-sm">
-                    <img src="../../../../assets/images/logo-sm.png" alt="" height="22">
+                    <img src="../../../../public/assets/images/logo-sm.png" alt="" height="22">
                 </span>
                 <span class="logo-lg">
-                    <img src="../../../../assets/images/logo-light.png" alt="" height="17">
+                    <img src="../../../../public/assets/images/logo-light.png" alt="" height="17">
                 </span>
             </RouterLink>
             <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
@@ -72,7 +72,55 @@
                                 </li>
                             </ul>
                         </div>
-                    </li> <!-- end Dashboard Menu -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebarIncome" data-bs-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="sidebarIncome">
+                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Income</span>
+                        </a>
+                        <div class="collapses menu-dropdown" id="sidebarIncome">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link" data-key="t-calendar"> Source
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link" data-key="t-chat"> Income </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebarLendBorrow" data-bs-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="sidebarLendBorrow">
+                            <i class="ri-apps-2-line"></i> <span data-key="t-apps">Lender-Borrower</span>
+                        </a>
+                        <div class="collapses menu-dropdown" id="sidebarLendBorrow">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="#sidebarLender" class="nav-link" data-bs-toggle="collapse" role="button"
+                                        aria-expanded="false" aria-controls="sidebarLender" data-key="t-email">
+                                        Lender
+                                    </a>
+                                    <div class="collapses menu-dropdown" id="sidebarLender">
+                                        <ul class="nav nav-sm flex-column">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" data-key="t-mailbox">
+                                                    Lenders </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" data-key="t-mailbox">
+                                                    Money </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link" data-key="t-chat"> Borrower </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="#sidebarApps" data-bs-toggle="collapse" role="button"
                             aria-expanded="false" aria-controls="sidebarApps">

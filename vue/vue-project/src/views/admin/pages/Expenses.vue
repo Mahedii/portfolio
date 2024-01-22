@@ -11,10 +11,25 @@
                     selectedExpenseParent: null,
                     expenseAmount: 0,
                     expenseDate: null,
+                    quantity: null,
                     remarks: null,
+                    selectedUnit: null,
                     selectedPaymentMethod: null,
                 },
-                expensesCategories: null,
+                fetchedFormData: {
+                    category_id: null,
+                    selectedExpense: null,
+                    selectedExpenseParent: null,
+                    expenseAmount: 0,
+                    expenseDate: null,
+                    quantity: null,
+                    remarks: null,
+                    selectedUnit: null,
+                    selectedPaymentMethod: null,
+                },
+                unitsList: [],
+                unitsListOptions: [],
+                expensesCategories: [],
                 expensesCategoriesOptions: [],
                 expensesList: [],
                 expenseListOptions: [],
@@ -23,14 +38,16 @@
             };
         },
         created() {
+            this.initialFormData = { ...this.formData }
             this.fetchExpenses();
+            this.fetchMeasurementUnits();
             this.fetchExpenseSubCategories();
             this.fetchPaymentMethods();
         },
         methods: {
             ...subCategoryMethods,
             
-            async fetchPaymentMethods() {
+            fetchPaymentMethods() {
                 try {
                     let payload = {
                         type: 'read',
@@ -48,7 +65,25 @@
                 }
             },
 
-            async fetchExpenseSubCategories() {
+            fetchMeasurementUnits() {
+                try {
+                    let payload = {
+                        type: 'read',
+                    }
+                    this.axios.post('/measurement-units/data', payload).then(res=>{
+                        this.unitsList = res.data.measurementUnits;
+
+                        this.unitsListOptions = this.unitsList.map(unit => ({
+                            label: unit.unit_name,
+                            value: unit.id.toString(),
+                        }));
+                    })
+                } catch (error) {
+                    console.error("Error fetching measurement units:", error);
+                }
+            },
+
+            fetchExpenseSubCategories() {
                 try {
                     let payload = {
                         type: 'read',
@@ -101,11 +136,15 @@
             async addExpense() {
                 try {
                     this.isSubmitting = true
-                    console.log(this.formData.category_id)
+                    if (this.formData.selectedUnit != null) {
+                        this.formData.selectedUnit = this.formData.selectedUnit.value
+                    }
                     let payload = {
                         category_id: this.formData.selectedExpense.value,
                         expense_amount: this.formData.expenseAmount,
                         expense_date: this.formData.expenseDate,
+                        unit_id: this.formData.selectedUnit,
+                        quantity: this.formData.quantity,
                         payment_method_id: this.formData.selectedPaymentMethod.value,
                         remarks: this.formData.remarks,
                         type: 'create',
@@ -143,9 +182,42 @@
                 }
             },
 
+            resetForm(method = null) {
+                if (method == 'update') {
+                    var dataObject = this.fetchedFormData
+                } else {
+                    var dataObject = this.formData
+                }
+                // Reset form fields and selected values
+                // dataObject.selectedCategory = null
+                this.formData = { ...this.initialFormData }
+            },
+
+            async openEditModal(expense) {
+                this.fetchedFormData.selectedExpense = expense.category_id
+                this.fetchedFormData.expenseAmount = expense.unit_name
+                this.fetchedFormData.quantity = expense.category_id
+                this.fetchedFormData.selectedUnit = expense.unit_name
+                this.fetchedFormData.expenseDate = expense.category_id
+                this.fetchedFormData.selectedPaymentMethod = expense.unit_name
+                this.fetchedFormData.remarks = expense.category_id
+                this.fetchedFormData.expenseAmount = expense.unit_name
+
+                // Open the modal
+                jQuery('#editModal').modal('show');
+            },
+
             async getSelectedExpenseParent(id) {
                 this.formData.category_id = id.value
-                console.log(this.formData.category_id)
+                console.log(this.expensesCategories)
+                console.log(JSON.parse(JSON.stringify(this.expensesCategories)))
+
+                var result = JSON.parse(JSON.stringify(this.expensesCategories)).filter((item) => {
+                    if (item.id == this.formData.category_id) {
+                        return item
+                    }
+                })
+                this.formData.selectedExpenseParent = result[0].parent_category_names
             },
         },
     };
@@ -185,44 +257,38 @@
                                         <v-select v-model="formData.selectedExpense" @option:selected="value => getSelectedExpenseParent(value)" class="new-styles" placeholder="Choose one" :options="expensesCategoriesOptions"/>
                                     </div>
                                     
-                                    <!-- <div class="col-md-6" v-if="formData.selectedExpenseParent != null"></div> -->
                                     <div class="col-md-6">
-                                        <label for="subcategory" class="form-label">Expense Parent</label>
+                                        <label for="" class="form-label">Expense Parent</label>
                                         <input v-model="formData.selectedExpenseParent" type="text" class="form-control" disabled>
                                     </div>
 
-                                    <!-- <div class="col-md-6">
-                                        <label for="subcategory" class="form-label">Expense Name</label>
-                                        <input v-model="formData.subcategory" type="text" class="form-control" placeholder="Enter expense name">
-                                    </div> -->
-
                                     <div class="col-md-4">
-                                        <label for="subcategory" class="form-label">Expense Amount</label>
+                                        <label for="" class="form-label">Expense Amount</label>
                                         <input v-model="formData.expenseAmount" type="text" class="form-control" placeholder="Enter expense name">
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label for="subcategory" class="form-label">Quantity</label>
-                                        <input v-model="formData.expenseAmount" type="text" class="form-control" placeholder="Enter quantity">
+                                        <label for="" class="form-label">Quantity</label>
+                                        <input v-model="formData.quantity" type="text" class="form-control" placeholder="Enter quantity">
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label for="subcategory" class="form-label">Unit</label>
-                                        <input v-model="formData.expenseAmount" type="text" class="form-control" placeholder="Enter unit">
+                                        <label for="" class="form-label">Unit</label>
+                                        <v-select v-model="formData.selectedUnit" class="new-styles" placeholder="Choose one" :options="unitsListOptions"/>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="subcategory" class="form-label">Expense Date</label>
+                                        <label for="" class="form-label">Expense Date</label>
                                         <input v-model="formData.expenseDate" type="date" class="form-control" placeholder="Enter expense date">
                                     </div>
 
                                     <div class="col-md-6">
                                         <label for="" class="form-label">Select Payment Method</label>
-                                        <v-select v-model="formData.selectedPaymentMethod" @option:selected="value => getSelectedExpenseParent(value)" class="new-styles" placeholder="Choose one" :options="paymentMethodOptions"/>
+                                        <v-select v-model="formData.selectedPaymentMethod" class="new-styles" placeholder="Choose one" :options="paymentMethodOptions"/>
                                     </div>
 
                                     <div class="col-md-12">
-                                        <label for="subcategory" class="form-label">Remarks</label>
+                                        <label for="" class="form-label">Remarks</label>
                                         <textarea v-model="formData.remarks" class="form-control" placeholder="Remarks if any.."></textarea>
                                     </div>
 
@@ -236,6 +302,68 @@
                         </div>
                     </div>
                 </div> <!-- end col -->
+            </div>
+
+            <!-- Edit Modal content -->
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form @submit.prevent="updateExpense">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="varyingcontentModalLabel">Update form</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Bind form fields to data properties -->
+                                <div class="row g-3">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="" class="form-label">Select Source of Expense</label>
+                                        <v-select v-model="fetchedFormData.selectedExpense" @option:selected="value => getSelectedExpenseParent(value)" class="new-styles" placeholder="Choose one" :options="expensesCategoriesOptions"/>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="" class="form-label">Expense Parent</label>
+                                        <input v-model="fetchedFormData.selectedExpenseParent" type="text" class="form-control" disabled>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="" class="form-label">Expense Amount</label>
+                                        <input v-model="fetchedFormData.expenseAmount" type="text" class="form-control" placeholder="Enter expense name">
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="" class="form-label">Quantity</label>
+                                        <input v-model="fetchedFormData.quantity" type="text" class="form-control" placeholder="Enter quantity">
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="" class="form-label">Unit</label>
+                                        <v-select v-model="fetchedFormData.selectedUnit" class="new-styles" placeholder="Choose one" :options="unitsListOptions"/>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="" class="form-label">Expense Date</label>
+                                        <input v-model="fetchedFormData.expenseDate" type="date" class="form-control" placeholder="Enter expense date">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="" class="form-label">Select Payment Method</label>
+                                        <v-select v-model="fetchedFormData.selectedPaymentMethod" class="new-styles" placeholder="Choose one" :options="paymentMethodOptions"/>
+                                    </div>
+
+                                    <div class="col-md-12 mb-3">
+                                        <label for="" class="form-label">Remarks</label>
+                                        <textarea v-model="fetchedFormData.remarks" class="form-control" placeholder="Remarks if any.."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <div class="row">

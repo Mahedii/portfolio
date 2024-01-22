@@ -107,6 +107,8 @@ class ExpensesService
                     'category_id' => $this->request->category_id,
                     'amount' => $this->request->expense_amount,
                     'expense_date' => $this->request->expense_date,
+                    'unit_id' => $this->request->unit_id,
+                    'quantity' => $this->request->quantity,
                     'payment_method_id' => $this->request->payment_method_id,
                     'remarks' => $this->request->remarks,
                 ]);

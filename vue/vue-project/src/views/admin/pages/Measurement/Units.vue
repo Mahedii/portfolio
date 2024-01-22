@@ -89,9 +89,8 @@
                     let payload = {
                         id: this.fetchedFormData.selectedMeasurementUnitId,
                         unitName: this.fetchedFormData.unitName,
+                        type: "update",
                     };
-
-                    console.log(payload)
 
                     this.axios.post('/measurement-units/update', payload)
                     .then(response => {
@@ -126,12 +125,6 @@
             },
 
             async openEditModal(measurementUnits) {
-                let payload = {
-                    type: 'read',
-                    id: measurementUnits.id,
-                }
-                const response = await this.axios.post('/measurement-units/data', payload)
-
                 this.fetchedFormData.selectedMeasurementUnitId = measurementUnits.id
                 this.fetchedFormData.unitName = measurementUnits.unit_name
 
@@ -145,7 +138,7 @@
                     id: id,
                 }
 
-                const response = await this.axios.post('/units/update', payload)
+                const response = await this.axios.post('/measurement-units/update', payload)
                 if (response.data.status == 200) {
                     this.fetchMeasurementUnits();
                     customToastr.toastrMessage(response.data.message, "success")

@@ -142,8 +142,8 @@ class UnitsService
         try {
             DB::transaction(function () {
                 $measurementUnits = Unit::find($this->request->id);
-                $measurementUnits->unit_name = $this->request->unit;
-                $measurementUnits->slug = $this->generateSlug($this->request->unit);
+                $measurementUnits->unit_name = $this->request->unitName;
+                $measurementUnits->slug = $this->generateSlug($this->request->unitName);
 
                 // Check if any values have changed and are not null
                 $changesToSave = $this->checkForDirtyData($measurementUnits);
@@ -157,13 +157,13 @@ class UnitsService
 
             $result = [
                 'status' => 200,
-                'message' => "Measurement Unit " . $this->request->unit . " updated successfully",
+                'message' => "Measurement Unit " . $this->request->unitName . " updated successfully",
             ];
         } catch (\Exception $e) {
             Log::error($e);
             $result = [
                 'status' => 500,
-                'message' => "Measurement Unit " . $this->request->unit . " could not be updated",
+                'message' => "Measurement Unit " . $this->request->unitName . " could not be updated",
             ];
         }
 
