@@ -1,8 +1,106 @@
 <script>
     import { subCategoryMethods } from '@/components/SubCategoryMethods';
     import { customToastr } from '@/components/Toastr.vue';
+    // import VdtnetTable from 'vue-datatables-net'
+    import DataTable from 'datatables.net-vue3';
+    import DataTablesCore from 'datatables.net';
+    import 'datatables.net-buttons';
+    import 'datatables.net-buttons/js/buttons.html5';
+    import 'datatables.net-responsive';
+    //Bootstrap and jQuery libraries
+    // import 'bootstrap/dist/css/bootstrap.min.css'
+
+    DataTable.use(DataTablesCore);
     
     export default {
+        components: {
+            DataTable,
+        },
+        // props: {
+        //     expensesList: {
+        //         type: Array,
+        //         default: () => [],
+        //     },
+        // },
+        setup() {
+            const columns = [
+                // {
+                //     title: 'No',
+                //     render(data, type, row, meta) {
+                //         return type === 'display' ? meta.row + 1 : meta.row;
+                //     },
+                // },
+                { data: 'index', title: 'No'},
+                { data: 'parent_category_names', title: 'Category' },
+                { data: 'amount', title: 'Amount' },
+                { data: 'formattedDate', title: 'Expense Date' },
+                { data: 'payment_method.method', title: 'Payment Method' },
+                { data: 'remarks', title: 'Remarks' },
+                { data: null, title: 'Action' }, // Placeholder for the action column
+            ];
+
+            const options = {
+                dom: 'Bftip',
+                responsive: true,
+                select: true,
+                ordering: true,
+                paging: true,
+                lengthMenu: [10, 25, 50, 75, 100],
+                buttons: ['copy', 'csv', 'excel'],
+                columnDefs: [
+                    {
+                        targets: -1, // Action column
+                        render(data, type, row) {
+                            return `
+                                <div class="dropdown d-inline-block">
+                                    <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-more-fill align-middle"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a href="#" class="dropdown-item edit-item-btn" @click="openEditModal(row)">
+                                        <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
+                                        Edit
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="dropdown-item delete-item-btn" @click="openDeleteModal(row)">
+                                        <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
+                                        Delete
+                                        </a>
+                                    </li>
+                                    </ul>
+                                </div>
+                                `;
+                        },
+                    },
+                ],
+            };
+
+            return { columns, options };
+        },
+        // setup() {
+        //     const columns = [
+        //         { data: 'name' },
+        //         { data: 'position' },
+        //         { data: 'office' },
+        //         { data: 'extn' },
+        //         { data: 'start_date' },
+        //         { data: 'salary' },
+        //     ];
+
+        //     const options = {
+        //         dom: 'Bftip',
+        //         responsive: true,
+        //         select: true,
+        //         ordering: true,
+        //         paging: true,
+        //         lengthMenu: [10, 25, 50, 75, 100],
+        //         buttons: ['copy', 'csv', 'excel'],
+        //     };
+
+        //     return { columns, options };
+        // },
         data() {
             return {
                 formData: {
@@ -35,6 +133,28 @@
                 expenseListOptions: [],
                 paymentMethodsList: null,
                 paymentMethodOptions: [],
+                datatableColumns: [
+                    { label: 'No', field: 'index', numeric: true },
+                    { label: 'Category', field: 'parent_category_names' },
+                    { label: 'Amount', field: 'amount' },
+                    { label: 'Expense Date', field: 'formattedDate' },
+                    { label: 'Payment Method', field: 'payment_method.method' },
+                    { label: 'Remarks', field: 'remarks' },
+                    { label: 'Action', field: 'action', html: true },
+                ],
+                datatableOptions: {
+                    sortable: ['index', 'amount', 'formattedDate'],
+                    perPage: 10,
+                    headings: {
+                        'index': 'No',
+                        'parent_category_names': 'Category',
+                        'amount': 'Amount',
+                        'formattedDate': 'Expense Date',
+                        'payment_method.method': 'Payment Method',
+                        'remarks': 'Remarks',
+                        'action': 'Action',
+                    },
+                },
             };
         },
         created() {
@@ -44,6 +164,17 @@
             this.fetchExpenseSubCategories();
             this.fetchPaymentMethods();
         },
+        // computed: {
+        //     formattedExpensesList() {
+        //         return this.expensesList.map((expense, index) => ({
+        //             ...expense,
+        //             index: index + 1,
+        //             formattedDate: this.formatRelativeDate(expense.expense_date),
+        //             action: `<button class="btn btn-sm btn-primary" @click="openEditModal(${index})">Edit</button>
+        //                     <button class="btn btn-sm btn-danger" @click="openDeleteModal(${index})">Delete</button>`,
+        //         }));
+        //     },
+        // },
         methods: {
             ...subCategoryMethods,
             
@@ -120,7 +251,14 @@
                     // })
 
                     const response = await this.axios.post('/expenses/data', payload);
-                    this.expensesList = response.data.expenses;
+                    // this.expensesList = response.data.expenses;
+                    this.expensesList = response.data.expenses.map((expense, index) => {
+                        return {
+                            ...expense,
+                            index: index + 1,
+                            formattedDate: this.formatRelativeDate(expense.expense_date),
+                        }
+                    })
                     // console.log(this.expensesList);
 
                     this.expenseListOptions = this.expensesList.map(subcategory => ({
@@ -301,7 +439,7 @@
                             </div>
                         </div>
                     </div>
-                </div> <!-- end col -->
+                </div>
             </div>
 
             <!-- Edit Modal content -->
@@ -373,7 +511,44 @@
                             <h5 class="card-title mb-0">Expense List</h5>
                         </div>
                         <div class="card-body">
-                            <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
+                            <!-- <DataTable
+                                :columns="columns"
+                                ajax="../../../../public/data.json"
+                                class="table table-bordered dt-responsive nowrap table-striped align-middle"
+                                width="100%"
+                                :options="options"
+                            >
+                                <thead>
+                                    <tr>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Office</th>
+                                    <th>Extn.</th>
+                                    <th>Start date</th>
+                                    <th>Salary</th>
+                                    </tr>
+                                </thead>
+                            </DataTable> -->
+                            <DataTable
+                            :columns="columns"
+                            :data="expensesList"
+                            class="table table-hover table-striped nowrap display"
+                            width="100%"
+                            :options="options"
+                            >
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th>Expense Date</th>
+                                        <th>Payment Method</th>
+                                        <th>Remarks</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                            </DataTable>
+                            <!-- <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -417,7 +592,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table> -->
                         </div>
                     </div>
                 </div>
@@ -425,3 +600,9 @@
         </div>
     </div>
 </template>
+
+<style>
+    @import 'datatables.net-dt';
+    @import 'datatables.net-buttons-dt';
+    @import 'datatables.net-responsive-dt';
+</style>

@@ -77,6 +77,8 @@ class AuthController extends Controller
             }
             return response()->json(['success' => false, 'message' => 'Login details are not valid'], 401);
         } catch (JWTException $e) {
+            // Log::error($e);
+            Log::error($e->getMessage());
             return response()->json(['success' => false, 'message' => 'Could not create token'], 500);
         }
     }
