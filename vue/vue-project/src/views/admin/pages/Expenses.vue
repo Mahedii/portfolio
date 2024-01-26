@@ -3,18 +3,27 @@
     import { customToastr } from '@/components/Toastr.vue';
     // import VdtnetTable from 'vue-datatables-net'
     import DataTable from 'datatables.net-vue3';
-    import DataTablesCore from 'datatables.net';
+    import DataTablesLib from 'datatables.net-bs5';
     import 'datatables.net-buttons';
     import 'datatables.net-buttons/js/buttons.html5';
     import 'datatables.net-responsive';
+
+    import jszip from 'jszip';
+    import pdfmake from 'pdfmake';
+
+    DataTable.use(DataTablesLib);
+    DataTablesLib.Buttons.jszip(jszip);
+    DataTablesLib.Buttons.pdfMake(pdfmake);
+
     //Bootstrap and jQuery libraries
     // import 'bootstrap/dist/css/bootstrap.min.css'
+    import TableAction from './TableAction.vue'
 
-    DataTable.use(DataTablesCore);
     
     export default {
         components: {
             DataTable,
+            TableAction,
         },
         // props: {
         //     expensesList: {
@@ -36,45 +45,123 @@
                 { data: 'formattedDate', title: 'Expense Date' },
                 { data: 'payment_method.method', title: 'Payment Method' },
                 { data: 'remarks', title: 'Remarks' },
-                { data: null, title: 'Action' }, // Placeholder for the action column
+                { 
+                    data: null, 
+                    orderable: false, 
+                    title: 'Action',
+                    render: function (data) { 
+                        // return '<button @click="deletePid(' + data.id + ')">Delete</button>'; 
+                        return '<div class="dropdown d-inline-block">' +
+                                    '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                                        '<i class="ri-more-fill align-middle"></i>' +
+                                        '</button>' +
+                                        '<ul class="dropdown-menu dropdown-menu-end">' +
+                                            '<li>' +
+                                                '<a class="dropdown-item edit-item-btn" @click="openEditModal(' + data.id + ')">' +
+                                                    '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
+                                                '</a>' +
+                                            '</li>' +
+                                            '<li>' +
+                                                '<a href="#" class="dropdown-item delete-item-btn" @click="openDeleteModal(row)">' +
+                                                    '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
+                                                '</a>' +
+                                            '</li>' +
+                                        '</ul>' +
+                                    '</div>';
+                    }, 
+                }
             ];
 
             const options = {
-                dom: 'Bftip',
+                dom: 'Bfrtip',
                 responsive: true,
-                select: true,
-                ordering: true,
-                paging: true,
-                lengthMenu: [10, 25, 50, 75, 100],
-                buttons: ['copy', 'csv', 'excel'],
-                columnDefs: [
-                    {
-                        targets: -1, // Action column
-                        render(data, type, row) {
-                            return `
-                                <div class="dropdown d-inline-block">
-                                    <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="ri-more-fill align-middle"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                    <li>
-                                        <a href="#" class="dropdown-item edit-item-btn" @click="openEditModal(row)">
-                                        <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>
-                                        Edit
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="dropdown-item delete-item-btn" @click="openDeleteModal(row)">
-                                        <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
-                                        Delete
-                                        </a>
-                                    </li>
-                                    </ul>
-                                </div>
-                                `;
-                        },
-                    },
+                "iDisplayLength": 6,
+                lengthMenu: [
+                    [ 10, 25, 50, -1 ],
+                    [ '10 rows', '25 rows', '50 rows', 'Show all' ]
                 ],
+                // select: true,
+                // ordering: true,
+                // paging: true,
+                // lengthMenu: [10, 25, 50, 75, 100],
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+                // initComplete: function () {
+                //     // Attach click event listeners to the Edit and Delete buttons
+                //     jQuery('#example').on('click', '.edit-item-btn', function () {
+                //         const rowData = table.row(jQuery(this).closest('tr')).data();
+                //         openEditModal(rowData);
+                //     });
+
+                //     jQuery('#example').on('click', '.delete-item-btn', function () {
+                //         const rowData = table.row(jQuery(this).closest('tr')).data();
+                //         openDeleteModal(rowData);
+                //     });
+                // },
+                // columnDefs: [
+                //     {
+                //         targets: -1, // Action column
+                //         // createdRow(row, data, dataIndex) {
+                //         //     // Create a new Vue instance for the rendered row
+                //         //     const vm = new Vue({ el: row });
+
+                //         //     // Add click event listeners using Vue methods
+                //         //     vm.$on('edit-item', () => {
+                //         //         // Access the row data
+                //         //         console.log('Edit clicked:', data);
+                //         //         // Call your edit method here
+                //         //         vm.$emit('open-edit-modal', data);
+                //         //     });
+
+                //         //     vm.$on('delete-item', () => {
+                //         //         // Access the row data
+                //         //         console.log('Delete clicked:', data);
+                //         //         // Call your delete method here
+                //         //         vm.$emit('open-delete-modal', data);
+                //         //     });
+                //         // },
+                //         render(data, type, row) {
+                //             return `
+                //                 <div class="dropdown d-inline-block">
+                //                     <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                //                     <i class="ri-more-fill align-middle"></i>
+                //                     </button>
+                //                     <ul class="dropdown-menu dropdown-menu-end">
+                //                     <li>
+                //                         <a class="dropdown-item edit-item-btn" @click="openEditModal()">
+                //                             <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+                //                         </a>
+                //                     </li>
+                //                     <li>
+                //                         <a href="#" class="dropdown-item delete-item-btn" @click="openDeleteModal(row)">
+                //                         <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
+                //                         Delete
+                //                         </a>
+                //                     </li>
+                //                     </ul>
+                //                 </div>
+                //                 `;
+                //         },
+                //         // render(data, type, row) {
+                //         //     return `<table-action :row="row"></table-action>`;
+                //         // },
+                //         // component: TableAction,
+                //         // createdCell(cell, cellData, rowData, rowIndex, colIndex) {
+                //         //     // Use jQuery to attach event listeners
+                //         //     jQuery(cell).find('.edit-item-btn').on('click', () => {
+                //         //         // Access rowData or use other logic as needed
+                //         //         console.log('Edit button clicked:', rowData);
+                //         //         // Call your Vue method here if needed
+                //         //         // Example: vm.openEditModal(rowData);
+                //         //     });
+
+                //         //     jQuery(cell).find('.delete-item-btn').on('click', () => {
+                //         //         console.log('Delete button clicked:', rowData);
+                //         //         // Call your Vue method here if needed
+                //         //         // Example: vm.openDeleteModal(rowData);
+                //         //     });
+                //         // },
+                //     },
+                // ],
             };
 
             return { columns, options };
@@ -331,18 +418,19 @@
                 this.formData = { ...this.initialFormData }
             },
 
-            async openEditModal(expense) {
-                this.fetchedFormData.selectedExpense = expense.category_id
-                this.fetchedFormData.expenseAmount = expense.unit_name
-                this.fetchedFormData.quantity = expense.category_id
-                this.fetchedFormData.selectedUnit = expense.unit_name
-                this.fetchedFormData.expenseDate = expense.category_id
-                this.fetchedFormData.selectedPaymentMethod = expense.unit_name
-                this.fetchedFormData.remarks = expense.category_id
-                this.fetchedFormData.expenseAmount = expense.unit_name
+            async openEditModal(id) {
+                console.log("expense: ")
+                // this.fetchedFormData.selectedExpense = expense.category_id
+                // this.fetchedFormData.expenseAmount = expense.unit_name
+                // this.fetchedFormData.quantity = expense.category_id
+                // this.fetchedFormData.selectedUnit = expense.unit_name
+                // this.fetchedFormData.expenseDate = expense.category_id
+                // this.fetchedFormData.selectedPaymentMethod = expense.unit_name
+                // this.fetchedFormData.remarks = expense.category_id
+                // this.fetchedFormData.expenseAmount = expense.unit_name
 
                 // Open the modal
-                jQuery('#editModal').modal('show');
+                // jQuery('#editModal').modal('show');
             },
 
             async getSelectedExpenseParent(id) {
@@ -529,7 +617,7 @@
                                     </tr>
                                 </thead>
                             </DataTable> -->
-                            <DataTable
+                            <!-- <DataTable
                             :columns="columns"
                             :data="expensesList"
                             class="table table-hover table-striped nowrap display"
@@ -547,7 +635,28 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                            </DataTable>
+                            </DataTable> -->
+                            <div class="table-responsive">
+                                <DataTable
+                                :columns="columns"
+                                :data="expensesList"
+                                class="table table-hover table-striped align-middle mb-0 nowrap display"
+                                width="100%"
+                                :options="options"
+                                >
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Category</th>
+                                            <th>Amount</th>
+                                            <th>Expense Date</th>
+                                            <th>Payment Method</th>
+                                            <th>Remarks</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </DataTable>
+                            </div>
                             <!-- <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle" style="width:100%">
                                 <thead>
                                     <tr>
@@ -602,6 +711,8 @@
 </template>
 
 <style>
+    @import 'bootstrap';
+    /* @import 'datatables.net-bs5'; */
     @import 'datatables.net-dt';
     @import 'datatables.net-buttons-dt';
     @import 'datatables.net-responsive-dt';

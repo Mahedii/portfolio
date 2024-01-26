@@ -10,6 +10,12 @@ import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 import { subCategoryMethods } from '@/components/SubCategoryMethods';
 
+import BootstrapVue3 from 'bootstrap-vue-3';
+import vClickOutside from "click-outside-vue3";
+import VueApexCharts from "vue3-apexcharts";
+// import '@/assets/scss/config/material/app.scss';
+// import '@vueform/slider/themes/default.css';
+
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:8000/api'
 })
