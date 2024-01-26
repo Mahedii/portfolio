@@ -75,16 +75,16 @@ const routes = [
       name: 'logout',
       component: () => import('../views/authentication/Logout.vue').then(module => module.default),
     },
-    {
-      path: '/cargo/list',
-      name: 'CargoIndex',
-      component: () => import('../views/cargo/list/Index.vue')
-    },
-    {
-      path: '/cargo/list/create',
-      name: 'CreateCargo',
-      component: () => import('../views/cargo/list/CreateCargo.vue')
-    }
+    // {
+    //   path: '/cargo/list',
+    //   name: 'CargoIndex',
+    //   component: () => import('../views/cargo/list/Index.vue')
+    // },
+    // {
+    //   path: '/cargo/list/create',
+    //   name: 'CreateCargo',
+    //   component: () => import('../views/cargo/list/CreateCargo.vue')
+    // }
 ]
 
 export default routes

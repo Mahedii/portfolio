@@ -1,4 +1,4 @@
-import './assets/main.css'
+// import './assets/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -8,7 +8,8 @@ import jwtToken from './vuex/jwtToken';
 import axios from 'axios'
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
-import { subCategoryMethods } from '@/components/SubCategoryMethods';
+// import { subCategoryMethods } from '@/components/SubCategoryMethods';
+import VueFeather from 'vue-feather';
 
 import BootstrapVue3 from 'bootstrap-vue-3';
 import vClickOutside from "click-outside-vue3";
@@ -53,10 +54,18 @@ axiosInstance.interceptors.response.use(
 
 const app = createApp(App)
 app.config.globalProperties.axios = { ...axiosInstance }
-app.component("v-select", vSelect);
 // app.mixin(subCategoryMethods)
 
-app.use(router)
+app.component("v-select", vSelect)
+// .use(store)
+.use(router)
+.use(VueApexCharts)
+.use(BootstrapVue3)
+.component(VueFeather.type, VueFeather)
+// .use(Maska)
+// .use(Particles)
+// .use(i18n)
+.use(vClickOutside)
 
 // Exclude lord-icon from component resolution
 // app.config.isCustomElement = (tag) => tag.startsWith('lord-icon');
