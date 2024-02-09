@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\v1\Filter\FilterController;
 use App\Http\Controllers\v1\Expenses\ExpenseController;
 use App\Http\Controllers\v1\Measurement\UnitsController;
 use App\Http\Controllers\v1\Payment\PaymentMethodsController;
@@ -68,4 +69,6 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/update', ExpenseController::class)->name('expenses.update');
         Route::post('/delete', ExpenseController::class)->name('expenses.delete');
     });
+
+    Route::post('filter', FilterController::class)->name('filter.data');
 });
