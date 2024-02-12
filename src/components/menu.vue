@@ -1178,6 +1178,9 @@
                     <router-link to="/login" class="nav-link">Login </router-link>
                 </li>
                 <li class="nav-item">
+                    <router-link to="/filter" class="nav-link">Filter </router-link>
+                </li>
+                <li class="nav-item">
                     <router-link to="/category" class="nav-link">Category </router-link>
                 </li>
                 <li class="nav-item">

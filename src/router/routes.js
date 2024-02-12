@@ -112,6 +112,15 @@ export default [
     component: () => import("../views/dashboard/ecommerce/index.vue"),
   },
   {
+    path: '/filter',
+    name: 'Filter',
+    meta: {
+        title: "Filter",
+        authRequired: true,
+    },
+    component: () => import('../views/admin/pages/Filter/Filter.vue'),
+  },
+  {
     path: '/category',
     name: 'Category',
     meta: {
