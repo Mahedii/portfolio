@@ -120,12 +120,12 @@ class SubCategoryService
                     'slug' => $slug
                 ]);
 
-                if ($createCategory) {
-                    $this->updateCategoryParentTree($createCategory->id, $this->request->parents);
-                } else {
-                    // If there's an issue with creating the category, throw an exception to roll back the transaction
-                    throw new Exception("Category creation failed");
-                }
+                // if ($createCategory) {
+                //     $this->updateCategoryParentTree($createCategory->id, $this->request->parents);
+                // } else {
+                //     // If there's an issue with creating the category, throw an exception to roll back the transaction
+                //     throw new Exception("Category creation failed");
+                // }
             });
 
             $result = [
@@ -166,12 +166,12 @@ class SubCategoryService
                     }
 
                     $updateCategory = Category::where('id', $this->request->id)->update($changesToSave);
-                    if ($updateCategory) {
-                        $this->updateCategoryParentTree($this->request->id, $this->request->parents);
-                    } else {
-                        // If there's an issue with updating the category, throw an exception to roll back the transaction
-                        throw new Exception("Subcategory update failed");
-                    }
+                    // if ($updateCategory) {
+                    //     $this->updateCategoryParentTree($this->request->id, $this->request->parents);
+                    // } else {
+                    //     // If there's an issue with updating the category, throw an exception to roll back the transaction
+                    //     throw new Exception("Subcategory update failed");
+                    // }
                 }
             });
 

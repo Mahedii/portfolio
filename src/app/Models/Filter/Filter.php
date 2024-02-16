@@ -34,14 +34,24 @@ class Filter extends Model
 
         $query->when($request->filled('expense_date') || ($request->filled('from_date') && $request->filled('to_date')), function ($q) use ($request) {
             $q->where(function ($subQuery) use ($request) {
-                $subQuery->when($request->has('expense_date'), function ($subQ) use ($request) {
+                $subQuery->when($request->filled('expense_date'), function ($subQ) use ($request) {
                     $subQ->whereDate('expense_date', $request->expense_date);
                 });
 
-                $subQuery->when($request->has('from_date') && $request->has('to_date'), function ($subQ) use ($request) {
+                $subQuery->when($request->filled('from_date') && $request->filled('to_date'), function ($subQ) use ($request) {
                     $subQ->orWhereBetween('expense_date', [$request->from_date, $request->to_date]);
                 });
             });
+        });
+
+        // Filter by month if provided
+        $query->when($request->filled('month'), function ($q) use ($request) {
+            $q->whereMonth('expense_date', $request->month);
+        });
+
+        // Filter by year if provided
+        $query->when($request->filled('year'), function ($q) use ($request) {
+            $q->whereYear('expense_date', $request->year);
         });
 
         $result = $query->get();

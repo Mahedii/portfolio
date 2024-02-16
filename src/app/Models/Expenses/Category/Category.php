@@ -15,7 +15,8 @@ class Category extends Model
     public static function getSubcategoriesWithCategory(): Collection
     {
         // return static::where('parent_id', '!=', null)->orderBy('id', 'desc')->get();
-        $subcategories = static::whereNotNull('parent_id')->orderBy('id', 'desc')->get();
+        // $subcategories = static::whereNotNull('parent_id')->orderBy('id', 'desc')->get();
+        $subcategories = static::orderBy('id', 'desc')->get();
 
         // Add parent category names to each subcategory
         $subcategories = $subcategories->map(function ($subcategory) {
