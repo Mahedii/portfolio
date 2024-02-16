@@ -244,9 +244,9 @@
         },
         created() {
             this.initialFormData = { ...this.formData }
+            this.fetchExpenseSubCategories();
             this.fetchExpenses();
             this.fetchMeasurementUnits();
-            this.fetchExpenseSubCategories();
             this.fetchPaymentMethods();
         },
         // computed: {
@@ -306,10 +306,10 @@
                     }
                     this.axios.post('/sub-category/data', payload).then(res=>{
                         this.expensesCategories = res.data.subcategories;
-                        // console.log(this.expensesCategories)
+                        console.log(this.expensesCategories)
 
                         this.expensesCategoriesOptions = this.expensesCategories.map(subcategory => ({
-                            label: subcategory.category_name,
+                            label: subcategory.parent_category_names != "" ? subcategory.parent_category_names + '->' + subcategory.category_name : subcategory.category_name,
                             value: subcategory.id.toString(), // Convert id to string for compatibility with v-select
                             parents: subcategory.parent_category_names,
                         }));

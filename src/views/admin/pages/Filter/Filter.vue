@@ -36,6 +36,7 @@
                     selectedCategory: null,
                     selectedPaymentMethod: null,
                     selectedMonth: null,
+                    selectedYear: null,
                     datePicker: 0,
                     expenseDate: null,
                     fromDate: null,
@@ -54,6 +55,20 @@
                     { label: "October", value: "10" },
                     { label: "November", value: "11" },
                     { label: "December", value: "12" },
+                ],
+                yearList: [
+                    { label: "2020", value: "2020" },
+                    { label: "2021", value: "2021" },
+                    { label: "2022", value: "2022" },
+                    { label: "2023", value: "2023" },
+                    { label: "2024", value: "2024" },
+                    { label: "2025", value: "2025" },
+                    { label: "2026", value: "2026" },
+                    { label: "2027", value: "2027" },
+                    { label: "2028", value: "2028" },
+                    { label: "2029", value: "2029" },
+                    { label: "2030", value: "2030" },
+                    { label: "2031", value: "2031" },
                 ],
                 filteredData: [],
                 isChecked: true,
@@ -105,7 +120,7 @@
                         type: 'read',
                     }
                     return this.axios.post('/sub-category/data', payload).then(res=>{
-                        // console.log(res.data);
+                        console.log(res.data);
                         if (res.data.status == 200) {
                             if (id != null) {
                                 return res.data.subcategories
@@ -113,7 +128,7 @@
                                 this.allSubCategory = res.data.subcategories
                             }
                             this.categoryOptions = this.allSubCategory.map(subCategory => ({
-                                label: subCategory.parent_category_names + '->' + subCategory.category_name,
+                                label: subCategory.parent_category_names != "" ? subCategory.parent_category_names + '->' + subCategory.category_name : subCategory.category_name,
                                 value: subCategory.id.toString(), // Convert id to string for compatibility with v-select
                             }));
                         }
@@ -150,6 +165,8 @@
                         expense_date: this.formData.expenseDate,
                         from_date: this.formData.fromDate,
                         to_date: this.formData.toDate,
+                        month: this.formData.selectedMonth != null ? this.formData.selectedMonth.value : this.formData.selectedMonth,
+                        year: this.formData.selectedYear != null ? this.formData.selectedYear.value : this.formData.selectedYear,
                         type: 'read',
                         subType: 'expenses'
                     };
@@ -222,8 +239,8 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label for="" class="form-label">Select Category</label>
-                                        <v-select v-model="formData.selectedCategory" class="new-styles" placeholder="Choose one" :options="categoryOptions"/>
+                                        <label for="" class="form-label">Category</label>
+                                        <v-select v-model="formData.selectedCategory" class="new-styles" placeholder="Choose Category" :options="categoryOptions"/>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -235,7 +252,13 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="" class="form-label">Month</label>
-                                        <v-select v-model="formData.selectedMonth" class="new-styles" placeholder="Choose one" :options="monthList"/>
+                                        <v-select v-model="formData.selectedMonth" class="new-styles" placeholder="Choose Month" :options="monthList"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="" class="form-label">Year</label>
+                                        <v-select v-model="formData.selectedYear" class="new-styles" placeholder="Choose Year" :options="yearList"/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

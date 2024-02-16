@@ -79,9 +79,15 @@ export const subCategoryMethods = {
                 }
             })
             // console.log(this.categoryTree)
+            // let payload = {
+            //     category_id: this.lastSelectedCategoryId, // Use last selected category id
+            //     parents: this.categoryTree,
+            //     subcategory: this.formData.subcategory,
+            //     type: 'create',
+            // };
+
             let payload = {
-                category_id: this.lastSelectedCategoryId, // Use last selected category id
-                parents: this.categoryTree,
+                category_id: this.formData.selectedCategory.value,
                 subcategory: this.formData.subcategory,
                 type: 'create',
             };
@@ -247,19 +253,46 @@ export const subCategoryMethods = {
         }
     },
 
+    getAllCategories(){
+        try {
+            let payload = {
+                type: 'read',
+            }
+            return this.axios.post('/sub-category/data', payload).then(res=>{
+                if (res.data.status == 200) {
+                    this.allSubCategory = res.data.subcategories
+                    this.categoryOptions = this.allSubCategory.map(subCategory => ({
+                        label: subCategory.parent_category_names != "" ? subCategory.parent_category_names + '->' + subCategory.category_name : subCategory.category_name,
+                        value: subCategory.id.toString(), // Convert id to string for compatibility with v-select
+                    }));
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
     async getSubCategories(id = null){
         try {
             let payload = {
                 id: id,
                 type: 'read',
             }
-            return this.axios.post('/sub-category/data', payload).then(res=>{
+            return await this.axios.post('/sub-category/data', payload).then(res=>{
                 // console.log(res.data);
                 if (res.data.status == 200) {
                     if (id != null) {
                         return res.data.subcategories
                     } else {
                         this.allSubCategory = res.data.subcategories
+                        // console.log(this.allSubCategory)
+                        // this.allSubCategory = res.data.subcategories.map((subcategory) => {
+                        //     return {
+                        //         ...subcategory,
+                        //         // index: index + 1,
+                        //         // formattedDate: this.formatRelativeDate(subcategory.created_at),
+                        //     }
+                        // })
                     }
                 }
             })
