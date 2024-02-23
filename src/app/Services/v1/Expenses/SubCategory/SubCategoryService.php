@@ -91,7 +91,8 @@ class SubCategoryService
             return [
                 'status' => 200,
                 // 'subcategories' => SubCategory::with('category')->orderBy('id', 'desc')->get(),
-                'subcategories' => Category::getSelectedSubcategoriesWithCategory($this->request->id)
+                // 'subcategories' => Category::getSelectedSubcategoriesWithCategory($this->request->id),
+                'subcategories' => Category::getSubcategoriesWithCategory($this->request->id)
             ];
         } else {
             return [

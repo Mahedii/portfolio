@@ -12,11 +12,15 @@ class Category extends Model
 
     protected $fillable = ['parent_id', 'category_name', 'slug'];
 
-    public static function getSubcategoriesWithCategory(): Collection
+    public static function getSubcategoriesWithCategory($id = null): Collection
     {
         // return static::where('parent_id', '!=', null)->orderBy('id', 'desc')->get();
         // $subcategories = static::whereNotNull('parent_id')->orderBy('id', 'desc')->get();
-        $subcategories = static::orderBy('id', 'desc')->get();
+        if ($id != null) {
+            $subcategories = static::where('id', $id)->orderBy('id', 'desc')->get();
+        } else {
+            $subcategories = static::orderBy('id', 'desc')->get();
+        }
 
         // Add parent category names to each subcategory
         $subcategories = $subcategories->map(function ($subcategory) {
