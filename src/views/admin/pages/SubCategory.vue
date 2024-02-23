@@ -10,18 +10,14 @@
     import 'datatables.net-buttons';
     import 'datatables.net-buttons/js/buttons.html5';
     import 'datatables.net-responsive';
+    DataTable.use(DataTablesLib);
 
-    // import bootstrap from 'bootstrap';
-    import { ref, onMounted, reactive } from 'vue';
-
-
-    // import ActionColumn from './ActionColumn.vue';
     // import { ref } from 'vue';
-
+    // import bootstrap from 'bootstrap';
+    import { reactive } from 'vue';
+    import axiosInstance from '@/axiosInstance.js'
     import moment from 'moment';
 
-    DataTable.use(DataTablesLib);
-    
     export default {
         page: {
             title: "Units",
@@ -48,11 +44,17 @@
                 },
                 fetchedFormData: {
                     id: null,
+                    parent_id: null,
                     selectedCategory: null,
                     selectedSubcategories: [],
                     numberOfSubcategories: 0,
                     subcategory: "",
                     parentCategories: "",
+                    categoryName: ""
+                },
+                updateFormData: {
+                    id: null,
+                    parent_id: null,
                     categoryName: ""
                 },
                 lastSelectedCategoryId: null,
@@ -72,12 +74,6 @@
             DataTable,
         },
         setup() {
-            // const openEditModal = (id = null) => {
-            //     console.log("ye: " + id);
-            // };
-            // const openDeleteModal = (id = null) => {
-            //     console.log("ye: " + id);
-            // };
             const columns = [
                 // { data: 'index', title: 'No'},
                 // { data: 'parent_category_names', title: 'Category Tree' },
@@ -104,31 +100,6 @@
                         return moment(data.created_at).fromNow();
                     },
                 },
-                // { 
-                //     data: null, 
-                //     orderable: false, 
-                //     title: 'Action',
-                //     render: function (data) { 
-                //         // return '<button @click="deletePid(' + data.id + ')">Delete</button>'; 
-                //         return '<div class="dropdown d-inline-block">' +
-                //                     '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                //                         '<i class="ri-more-fill align-middle"></i>' +
-                //                         '</button>' +
-                //                         '<ul class="dropdown-menu dropdown-menu-end">' +
-                //                             '<li>' +
-                //                                 '<a id="edit-item-btn" class="dropdown-item edit-item-btn" v-on:click="openEditModal()">' +
-                //                                     '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
-                //                                 '</a>' +
-                //                             '</li>' +
-                //                             '<li>' +
-                //                                 '<a href="#" class="dropdown-item delete-item-btn" @click="openDeleteModal(' + data.id + ')">' +
-                //                                     '<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete' +
-                //                                 '</a>' +
-                //                             '</li>' +
-                //                         '</ul>' +
-                //                     '</div>';
-                //     }, 
-                // }
                 {
                     data: null,
                     orderable: false,
@@ -148,51 +119,6 @@
                         '</div>';
                     },
                 }
-                // {
-                //     data: null,
-                //     orderable: false,
-                //     title: 'Action',
-                //     render: function (data, type, row, meta) {
-                //         return '<div class="dropdown d-inline-block">' +
-                //         '<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">' +
-                //         '<i class="ri-more-fill align-middle"></i>' +
-                //         '</button>' +
-                //         '<ul class="dropdown-menu dropdown-menu-end">' +
-                //         '<li>' +
-                //         '<a class="dropdown-item edit-item-btn" data-index="' + meta.row + '">' +
-                //         '<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit' +
-                //         '</a>' +
-                //         '</li>' +
-                //         '</ul>' +
-                //         '</div>';
-                //     },
-                // },
-                // { 
-                //     data: null, 
-                //     orderable: false, 
-                //     title: 'Action',
-                //     render: (data) => { 
-                //         return (
-                //             <div class="dropdown d-inline-block">
-                //                 <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                //                     <i class="ri-more-fill align-middle"></i>
-                //                 </button>
-                //                 <ul class="dropdown-menu dropdown-menu-end">
-                //                     <li>
-                //                         <a id="edit-item-btn" class="dropdown-item edit-item-btn" onClick={() => openEditModal(data.id)}>
-                //                             <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
-                //                         </a>
-                //                     </li>
-                //                     <li>
-                //                         <a href="#" class="dropdown-item delete-item-btn" onClick={() => openDeleteModal(data)}>
-                //                             <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
-                //                         </a>
-                //                     </li>
-                //                 </ul>
-                //             </div>
-                //         );
-                //     }, 
-                // }
             ];
 
             const dataTableOptions = {
@@ -214,39 +140,71 @@
                 display: 'display:none',
             });
 
-            // Create a ref to hold the allSubCategory data
-            const allSubCategoryRef = ref([]);
-
-            // On component mount, assign the data to the ref
-            onMounted(() => {
-                allSubCategoryRef.value = this.allSubCategory;
-
-                // Now you can log it
-                console.log(allSubCategoryRef.value);
+            const editModal = ({
+                subCategory: [],
+                subCategoryId: null,
+                parentCategoryId: null,
+                parentCategoryName: null,
             });
 
-            const openEditModal = (dataId) => {
-                console.log('id: ' + dataId);
-                const allSubcategoryRef = ref([]);
-                allSubcategoryRef.value = this.allSubCategory;
-                const foundElement = allSubcategoryRef.value.find(subcategory => subcategory.id === dataId);
-
-                // Check if the element is found
-                if (foundElement) {
-                    console.log('Found Element:', foundElement);
-                } else {
-                    console.log('Element not found');
+            const getSelectedSubCategoryData = async (dataId) => {
+                console.log("yo")
+                try {
+                    let payload = {
+                        id: dataId,
+                        type: 'read',
+                    }
+                    const response = await axiosInstance.post('/sub-category/data', payload)
+                    console.log(response.data.status)
+                    return response.data.subcategories;
+                    // await axiosInstance.post('/sub-category/data', payload).then(res => {
+                    //     if (res.data.status == 200) {
+                    //         if (dataId != null) {
+                    //             console.log(res.data.subcategories[0])
+                    //             return res.data.subcategories[0]
+                    //         }
+                    //     }
+                    // })
+                    // console.log("finis=shed call")
+                } catch (error) {
+                    console.log(error)
                 }
-                // jQuery('#editModal').modal('show');
-                modal.isEditModalOpen = true;
-                modal.show = 'modal fade show';
-                modal.ariaHidden = false;
-                modal.ariaModal = true;
-                modal.display = 'display:block';
-                // Call other methods or perform actions here
+            };
+
+            const openEditModal = async (dataId) => {
+                try {
+                    let payload = {
+                        id: dataId,
+                        type: 'read',
+                    }
+                    const subCategory = await axiosInstance.post('/sub-category/data', payload).then(res => {
+                        if (res.data.status == 200) {
+                            if (dataId != null) {
+                                return res.data.subcategories[0]
+                            }
+                        }
+                    })
+
+                    editModal.subCategory = subCategory
+                    editModal.subCategoryId = subCategory.id
+                    editModal.parentCategoryId = subCategory.parent_id
+                    editModal.parentCategoryName = subCategory.parent_category_names != '' ? subCategory.parent_category_names + '->' + subCategory.category_name : subCategory.category_name
+                    editModal.subCategoryName = subCategory.category_name
+
+                    // jQuery('#editModal').modal('show');
+                    modal.isEditModalOpen = true;
+                    modal.show = 'modal fade show';
+                    modal.ariaHidden = false;
+                    modal.ariaModal = true;
+                    modal.display = 'display:block';
+                    // Call other methods or perform actions here
+                } catch (error) {
+                    console.log(error)
+                }
             };
 
             const closeEditModal = () => {
+                modal.isEditModalOpen = false;
                 modal.show = 'modal fade';
                 modal.ariaHidden = true;
                 modal.ariaModal = false;
@@ -266,38 +224,13 @@
                     openEditModal(dataId);
                 } else if (event.target.matches('.close-edit-modal')) {
                     closeEditModal();
-                } else {
+                } else if(modal.isEditModalOpen == true && !event.target.closest('.modal-dialog') == true) {
                     // If clicked outside the modal, close it
-                    // console.log("woah")
-                    // closeEditModal();
-                    // const modal = document.getElementById('editModal');
-                    // // Check if the click event target is outside the modal
-                    // if (!modal.contains(event.target)) {
-                    //     // Close the modal if the click is outside
-                    //     closeEditModal();
-                    // }
-                    const isOutsideModal = !event.target.closest('#editModal');
-
-                    // If the click is outside the modal, close the modal
-                    if (isOutsideModal) {
-                        closeEditModal();
-                    }
+                    closeEditModal();
                 }
-                
-                // You can add more conditions for other buttons if needed
-                // handleOutsideClick(event);
             });
 
-            // const handleOutsideClick = (event) => {
-            //     const modal = document.getElementById('editModal');
-            //     // Check if the click event target is outside the modal
-            //     if (!modal.contains(event.target)) {
-            //         // Close the modal if the click is outside
-            //         closeEditModal();
-            //     }
-            // };
-
-            return { columns, dataTableOptions, modal, closeEditModal };
+            return { columns, dataTableOptions, modal, editModal, closeEditModal, getSelectedSubCategoryData };
         },
         created() {
             // this.fetchCategories();
@@ -308,19 +241,13 @@
             ...subCategoryMethods,
         
             // Your component-specific methods, if any
-        
-            // For example:
-            openEditModal(id = null) {
-                console.log("ye: " + id)
-                // Assign the selected subcategory to the data property
-                // this.editedSubcategory = { ...subcategory };
-                // this.isEditModalOpen = true;
-                // this.fetchedFormData.id = subcategory.id
-                // this.fetchedFormData.subcategory = subcategory.category_name
-                // this.fetchedFormData.parentCategories = subcategory.parent_category_names
 
-                // Open the modal
-                // jQuery('#editModal').modal('show');
+            async changeSelectedSubCategories(value) {
+                const sub = this.getSelectedSubCategoryData(value.value)
+                console.log(sub)
+                this.updateFormData.parent_id = value.value
+                this.updateFormData.id = this.editModal.subCategoryId
+                // console.log(this.editModal.subCategoryName)
             },
 
             openDeleteModal(subcategory) {
@@ -381,36 +308,37 @@
         </div>
 
         <!-- Edit Modal content -->
-        <div :class="modal.show" id="editModal" data-bs-dismiss="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" :aria-hidden="modal.ariaHidden" :aria-modal="modal.ariaModal" :style="modal.display" ref="modalRef" role="dialog">
-            <div class="modal-dialog">
+        <div :class="modal.show" id="editModal" data-bs-dismiss="modal" tabindex="-1" :aria-hidden="modal.ariaHidden" :aria-modal="modal.ariaModal" :style="modal.display" ref="modalRef" role="dialog">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <form @submit.prevent="updateSubcategory">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="varyingcontentModalLabel">New message</h5>
+                            <h5 class="modal-title" id="varyingcontentModalLabel">Edit Form</h5>
                             <button type="button" class="btn-close close-edit-modal" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <!-- Bind form fields to data properties -->
-                            <div class="mb-3">
-                                <label for="subcategory" class="form-label">Parent Category</label>
-                                <input v-model="fetchedFormData.parentCategories" type="text" class="form-control" disabled>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="subcategory" class="form-label">Category Tree</label>
+                                        <input v-model="editModal.parentCategoryName" type="text" class="form-control" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="" class="form-label">Change Category</label>
+                                        <v-select v-model="editModal.subCategoryId" @option:selected="value => changeSelectedSubCategories(value)" class="new-styles" placeholder="Choose one" :options="categoryOptions"/>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="mb-3">
+                                        <label for="subcategory" class="form-label">Subcategory Name</label>
+                                        <input v-model="editModal.subCategoryName" type="text" class="form-control" id="subcategory"
+                                                placeholder="Enter Sub-Category name">
+                                    </div>
+                                </div>
+                                <!-- Add other form fields as needed -->
                             </div>
-                            <div class="mb-3">
-                                <label for="" class="form-label">Change Category</label>
-                                <v-select v-model="fetchedFormData.selectedCategory" @option:selected="value => getSelectedSubCategories(value, null, 'update')" class="new-styles" placeholder="Choose one" :options="options"/>
-                            </div>
-                            <div v-for="(selectedSubcategory, index) in fetchedFormData.selectedSubcategories" :key="index" class="mb-3">
-                                <label :for="'subcategory' + (index + 1)" class="form-label">Select Subcategory</label>
-                                <v-select v-model="fetchedFormData.selectedSubcategories[index]" :data-index="index" @option:selected="value => getSelectedSubCategories(value, index, 'update')" class="new-styles" :placeholder="'Choose one'" :options="subcategoriesOptions[index]"/>
-                            </div>
-                            <div class="mb-3">
-                                <label for="subcategory" class="form-label">Subcategory Name</label>
-                                <input v-model="fetchedFormData.subcategory" type="text" class="form-control" id="subcategory"
-                                        placeholder="Enter Sub-Category name">
-                            </div>
-
-                            <!-- Add other form fields as needed -->
-                            
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light close-edit-modal" data-bs-dismiss="modal">Close</button>
@@ -444,9 +372,6 @@
             </div>
         </div>
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deleteModal">Click me</button>
-        <a class="btn btn-soft-secondary btn-sm edit-item-btn" @click="openEditModal"><i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit - {{ modal.isEditModalOpen }}</a>
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -476,6 +401,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div v-if="modal.isEditModalOpen">
+            <div class="modal-backdrop show"></div>
         </div>
     </Layout>
 </template>

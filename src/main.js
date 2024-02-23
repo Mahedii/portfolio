@@ -89,6 +89,7 @@ app.config.globalProperties.axios = { ...axiosInstance }
 app.use(store)
     .use(router)
     .component("v-select", vSelect)
+    // .use(axiosInstance)
     // .use(AxiosPlugin)
     .use(VueApexCharts)
     .use(BootstrapVue3)

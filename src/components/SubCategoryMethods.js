@@ -125,19 +125,28 @@ export const subCategoryMethods = {
     async updateSubcategory() {
         try {
             this.isSubmitting = true
-            this.categoryTreeArray.filter((value, index) => {
-                if (index == 0) {
-                    this.categoryTree = value
-                } else {
-                    this.categoryTree = this.categoryTree + "," + value
-                }
-            })
+            // this.categoryTreeArray.filter((value, index) => {
+            //     if (index == 0) {
+            //         this.categoryTree = value
+            //     } else {
+            //         this.categoryTree = this.categoryTree + "," + value
+            //     }
+            // })
+
+            // let payload = {
+            //     id: this.fetchedFormData.id,
+            //     category_id: this.lastSelectedCategoryId, // Use last selected category id
+            //     parents: this.categoryTree,
+            //     subcategory: this.fetchedFormData.subcategory,
+            //     type: 'update',
+            // };
+
+            this.updateFormData.categoryName = this.editModal.subCategoryName
 
             let payload = {
-                id: this.fetchedFormData.id,
-                category_id: this.lastSelectedCategoryId, // Use last selected category id
-                parents: this.categoryTree,
-                subcategory: this.fetchedFormData.subcategory,
+                id: this.updateFormData.id,
+                category_id: this.updateFormData.parent_id,
+                subcategory: this.updateFormData.categoryName,
                 type: 'update',
             };
 
